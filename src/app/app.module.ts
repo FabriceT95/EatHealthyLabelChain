@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import {MetaModule} from './meta/meta.module';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
@@ -14,10 +13,14 @@ import {
   MatInputModule,
   MatToolbarModule
 } from '@angular/material';
+import { FormInputProductComponent } from './form-input-product/form-input-product.component';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    FormInputProductComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -30,7 +33,6 @@ import {
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    MetaModule
   ],
   providers: [],
   bootstrap: [AppComponent]

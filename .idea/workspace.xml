@@ -1,11 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b979d4c8-985c-477d-b226-bf0a39cdf726" name="Default Changelist" comment="" />
+    <list default="true" id="b979d4c8-985c-477d-b226-bf0a39cdf726" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/angular.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/contracts/ConvertLib.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/ConvertLib.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/contracts/MetaCoin.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/MetaCoin.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/contracts/Migrations.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/Migrations.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/2_deploy_contracts.js" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/2_deploy_contracts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/app.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/app.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/meta/meta-sender/meta-sender.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/meta/meta-sender/meta-sender.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/meta/meta.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/meta/meta.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/util/util.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/util/util.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/util/web3.service.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/util/web3.service.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/util/web3.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/util/web3.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/environments/environment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/environments/environment.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Solidity Contract" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1czp5rCx7kCc419jjy3w6x7msRt" />
   <component name="ProjectViewState">
@@ -15,12 +45,14 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="ts.external.directory.path" value="C:\Users\Fabrice\Desktop\Project_EatHealthyLabelChain\EatHealthyLabelChain\node_modules\typescript\lib" />
   </component>
   <component name="RunManager" selected="npm.Angular CLI Server">
     <configuration name="Tests (angular-truffle-box)" type="JavaScriptTestRunnerKarma">
@@ -63,10 +95,50 @@
       <option name="presentableId" value="Default" />
       <updated>1591541095031</updated>
       <workItem from="1591541097474" duration="530000" />
+      <workItem from="1591971897990" duration="8899000" />
+      <workItem from="1591997854946" duration="1220000" />
+      <workItem from="1592044560036" duration="10301000" />
+      <workItem from="1592057557029" duration="22107000" />
+      <workItem from="1592082821970" duration="8000" />
+      <workItem from="1592087937441" duration="644000" />
+      <workItem from="1592128677413" duration="13020000" />
+      <workItem from="1592169308185" duration="96000" />
+      <workItem from="1592225602082" duration="2135000" />
+      <workItem from="1592397969993" duration="875000" />
+      <workItem from="1592398856725" duration="2411000" />
+      <workItem from="1592407760983" duration="4590000" />
+      <workItem from="1592555533528" duration="831000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="239" y="323" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1592079773503">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="239" y="323" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592079773503" />
+    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1592078378875">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592078378875" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1592165006549">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592165006549" />
+    <state x="606" y="135" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1592066528350">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="606" y="135" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592066528350" />
+    <state x="656" y="252" width="607" height="536" key="find.popup" timestamp="1592061580284">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="656" y="252" width="607" height="536" key="find.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592061580284" />
+    <state x="151" y="229" width="672" height="678" key="search.everywhere.popup" timestamp="1592399389784">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="151" y="229" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592399389784" />
+    <state x="151" y="229" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592087942258" />
   </component>
 </project>
