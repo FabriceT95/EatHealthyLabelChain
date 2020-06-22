@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, Input, EventEmitter, Output, ViewChild} from '@angular/core';
 import {AppComponent} from '../app.component';
 
 @Component({
@@ -7,15 +7,24 @@ import {AppComponent} from '../app.component';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-
+  @Output() changeDataSource = new EventEmitter<boolean>();
+  @Output() pageSelected = new EventEmitter<string>();
   constructor(private web3: AppComponent) {
   }
 
-  async ngOnInit() {
-
+  ngOnInit() {
+/*
     setTimeout(() => {
       console.log(this.web3);
     }, 1000);
+*/
+  }
 
+  onSelect(page: string){
+    this.pageSelected.emit(page);
+  }
+
+  onChangeDataSource(SourceData) {
+    this.changeDataSource.emit(SourceData._checked);
   }
 }

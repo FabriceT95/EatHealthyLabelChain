@@ -2,25 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b979d4c8-985c-477d-b226-bf0a39cdf726" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/angular.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/ConvertLib.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/ConvertLib.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/MetaCoin.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/MetaCoin.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/Migrations.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/Migrations.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/2_deploy_contracts.js" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/2_deploy_contracts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/app.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/app.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/meta/meta-sender/meta-sender.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/meta/meta-sender/meta-sender.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/meta/meta.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/meta/meta.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/util/util.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/util/util.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/util/web3.service.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/util/web3.service.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/util/web3.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/util/web3.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/environments/environment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/environments/environment.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/form-input-product/form-input-product.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/form-input-product/form-input-product.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/header/header.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/header/header.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/header/header.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/header/header.component.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +35,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../angular_tutorial/cooking-list" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
@@ -107,7 +95,11 @@
       <workItem from="1592397969993" duration="875000" />
       <workItem from="1592398856725" duration="2411000" />
       <workItem from="1592407760983" duration="4590000" />
-      <workItem from="1592555533528" duration="831000" />
+      <workItem from="1592555533528" duration="4232000" />
+      <workItem from="1592600680909" duration="3795000" />
+      <workItem from="1592650970373" duration="8435000" />
+      <workItem from="1592758208061" duration="4019000" />
+      <workItem from="1592826398111" duration="639000" />
     </task>
     <servers />
   </component>
@@ -123,10 +115,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592078378875" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1592165006549">
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1592588896193">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592165006549" />
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592588896193" />
     <state x="606" y="135" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1592066528350">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

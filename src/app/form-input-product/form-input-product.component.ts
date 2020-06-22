@@ -9,13 +9,14 @@ import dataTest from '../../build/contract/dataTest.json';
 @Component({
   selector: 'app-form-input-product',
   templateUrl: './form-input-product.component.html',
-  styleUrls: ['./form-input-product.component.css']
+  styleUrls: ['./form-input-product.component.css'],
 })
 export class FormInputProductComponent implements OnInit {
 
   constructor(private web3: AppComponent, private server: ServerService) {}
 
   ngOnInit() {
+    // console.log(this.web3);
   }
 
   testQuaggaReading(codebarreInput) {
@@ -63,10 +64,15 @@ export class FormInputProductComponent implements OnInit {
   }
 
   addProductInDatabase(codebarre, productName, idUser) {
-    const newProduct = {user_id: idUser.value, code: codebarre.value, name: productName.value};
-    this.server.createProduct(newProduct).then((result) => {
-      console.log('Votre produit a été ajouté : ', result);
-    });
+    console.log(this.web3.isChecked);
+    if (this.web3.isChecked === false) {
+      const newProduct = {user_id: idUser.value, code: codebarre.value, name: productName.value};
+      this.server.createProduct(newProduct).then((result) => {
+        console.log('Votre produit a été ajouté : ', result);
+      });
+    } else {
+      console.log('bonjour');
+    }
   }
 
   addUserInDatabase(username, wallet) {

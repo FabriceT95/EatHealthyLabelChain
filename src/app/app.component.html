@@ -1,4 +1,9 @@
-<mat-toolbar color="primary">Angular Truffle Box</mat-toolbar>
+<!--<mat-toolbar color="primary">Angular Truffle Box</mat-toolbar>-->
 <!--<app-meta-sender></app-meta-sender>-->
-<app-header></app-header>
-<app-form-input-product></app-form-input-product>
+<app-header (changeDataSource) ="onDataSourceChanged($event)"  (pageSelected)="onNavigate($event)"></app-header>
+<div class="row">
+  <div class="col-md-12">
+    <app-form-input-product *ngIf="loadedPage === 'accueil'"></app-form-input-product>
+    <p *ngIf="loadedPage === 'accueil'" >Bonjour</p>
+  </div>
+</div>

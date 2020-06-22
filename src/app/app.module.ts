@@ -7,14 +7,17 @@ import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
+  MatIconModule,
   MatButtonModule,
   MatCardModule,
   MatFormFieldModule,
   MatInputModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatSlideToggleModule
 } from '@angular/material';
 import { FormInputProductComponent } from './form-input-product/form-input-product.component';
 import { HeaderComponent } from './header/header.component';
+import {ServerService} from './server.service';
 
 @NgModule({
   declarations: [
@@ -25,16 +28,18 @@ import { HeaderComponent } from './header/header.component';
   imports: [
     BrowserAnimationsModule,
     CommonModule,
+    MatIconModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatToolbarModule,
+    MatSlideToggleModule,
     BrowserModule,
     FormsModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [ServerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
