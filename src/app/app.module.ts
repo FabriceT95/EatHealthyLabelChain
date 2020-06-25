@@ -22,6 +22,8 @@ import { ContentHomepageComponent } from './content-homepage/content-homepage.co
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserProductManagerComponent } from './user-product-manager/user-product-manager.component';
 import { UserSearchComponent } from './user-search/user-search.component';
+import {MatDividerModule} from '@angular/material/divider';
+import {MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -46,8 +48,13 @@ import { UserSearchComponent } from './user-search/user-search.component';
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    MatDividerModule,
+    MatDialogModule
   ],
-  providers: [ServerService],
-  bootstrap: [AppComponent]
+  providers: [AppComponent, ServerService],
+  bootstrap: [AppComponent],
+  entryComponents: [
+    FormInputProductComponent
+  ]
 })
 export class AppModule { }

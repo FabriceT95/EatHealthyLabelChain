@@ -1,180 +1,235 @@
-<div class="container">
+<mat-dialog-content>
+    <!-- ADD NEW PRODUCT -->
 
-  <!-- ADD NEW PRODUCT -->
+    <h2>Nouveau Produit</h2>
+  <mat-divider></mat-divider>
 
-  <h2>Nouveau Produit</h2>
-  <form class="form-horizontal"  (ngSubmit)="addProductInDatabase(codebarre_inputText,productName_inputText,idUser_inputText)">
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="codebarre_inputText">Code Barre:</label>
-      <div class="col-sm-10">
-        <input #codebarre_inputText type="text" class="form-control" id="codebarre_inputText" placeholder="Entrez un codebarre" name="codebarre">
+    <form  (ngSubmit)="addProductInDatabase(codebarre_inputText,productName_inputText,idUser_inputText)">
+      <div class="row" style="margin:auto; padding-top:10px">
+        <div class="col-sm-4">
+        <mat-form-field>
+          <mat-label>Code Barre</mat-label>
+          <input matInput #codebarre_inputText type="text" id="codebarre_inputText" placeholder="Entrez un codebarre" name="codebarre">
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+          <mat-label>Nom du produit</mat-label>
+          <input matInput #productName_inputText type="text"  id="productName_inputText" placeholder="Entrez un nom de produit" name="codebarre_inputText">
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+          <mat-label>ID User</mat-label>
+          <input matInput #idUser_inputText type="text" id="idUser_inputText" placeholder="Votre identifiant" name="codebarre_inputText">
+        </mat-form-field>
+        <div mat-dialog-actions>
+          <button mat-button type="submit">Add Product</button>
+        </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="productName_inputText">Nom du produit :</label>
-      <div class="col-sm-10">
-        <input #productName_inputText type="text" class="form-control" id="productName_inputText" placeholder="Entrez un nom de produit" name="codebarre_inputText">
+        <div class="col-sm-4">
+          <mat-form-field>
+            <mat-label>Code Barre</mat-label>
+            <input matInput #codebarre_inputText type="text" id="codebarre_inputText" placeholder="Entrez un codebarre" name="codebarre">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <mat-label>Nom du produit</mat-label>
+            <input matInput #productName_inputText type="text"  id="productName_inputText" placeholder="Entrez un nom de produit" name="codebarre_inputText">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <mat-label>ID User</mat-label>
+            <input matInput #idUser_inputText type="text" id="idUser_inputText" placeholder="Votre identifiant" name="codebarre_inputText">
+          </mat-form-field>
+          <div mat-dialog-actions>
+            <button mat-button type="submit">Add Product</button>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="idUser_inputText">ID User :</label>
-      <div class="col-sm-10">
-        <input #idUser_inputText type="text" class="form-control" id="idUser_inputText" placeholder="Votre identifiant" name="codebarre_inputText">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-default">Add Product</button>
-      </div>
-    </div>
-  </form>
 
 
-
-  <!-- ADD NEW USER -->
-
-  <h2>Nouvel Utilisateur</h2>
-  <form class="form-horizontal"  (ngSubmit)="addUserInDatabase(username_inputText,wallet_inputText)">
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="username_inputText">Nom utilisateur : </label>
-      <div class="col-sm-10">
-        <input #username_inputText type="text" class="form-control" id="username_inputText" placeholder="Entrez votre nom utilisateur" name="username_inputText">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="wallet_inputText"> Wallet : </label>
-      <div class="col-sm-10">
-        <input #wallet_inputText type="text" class="form-control" id="wallet_inputText" placeholder="Entrez votre wallet" name="wallet_inputText">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-default">Add User</button>
-      </div>
-    </div>
-  </form>
+    </form>
+</mat-dialog-content>
 
 
 
-  <!-- GET USER -->
-  <h2>Récupération User</h2>
-  <form class="form-horizontal"  (ngSubmit)="getUserFromDatabase(username_getUser)">
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="username_getUser"> Username : </label>
-      <div class="col-sm-10">
-        <input #username_getUser type="text" class="form-control" id="username_getUser" placeholder="Entrez un nom d'utilisateur" name="username_getUser">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-primary">Find User</button>
-      </div>
-    </div>
-  </form>
 
+<!--<div class="container">-->
 
-  <!-- GET PRODUCT -->
-  <h2>Récupérer Produit</h2>
-  <form class="form-horizontal"  (ngSubmit)="getProductFromDatabase(code_getProduct)">
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="username_getUser"> Code Produit : </label>
-      <div class="col-sm-10">
-        <input #code_getProduct type="text" class="form-control" id="code_getProduct" placeholder="Entrez un code produit" name="code_getProduct">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-primary">Find Product</button>
-      </div>
-    </div>
-  </form>
+<!--  &lt;!&ndash; ADD NEW PRODUCT &ndash;&gt;-->
 
-
-  <!-- UPDATE USER -->
-  <h2>Update Utilisateur</h2>
-  <form class="form-horizontal"  (ngSubmit)="updateUserFromDatabase(wallet_updateUser, new_wallet_updateUser,new_username_updateUser)">
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="wallet_updateUser"> Wallet actuel : </label>
-      <div class="col-sm-10">
-        <input #wallet_updateUser type="text" class="form-control" id="wallet_updateUser" placeholder="Entrez votre wallet" name="wallet_updateUser">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="new_wallet_updateUser"> Nouveau wallet : </label>
-      <div class="col-sm-10">
-        <input #new_wallet_updateUser type="text" class="form-control" id="new_wallet_updateUser" placeholder="Entrez votre nouveau wallet" name="new_wallet_updateUser">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="new_username_updateUser"> Nouveau username : </label>
-      <div class="col-sm-10">
-        <input #new_username_updateUser type="text" class="form-control" id="new_username_updateUser" placeholder="Entrez votre nouveau username" name="new_username_updateUser">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-primary">Update User</button>
-      </div>
-    </div>
-  </form>
-
-  <!-- UPDATE PRODUCT -->
-  <h2>Update Product</h2>
-  <form class="form-horizontal"  (ngSubmit)="updateProductFromDatabase(code_updateProduct, name_updateProduct)">
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="code_updateProduct"> Code du produit à modifier : </label>
-      <div class="col-sm-10">
-        <input #code_updateProduct type="text" class="form-control" id="code_updateProduct" placeholder="Entrez le code du produit à modifier" name="code_updateProduct">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="name_updateProduct"> Nouveau nom du produit </label>
-      <div class="col-sm-10">
-        <input #name_updateProduct type="text" class="form-control" id="name_updateProduct" placeholder="Entrez le nouveau nom du produit" name="name_updateProduct">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-primary">Update Product</button>
-      </div>
-    </div>
-  </form>
-
-  <!-- DELETE USER -->
-  <h2>Delete Utilisateur</h2>
-  <form class="form-horizontal"  (ngSubmit)="deleteUserFromDatabase(wallet_deleteUser)">
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="wallet_deleteUser"> Entrez le wallet de l'user à delete : </label>
-      <div class="col-sm-10">
-        <input #wallet_deleteUser type="text" class="form-control" id="wallet_deleteUser" placeholder="Entrez le wallet de l'user à delete" name="wallet_deleteUser">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-primary">Delete User</button>
-      </div>
-    </div>
-  </form>
-
-  <!-- DELETE PRODUCT -->
-  <h2>Delete Product</h2>
-  <form class="form-horizontal"  (ngSubmit)="deleteProductFromDatabase(code_deleteProduct)">
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="code_deleteProduct"> Entrez le wallet de l'user à delete : </label>
-      <div class="col-sm-10">
-        <input #code_deleteProduct type="text" class="form-control" id="code_deleteProduct" placeholder="Entrez le code du produit à delete" name="code_deleteProduct">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-primary">Delete Product</button>
-      </div>
-    </div>
-  </form>
+<!--  <h2>Nouveau Produit</h2>-->
+<!--  <form class="form-horizontal"  (ngSubmit)="addProductInDatabase(codebarre_inputText,productName_inputText,idUser_inputText)">-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="codebarre_inputText">Code Barre:</label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #codebarre_inputText type="text" class="form-control" id="codebarre_inputText" placeholder="Entrez un codebarre" name="codebarre">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="productName_inputText">Nom du produit :</label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #productName_inputText type="text" class="form-control" id="productName_inputText" placeholder="Entrez un nom de produit" name="codebarre_inputText">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="idUser_inputText">ID User :</label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #idUser_inputText type="text" class="form-control" id="idUser_inputText" placeholder="Votre identifiant" name="codebarre_inputText">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <div class="col-sm-offset-2 col-sm-10">-->
+<!--        <button type="submit" class="btn btn-default">Add Product</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </form>-->
 
 
 
-</div>
+<!--  &lt;!&ndash; ADD NEW USER &ndash;&gt;-->
+
+<!--  <h2>Nouvel Utilisateur</h2>-->
+<!--  <form class="form-horizontal"  (ngSubmit)="addUserInDatabase(username_inputText,wallet_inputText)">-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="username_inputText">Nom utilisateur : </label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #username_inputText type="text" class="form-control" id="username_inputText" placeholder="Entrez votre nom utilisateur" name="username_inputText">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="wallet_inputText"> Wallet : </label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #wallet_inputText type="text" class="form-control" id="wallet_inputText" placeholder="Entrez votre wallet" name="wallet_inputText">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <div class="col-sm-offset-2 col-sm-10">-->
+<!--        <button type="submit" class="btn btn-default">Add User</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </form>-->
+
+
+
+<!--  &lt;!&ndash; GET USER &ndash;&gt;-->
+<!--  <h2>Récupération User</h2>-->
+<!--  <form class="form-horizontal"  (ngSubmit)="getUserFromDatabase(username_getUser)">-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="username_getUser"> Username : </label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #username_getUser type="text" class="form-control" id="username_getUser" placeholder="Entrez un nom d'utilisateur" name="username_getUser">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <div class="col-sm-offset-2 col-sm-10">-->
+<!--        <button type="submit" class="btn btn-primary">Find User</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </form>-->
+
+
+<!--  &lt;!&ndash; GET PRODUCT &ndash;&gt;-->
+<!--  <h2>Récupérer Produit</h2>-->
+<!--  <form class="form-horizontal"  (ngSubmit)="getProductFromDatabase(code_getProduct)">-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="username_getUser"> Code Produit : </label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #code_getProduct type="text" class="form-control" id="code_getProduct" placeholder="Entrez un code produit" name="code_getProduct">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <div class="col-sm-offset-2 col-sm-10">-->
+<!--        <button type="submit" class="btn btn-primary">Find Product</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </form>-->
+
+
+<!--  &lt;!&ndash; UPDATE USER &ndash;&gt;-->
+<!--  <h2>Update Utilisateur</h2>-->
+<!--  <form class="form-horizontal"  (ngSubmit)="updateUserFromDatabase(wallet_updateUser, new_wallet_updateUser,new_username_updateUser)">-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="wallet_updateUser"> Wallet actuel : </label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #wallet_updateUser type="text" class="form-control" id="wallet_updateUser" placeholder="Entrez votre wallet" name="wallet_updateUser">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="new_wallet_updateUser"> Nouveau wallet : </label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #new_wallet_updateUser type="text" class="form-control" id="new_wallet_updateUser" placeholder="Entrez votre nouveau wallet" name="new_wallet_updateUser">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="new_username_updateUser"> Nouveau username : </label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #new_username_updateUser type="text" class="form-control" id="new_username_updateUser" placeholder="Entrez votre nouveau username" name="new_username_updateUser">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <div class="col-sm-offset-2 col-sm-10">-->
+<!--        <button type="submit" class="btn btn-primary">Update User</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </form>-->
+
+<!--  &lt;!&ndash; UPDATE PRODUCT &ndash;&gt;-->
+<!--  <h2>Update Product</h2>-->
+<!--  <form class="form-horizontal"  (ngSubmit)="updateProductFromDatabase(code_updateProduct, name_updateProduct)">-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="code_updateProduct"> Code du produit à modifier : </label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #code_updateProduct type="text" class="form-control" id="code_updateProduct" placeholder="Entrez le code du produit à modifier" name="code_updateProduct">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="name_updateProduct"> Nouveau nom du produit </label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #name_updateProduct type="text" class="form-control" id="name_updateProduct" placeholder="Entrez le nouveau nom du produit" name="name_updateProduct">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <div class="col-sm-offset-2 col-sm-10">-->
+<!--        <button type="submit" class="btn btn-primary">Update Product</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </form>-->
+
+<!--  &lt;!&ndash; DELETE USER &ndash;&gt;-->
+<!--  <h2>Delete Utilisateur</h2>-->
+<!--  <form class="form-horizontal"  (ngSubmit)="deleteUserFromDatabase(wallet_deleteUser)">-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="wallet_deleteUser"> Entrez le wallet de l'user à delete : </label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #wallet_deleteUser type="text" class="form-control" id="wallet_deleteUser" placeholder="Entrez le wallet de l'user à delete" name="wallet_deleteUser">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <div class="col-sm-offset-2 col-sm-10">-->
+<!--        <button type="submit" class="btn btn-primary">Delete User</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </form>-->
+
+<!--  &lt;!&ndash; DELETE PRODUCT &ndash;&gt;-->
+<!--  <h2>Delete Product</h2>-->
+<!--  <form class="form-horizontal"  (ngSubmit)="deleteProductFromDatabase(code_deleteProduct)">-->
+<!--    <div class="form-group">-->
+<!--      <label class="control-label col-sm-2" for="code_deleteProduct"> Entrez le wallet de l'user à delete : </label>-->
+<!--      <div class="col-sm-10">-->
+<!--        <input #code_deleteProduct type="text" class="form-control" id="code_deleteProduct" placeholder="Entrez le code du produit à delete" name="code_deleteProduct">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <div class="col-sm-offset-2 col-sm-10">-->
+<!--        <button type="submit" class="btn btn-primary">Delete Product</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </form>-->
+
+
+
+<!--</div>-->
 
 
 

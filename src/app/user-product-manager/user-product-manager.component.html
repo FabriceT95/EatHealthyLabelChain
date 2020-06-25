@@ -1,1 +1,23 @@
-<p>user-product-manager works!</p>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Gestionnaire de produit par l'utilisateur</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="row" style="padding-top:2%; text-align: center">
+        <mat-form-field appearance="fill" style="margin:0 auto">
+        <mat-label>Input</mat-label>
+        <input matInput>
+         </mat-form-field>
+    </div>
+    <div class="row" style="padding-top:2%; text-align: center; margin:auto">
+      <div class="col-sm-4">
+      <button mat-raised-button color="primary" (click)="openDialog()">Ajouter un nouveau produit</button>
+      </div>
+      <div class="col-sm-4">
+      <button mat-raised-button color="accent" (click)="openDialog()">Mise à jour d'un produit</button>
+      </div>
+
+    </div>
+    </mat-card-content>
+</mat-card>

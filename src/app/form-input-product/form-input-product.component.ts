@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 // import Quagga from 'quagga/dist/quagga.js';
 import javascriptBarcodeReader from 'javascript-barcode-reader';
 // import {WEB3} from '../util/web3.service';
 import {AppComponent} from '../app.component';
 import { ServerService } from '../server.service';
 import dataTest from '../../build/contract/dataTest.json';
+import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-form-input-product',
@@ -13,10 +14,13 @@ import dataTest from '../../build/contract/dataTest.json';
 })
 export class FormInputProductComponent implements OnInit {
 
-  constructor(private web3: AppComponent, private server: ServerService) {}
+  constructor(private web3: AppComponent, private server: ServerService, public dialogRef: MatDialogRef<FormInputProductComponent>) {}
 
   ngOnInit() {
     // console.log(this.web3);
+  }
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 
   testQuaggaReading(codebarreInput) {
