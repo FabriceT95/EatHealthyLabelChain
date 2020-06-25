@@ -34,8 +34,10 @@ export class AppComponent implements OnInit {
       dataTest.abi,
       this.deployedNetwork.address
     );
-   // console.log(this.web3);
-    // this.role = await this.contract.methods.getRole().call({from: this.accounts[0]});
+
+    // console.log(this.web3);
+    this.role = await this.contract.methods.getRole().call({from: this.accounts[0]});
+    console.log(this.role);
   }
 
   onNavigate(page: string) {

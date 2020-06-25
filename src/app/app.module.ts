@@ -18,12 +18,20 @@ import {
 import { FormInputProductComponent } from './form-input-product/form-input-product.component';
 import { HeaderComponent } from './header/header.component';
 import {ServerService} from './server.service';
+import { ContentHomepageComponent } from './content-homepage/content-homepage.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { UserProductManagerComponent } from './user-product-manager/user-product-manager.component';
+import { UserSearchComponent } from './user-search/user-search.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     FormInputProductComponent,
-    HeaderComponent
+    HeaderComponent,
+    ContentHomepageComponent,
+    UserProfileComponent,
+    UserProductManagerComponent,
+    UserSearchComponent
   ],
   imports: [
     BrowserAnimationsModule,
