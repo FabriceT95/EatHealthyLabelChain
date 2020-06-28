@@ -4366,12 +4366,12 @@
         }
       },
       "links": {},
-      "address": "0xfb6F6cC6d6891355ac57a33856E704A920137FE2",
-      "transactionHash": "0x5946da808d8ea8d2d02cca60f69a0f50a4cda121c3e32c1ca7935af0c54087bf"
+      "address": "0x06d270D7669826718A4E302e646685F6170852fD",
+      "transactionHash": "0xaa9d263412c407fa1be0d890f2cad8eaa408371ae2307486ee20e5efc67fb6b9"
     }
   },
   "schemaVersion": "3.2.0",
-  "updatedAt": "2020-06-24T17:10:10.563Z",
+  "updatedAt": "2020-06-27T19:52:20.456Z",
   "devdoc": {
     "author": "Fabrice Tapia",
     "details": "Contract which is a part of the Alyra's Final Project : Eat Healthy LabelChain",

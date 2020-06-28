@@ -1,56 +1,60 @@
 <mat-dialog-content>
-    <!-- ADD NEW PRODUCT -->
+  <!-- ADD NEW PRODUCT -->
 
-    <h2>Nouveau Produit</h2>
+  <h2>Nouveau Produit</h2>
   <mat-divider></mat-divider>
 
-    <form  (ngSubmit)="addProductInDatabase(codebarre_inputText,productName_inputText,idUser_inputText)">
-      <div class="row" style="margin:auto; padding-top:10px">
-        <div class="col-sm-4">
+  <form (ngSubmit)="addProductInDatabase(codebarre_inputText,productName_inputText,idUser_inputText)">
+    <div class="row" style="margin:auto; padding-top:10px">
+      <div class="col-sm-4">
         <mat-form-field>
           <mat-label>Code Barre</mat-label>
-          <input matInput #codebarre_inputText type="text" id="codebarre_inputText" placeholder="Entrez un codebarre" name="codebarre">
+          <input #codebarre_inputText id="codebarre_inputText" matInput name="codebarre" placeholder="Entrez un codebarre"
+                 type="text">
         </mat-form-field>
         <br>
         <mat-form-field>
           <mat-label>Nom du produit</mat-label>
-          <input matInput #productName_inputText type="text"  id="productName_inputText" placeholder="Entrez un nom de produit" name="codebarre_inputText">
+          <input #productName_inputText id="productName_inputText" matInput name="codebarre_inputText"
+                 placeholder="Entrez un nom de produit" type="text">
         </mat-form-field>
         <br>
         <mat-form-field>
           <mat-label>ID User</mat-label>
-          <input matInput #idUser_inputText type="text" id="idUser_inputText" placeholder="Votre identifiant" name="codebarre_inputText">
+          <input #idUser_inputText id="idUser_inputText" matInput name="codebarre_inputText" placeholder="Votre identifiant"
+                 type="text">
         </mat-form-field>
         <div mat-dialog-actions>
           <button mat-button type="submit">Add Product</button>
         </div>
       </div>
-        <div class="col-sm-4">
-          <mat-form-field>
-            <mat-label>Code Barre</mat-label>
-            <input matInput #codebarre_inputText type="text" id="codebarre_inputText" placeholder="Entrez un codebarre" name="codebarre">
-          </mat-form-field>
-          <br>
-          <mat-form-field>
-            <mat-label>Nom du produit</mat-label>
-            <input matInput #productName_inputText type="text"  id="productName_inputText" placeholder="Entrez un nom de produit" name="codebarre_inputText">
-          </mat-form-field>
-          <br>
-          <mat-form-field>
-            <mat-label>ID User</mat-label>
-            <input matInput #idUser_inputText type="text" id="idUser_inputText" placeholder="Votre identifiant" name="codebarre_inputText">
-          </mat-form-field>
-          <div mat-dialog-actions>
-            <button mat-button type="submit">Add Product</button>
-          </div>
+      <div class="col-sm-4">
+        <mat-form-field>
+          <mat-label>Code Barre</mat-label>
+          <input matInput name="codebarre" placeholder="Entrez un codebarre"
+                 type="text">
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+          <mat-label>Nom du produit</mat-label>
+          <input matInput name="codebarre_inputText"
+                 placeholder="Entrez un nom de produit" type="text">
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+          <mat-label>ID User</mat-label>
+          <input matInput name="codebarre_inputText" placeholder="Votre identifiant"
+                 type="text">
+        </mat-form-field>
+        <div mat-dialog-actions>
+          <button mat-button type="submit">Add Product</button>
         </div>
       </div>
+    </div>
 
 
-    </form>
+  </form>
 </mat-dialog-content>
-
-
 
 
 <!--<div class="container">-->
@@ -85,7 +89,6 @@
 <!--  </form>-->
 
 
-
 <!--  &lt;!&ndash; ADD NEW USER &ndash;&gt;-->
 
 <!--  <h2>Nouvel Utilisateur</h2>-->
@@ -108,7 +111,6 @@
 <!--      </div>-->
 <!--    </div>-->
 <!--  </form>-->
-
 
 
 <!--  &lt;!&ndash; GET USER &ndash;&gt;-->
@@ -228,9 +230,7 @@
 <!--  </form>-->
 
 
-
 <!--</div>-->
-
 
 
 <!-- GET PRODUCT FROM SMART CONTRACT -->

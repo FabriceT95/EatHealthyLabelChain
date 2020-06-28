@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { UserProductManagerComponent } from './user-product-manager.component';
+import {UserProductManagerComponent} from './user-product-manager.component';
 
 describe('UserProductManagerComponent', () => {
   let component: UserProductManagerComponent;
@@ -8,9 +8,9 @@ describe('UserProductManagerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserProductManagerComponent ]
+      declarations: [UserProductManagerComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,5 +1,7 @@
 import {Component, OnInit, Input, EventEmitter, Output, ViewChild} from '@angular/core';
 import {AppComponent} from '../app.component';
+import dataTest from '../../../build/contracts/DataTest.json';
+import {WEB3} from '../util/web3.service';
 
 @Component({
   selector: 'app-header',
@@ -9,18 +11,19 @@ import {AppComponent} from '../app.component';
 export class HeaderComponent implements OnInit {
   @Output() changeDataSource = new EventEmitter<boolean>();
   @Output() pageSelected = new EventEmitter<string>();
-  constructor(private web3: AppComponent) {
+
+  constructor() {
   }
 
-  ngOnInit() {
-/*
-    setTimeout(() => {
-      console.log(this.web3);
-    }, 1000);
-*/
+  async ngOnInit() {
+    /*
+        setTimeout(() => {
+          console.log(this.web3);
+        }, 1000);
+    */
   }
 
-  onSelect(page: string){
+  onSelect(page: string) {
     this.pageSelected.emit(page);
   }
 

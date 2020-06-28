@@ -2,10 +2,11 @@ import {Component, Inject, OnInit} from '@angular/core';
 // import Quagga from 'quagga/dist/quagga.js';
 import javascriptBarcodeReader from 'javascript-barcode-reader';
 // import {WEB3} from '../util/web3.service';
-import {AppComponent} from '../app.component';
-import { ServerService } from '../server.service';
+import {AppComponent} from '../../../app.component';
+import {ServerService} from '../../../server.service';
 import dataTest from '../../build/contract/dataTest.json';
 import {MatDialogRef} from '@angular/material/dialog';
+import {Web3Service} from '../../../util/web3.service';
 
 @Component({
   selector: 'app-form-input-product',
@@ -14,14 +15,14 @@ import {MatDialogRef} from '@angular/material/dialog';
 })
 export class FormInputProductComponent implements OnInit {
 
-  constructor(private web3: AppComponent, private server: ServerService, public dialogRef: MatDialogRef<FormInputProductComponent>) {}
+  constructor(private web3: Web3Service, private server: ServerService) {
+  }
 
   ngOnInit() {
     // console.log(this.web3);
   }
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
+
+
 
   testQuaggaReading(codebarreInput) {
     const vi = codebarreInput.value;
@@ -50,25 +51,25 @@ export class FormInputProductComponent implements OnInit {
   }
 
   async readBarreCodeInputText(codebarreInputText) {
-    const barcodeValue = codebarreInputText.value;
-    if (Number(barcodeValue) && barcodeValue.length === 13) {
-      await this.web3.contract.methods.addProductToProposal(barcodeValue, 'ABAJOUR', 5 , [0]).send({from: this.web3.accounts[0]});
-      this.web3.contract.events.TriggerAddProduct({
-        fromBlock: await this.web3.web3.eth.getBlockNumber()
-      }, function(error, event) { console.log(event.returnValues.idProduct); });
-    }
+    /*  const barcodeValue = codebarreInputText.value;
+      if (Number(barcodeValue) && barcodeValue.length === 13) {
+        await this.web3.contract.methods.addProductToProposal(barcodeValue, 'ABAJOUR', 5 , [0]).send({from: this.web3.accounts[0]});
+        this.web3.contract.events.TriggerAddProduct({
+          fromBlock: await this.web3.web3.eth.getBlockNumber()
+        }, function(error, event) { console.log(event.returnValues.idProduct); });
+      }*/
 
 
   }
 
   async getProducts() {
     const barcodeValue = 1234567891234;
-    const product = await this.web3.contract.methods.getProduct(barcodeValue).call();
-    console.log(product);
+   // const product = await this.web3.contract.methods.getProduct(barcodeValue).call();
+ //   console.log(product);
   }
 
   addProductInDatabase(codebarre, productName, idUser) {
-    console.log(this.web3.isChecked);
+   /* console.log(this.web3.isChecked);
     if (this.web3.isChecked === false) {
       const newProduct = {user_id: idUser.value, code: codebarre.value, name: productName.value};
       this.server.createProduct(newProduct).then((result) => {
@@ -76,7 +77,7 @@ export class FormInputProductComponent implements OnInit {
       });
     } else {
       console.log('bonjour');
-    }
+    }*/
   }
 
   addUserInDatabase(username, wallet) {
@@ -85,12 +86,14 @@ export class FormInputProductComponent implements OnInit {
       console.log('Cet utilisateur a été ajouté : ', result);
     });
   }
+
   getProductFromDatabase(code) {
     const product = {code: code.value};
     this.server.getProduct(product).then((result) => {
       console.log('Retour de la requête GET PRODUCT : ', result);
     });
   }
+
   getUserFromDatabase(username) {
     const user = {username: username.value};
     this.server.getUser(user).then((result) => {
@@ -99,7 +102,7 @@ export class FormInputProductComponent implements OnInit {
   }
 
   updateUserFromDatabase(wallet, new_wallet, new_username) {
-    const updateUser = {new_username: new_username.value, new_wallet: new_wallet.value, wallet: wallet.value };
+    const updateUser = {new_username: new_username.value, new_wallet: new_wallet.value, wallet: wallet.value};
     this.server.updateUser(updateUser).then((result) => {
       console.log('Retour de la requête UPDATE USER : ', result);
     });

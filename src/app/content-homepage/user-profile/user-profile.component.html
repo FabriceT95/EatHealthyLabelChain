@@ -1,13 +1,13 @@
-<mat-card>
+<mat-card style="height:100%">
   <mat-card-header>
     <mat-card-title>Profil Utilisateur</mat-card-title>
   </mat-card-header>
   <mat-divider></mat-divider>
   <mat-card-content>
-    <div class="row" style="margin:auto; padding-top:10px">
+    <div class="row" style="padding-top:10px">
       <div class="col-sm-12">
         <p>
-          <strong>Adresse</strong> : 0x454344
+          <strong>Adresse</strong> : <span style="font-size:11px">{{ walletAddress }}</span>
         </p>
 
         <p>
@@ -23,4 +23,4 @@
 
 
   </mat-card-content>
-  </mat-card>
+</mat-card>

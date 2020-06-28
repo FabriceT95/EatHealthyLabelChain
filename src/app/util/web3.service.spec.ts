@@ -1,4 +1,5 @@
 import {TestBed, inject} from '@angular/core/testing';
+
 const Web3 = require('web3');
 
 import {WEB3} from './web3.service';

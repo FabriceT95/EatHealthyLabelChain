@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {MatDialog } from '@angular/material/dialog';
-import {FormInputProductComponent} from '../form-input-product/form-input-product.component';
+import {MatDialog} from '@angular/material/dialog';
+import {FormInputProductComponent} from './form-input-product/form-input-product.component';
 
 @Component({
   selector: 'app-user-product-manager',
@@ -9,10 +9,11 @@ import {FormInputProductComponent} from '../form-input-product/form-input-produc
 })
 export class UserProductManagerComponent implements OnInit {
 
-  ngOnInit() {
+  constructor(public dialog: MatDialog) {
   }
 
-  constructor(public dialog: MatDialog) {}
+  ngOnInit() {
+  }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(FormInputProductComponent, {
