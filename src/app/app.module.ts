@@ -74,8 +74,7 @@ import {Web3Service} from './util/web3.service';
     MatCheckboxModule,
     MatGridListModule
   ],
-  providers: [Web3Service, ServerService],
-  // providers: [ServerService],
+  providers: [Web3Service, ServerService, AppComponent],
   bootstrap: [AppComponent],
   entryComponents: [
     UserFormVoteComponent,

@@ -1,11 +1,8 @@
 import {Component, Inject, OnInit} from '@angular/core';
 // import Quagga from 'quagga/dist/quagga.js';
 import javascriptBarcodeReader from 'javascript-barcode-reader';
-// import {WEB3} from '../util/web3.service';
 import {AppComponent} from '../../../app.component';
 import {ServerService} from '../../../server.service';
-import dataTest from '../../build/contract/dataTest.json';
-import {MatDialogRef} from '@angular/material/dialog';
 import {Web3Service} from '../../../util/web3.service';
 
 @Component({
@@ -15,7 +12,7 @@ import {Web3Service} from '../../../util/web3.service';
 })
 export class FormInputProductComponent implements OnInit {
 
-  constructor(private web3: Web3Service, private server: ServerService) {
+  constructor(private web3: Web3Service, private server: ServerService, private app: AppComponent) {
   }
 
   ngOnInit() {
@@ -68,16 +65,28 @@ export class FormInputProductComponent implements OnInit {
  //   console.log(product);
   }
 
-  addProductInDatabase(codebarre, productName, idUser) {
-   /* console.log(this.web3.isChecked);
-    if (this.web3.isChecked === false) {
-      const newProduct = {user_id: idUser.value, code: codebarre.value, name: productName.value};
+  addProductInDatabase(codebarre, productName, idUser, carbohydrates, salt, sugars, energy, energy_kcal, fiber,  fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels ) {
+    console.log(this.app.isChecked);
+  //  if (this.app.isChecked === false) {
+      const newProduct = {
+        user_id:  idUser.value,
+        code: codebarre.value,
+        product_name: productName.value,
+        nutriments: JSON.stringify({carbohydrates : carbohydrates.value, salt : salt.value, sugars : sugars.value, energy: energy.value, energy_kcal: energy_kcal.value, saturated_fat: saturated_fat.value, fiber: fiber.value, fat: fat.value, sodium : sodium.value}),
+        ingredients: ingredients.value.split(','),
+        quantity : quantity.value,
+        generic_name: typeOfProduct.value,
+        packaging: packaging.value,
+        labels : labels.value.split(',')
+      };
       this.server.createProduct(newProduct).then((result) => {
         console.log('Votre produit a été ajouté : ', result);
       });
-    } else {
-      console.log('bonjour');
-    }*/
+
+
+  //  } else {
+  //    console.log('bonjour');
+  //  }
   }
 
   addUserInDatabase(username, wallet) {
