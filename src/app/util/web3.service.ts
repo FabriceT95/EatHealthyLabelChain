@@ -16,6 +16,7 @@ export const WEB3 = new InjectionToken<Web3>('web3', {
 
 export class Web3Service {
   accountChanged = new EventEmitter<any>();
+  isChecked = true;
   that: any;
   accounts: any;
   networkId: any;

@@ -12,7 +12,7 @@ import {Web3Service} from '../../../util/web3.service';
 })
 export class FormInputProductComponent implements OnInit {
 
-  constructor(private web3: Web3Service, private server: ServerService, private app: AppComponent) {
+  constructor(private web3: Web3Service, private server: ServerService) {
   }
 
   ngOnInit() {
@@ -59,29 +59,40 @@ export class FormInputProductComponent implements OnInit {
 
   }
 
+  testCheck() {
+    console.log(this.web3.isChecked);
+    console.log(this.server.isChecked);
+    if (!this.server.isChecked && this.web3.isChecked) {
+      console.log('coucou');
+    }
+  }
+
   async getProducts() {
     const barcodeValue = 1234567891234;
    // const product = await this.web3.contract.methods.getProduct(barcodeValue).call();
  //   console.log(product);
   }
 
-  addProductInDatabase(codebarre, productName, idUser, carbohydrates, salt, sugars, energy, energy_kcal, fiber,  fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels ) {
-    console.log(this.app.isChecked);
-  //  if (this.app.isChecked === false) {
-      const newProduct = {
+  addProductInDatabase(codebarre, productName, idUser, glucide, salt, sugars, energy, energy_kcal, fiber,  fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels ) {
+   const newProduct = {
         user_id:  idUser.value,
         code: codebarre.value,
         product_name: productName.value,
-        nutriments: JSON.stringify({carbohydrates : carbohydrates.value, salt : salt.value, sugars : sugars.value, energy: energy.value, energy_kcal: energy_kcal.value, saturated_fat: saturated_fat.value, fiber: fiber.value, fat: fat.value, sodium : sodium.value}),
+        nutriments: JSON.stringify({carbohydrates : glucide.value, salt : salt.value, sugars : sugars.value, energy: energy.value, energy_kcal: energy_kcal.value, saturated_fat: saturated_fat.value, fiber: fiber.value, fat: fat.value, sodium : sodium.value}),
         ingredients: ingredients.value.split(','),
         quantity : quantity.value,
         generic_name: typeOfProduct.value,
         packaging: packaging.value,
         labels : labels.value.split(',')
       };
-      this.server.createProduct(newProduct).then((result) => {
+      // Si Mysql Server is ON
+    if (this.server.isChecked && !this.web3.isChecked) {
+     this.server.createProduct(newProduct).then((result) => {
         console.log('Votre produit a été ajouté : ', result);
       });
+    } else if (!this.server.isChecked && this.web3.isChecked) {
+      console.log('Here is the SC Function');
+    }
 
 
   //  } else {

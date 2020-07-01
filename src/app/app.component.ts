@@ -1,8 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {Web3Service} from './util/web3.service';
-// import {WEB3, Web3Service} from './util/web3.service';
-
-import Web3 from 'web3';
 import dataTest from './../../build/contracts/DataTest.json';
 import {ServerService} from './server.service';
 
@@ -10,7 +7,7 @@ import {ServerService} from './server.service';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [ServerService]
+  providers: []
 })
 export class AppComponent implements OnInit {
   title = 'app works!';
@@ -20,8 +17,8 @@ export class AppComponent implements OnInit {
 
  /*constructor(public web3: WEB3) {
   }*/
-  constructor(public web3: Web3Service) {
-  }
+  /*constructor(public web3: Web3Service) {
+  }*/
 
 
 
@@ -59,7 +56,6 @@ async ngOnInit() {
   onDataSourceChanged(boolSourceData) {
     this.isChecked = boolSourceData;
     console.log('isChecked from app.component.ts : ', this.isChecked);
-
   }
 
 }

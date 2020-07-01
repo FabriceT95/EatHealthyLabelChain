@@ -2,10 +2,9 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../environments/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ServerService {
+  isChecked = false;
 
   constructor(private http: HttpClient) {
   }
