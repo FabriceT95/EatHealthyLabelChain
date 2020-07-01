@@ -1,9 +1,11 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Inject, OnInit, Optional, Output} from '@angular/core';
 // import Quagga from 'quagga/dist/quagga.js';
 import javascriptBarcodeReader from 'javascript-barcode-reader';
 import {AppComponent} from '../../../app.component';
 import {ServerService} from '../../../server.service';
 import {Web3Service} from '../../../util/web3.service';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Product} from '../../../shared/product.model';
 
 @Component({
   selector: 'app-form-input-product',
@@ -11,12 +13,22 @@ import {Web3Service} from '../../../util/web3.service';
   styleUrls: ['./form-input-product.component.css'],
 })
 export class FormInputProductComponent implements OnInit {
-
-  constructor(private web3: Web3Service, private server: ServerService) {
+  codebarreProduct: number;
+  constructor(
+    private web3: Web3Service,
+    private server: ServerService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<FormInputProductComponent>
+  ) {
+    this.codebarreProduct = data.codebarreValue;
   }
 
   ngOnInit() {
     // console.log(this.web3);
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 
 
@@ -59,39 +71,64 @@ export class FormInputProductComponent implements OnInit {
 
   }
 
-  testCheck() {
-    console.log(this.web3.isChecked);
-    console.log(this.server.isChecked);
-    if (!this.server.isChecked && this.web3.isChecked) {
-      console.log('coucou');
-    }
-  }
-
   async getProducts() {
     const barcodeValue = 1234567891234;
    // const product = await this.web3.contract.methods.getProduct(barcodeValue).call();
  //   console.log(product);
   }
 
-  addProductInDatabase(codebarre, productName, idUser, glucide, salt, sugars, energy, energy_kcal, fiber,  fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels ) {
-   const newProduct = {
-        user_id:  idUser.value,
-        code: codebarre.value,
-        product_name: productName.value,
-        nutriments: JSON.stringify({carbohydrates : glucide.value, salt : salt.value, sugars : sugars.value, energy: energy.value, energy_kcal: energy_kcal.value, saturated_fat: saturated_fat.value, fiber: fiber.value, fat: fat.value, sodium : sodium.value}),
-        ingredients: ingredients.value.split(','),
-        quantity : quantity.value,
-        generic_name: typeOfProduct.value,
-        packaging: packaging.value,
-        labels : labels.value.split(',')
-      };
+  async addProductInDatabase(productName, proteines, glucide, salt, sugars, energy, energy_kcal, fiber,  fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels ) {
+    console.log(energy.value);
+    const newProduct = new Product(
+          this.codebarreProduct,
+          productName.value,
+          {
+            energy: energy.value,
+            energy_kcal: energy_kcal.value,
+            proteines: proteines.value,
+            carbohydrates : glucide.value,
+            salt : salt.value,
+            sugars : sugars.value,
+            fat: fat.value,
+            saturated_fat: saturated_fat.value,
+            fiber: fiber.value,
+            sodium : sodium.value
+          },
+          ingredients.value.split(','),
+          quantity.value,
+          typeOfProduct.value,
+          packaging.value.split(','),
+          labels.value.split(',')
+  );
       // Si Mysql Server is ON
     if (this.server.isChecked && !this.web3.isChecked) {
-     this.server.createProduct(newProduct).then((result) => {
+      newProduct.nutriments = JSON.stringify(newProduct.nutriments);
+      this.server.createProduct(newProduct).then((result) => {
         console.log('Votre produit a été ajouté : ', result);
       });
     } else if (!this.server.isChecked && this.web3.isChecked) {
-      console.log('Here is the SC Function');
+      const that = this;
+     this.web3.contract.methods.addProductToProposal(
+       newProduct.code,
+       newProduct.product_name,
+       newProduct.labels,
+       newProduct.ingredient,
+       newProduct.quantity,
+       newProduct.generic_name,
+       newProduct.packaging,
+       newProduct.nutriments)
+       .send({from: this.web3.accounts[0]})
+       .on('receipt', function(receipt) {
+         console.log(receipt);
+         that.onNoClick();
+         alert('Le produit suivant a été placé dans la liste d\'attente : ' + newProduct.code + ' - ' + newProduct.product_name);
+       });
+      /*this.web3.contract.events.TriggerAddProduct({
+        fromBlock: await this.web3.web3.eth.getBlockNumber()
+      }, function(error, event) { console.log('Trigger Add Product : ' + event.returnValues.idProduct); })
+        .on('data', function(event) {
+          console.log("from data event " + event.returnValues.idProduct); // same results as the optional callback above
+        });*/
     }
 
 

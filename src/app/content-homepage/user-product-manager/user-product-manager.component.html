@@ -5,19 +5,19 @@
   <mat-divider></mat-divider>
   <mat-card-content>
     <div class="row" style="padding-top:2%; text-align: center">
+      <p>Entrez un nouveau code-barre ou un code-barre existant à modifier</p>
       <mat-form-field appearance="fill" style="margin:0 auto">
-        <mat-label>Input</mat-label>
-        <input matInput>
+        <mat-label>Code Barre</mat-label>
+        <input (input)="checkStatusProduct(input_product_code)" matInput #input_product_code [(ngModel)]="barcode">
       </mat-form-field>
     </div>
     <div class="row" style="padding-top:2%; text-align: center; margin:auto">
-      <div class="col-sm-4">
+      <div style="display:none" #div_inputAddProduct>
         <button (click)="openDialog()" color="primary" mat-raised-button>Ajouter un nouveau produit</button>
       </div>
-      <div class="col-sm-4">
+      <div style="display:none" #div_inputUpdateProduct>
         <button (click)="openDialog()" color="accent" mat-raised-button>Mise à jour d'un produit</button>
       </div>
-
     </div>
   </mat-card-content>
 </mat-card>

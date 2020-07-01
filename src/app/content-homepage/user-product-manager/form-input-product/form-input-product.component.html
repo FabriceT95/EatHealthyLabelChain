@@ -1,27 +1,27 @@
 <mat-dialog-content>
   <!-- ADD NEW PRODUCT -->
 
-  <h2>Nouveau Produit</h2>
+  <h2>Nouveau Produit : <span  [innerText]='data.codebarreValue'></span></h2>
   <mat-divider></mat-divider>
 
-<form (ngSubmit)="addProductInDatabase(codebarre_inputText,productName_inputText,idUser_inputText, glucide_inputText, sel_inputText, sucre_inputText, energie_inputText, energiekcal_inputText, fibre_inputText, matgra_inputText, acidegrassature_inputText, sodium_inputText, ingredients_inputText, quantite_inputText, type_inputText, emballage_inputText, labels_inputText)">
+<form (ngSubmit)="addProductInDatabase(productName_inputText, proteines_inputText, glucide_inputText, sel_inputText, sucre_inputText, energie_inputText, energiekcal_inputText, fibre_inputText, matgra_inputText, acidegrassature_inputText, sodium_inputText, ingredients_inputText, quantite_inputText, type_inputText, emballage_inputText, labels_inputText)">
     <div class="row" style="margin:auto; padding-top:10px">
       <div class="col-sm-3">
-        <mat-form-field>
-          <mat-label>Code Barre</mat-label>
-          <input #codebarre_inputText id="codebarre_inputText" matInput name="codebarre" placeholder="Entrez un codebarre"
-                 type="text">
-        </mat-form-field>
-        <br>
         <mat-form-field>
           <mat-label>Nom du produit</mat-label>
           <input #productName_inputText id="productName_inputText" matInput name="codebarre_inputText"
                  placeholder="Entrez un nom de produit" type="text">
         </mat-form-field>
         <br>
+<!--        <mat-form-field>-->
+<!--          <mat-label>ID User</mat-label>-->
+<!--          <input #idUser_inputText id="idUser_inputText" matInput name="codebarre_inputText" placeholder="Votre identifiant"-->
+<!--                 type="text">-->
+<!--        </mat-form-field>-->
+<!--        <br>-->
         <mat-form-field>
-          <mat-label>ID User</mat-label>
-          <input #idUser_inputText id="idUser_inputText" matInput name="codebarre_inputText" placeholder="Votre identifiant"
+          <mat-label>Protéines (en g)</mat-label>
+          <input #proteines_inputText matInput name="codebarre_inputText" placeholder="Entrez la quantité en protéines du produit"
                  type="text">
         </mat-form-field>
 <!--        <div mat-dialog-actions>-->
