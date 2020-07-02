@@ -1,15 +1,8 @@
 <div class="row" style="padding:1%">
   <div class="col-sm-10">
     <mat-card style="word-break: break-word">
-      <p>Le produit <strong>{{ productvote.product_name }}</strong> avec le code-barre <strong>{{ productvote.code }}</strong></p>
-      <p>{{ productvote.nutriments }}</p>
-      <p>{{ productvote.ingredients }}</p>
-      <p>{{ productvote.quantity }}</p>
-      <p>{{ productvote.generic_name }}</p>
-      <p>{{ productvote.packaging }}</p>
-      <p>{{ productvote.labels }}</p>
-      <p>{{ productvote.additifs }}</p>
-      <p>{{ productvote.voteDates }}</p>
+      <p>Le produit <strong>{{ productvote.product_name }}</strong> avec le code-barre <strong>{{ productvote.code }}</strong> proposé par <strong>{{ productvote.addressProposer}}</strong>:</p>
+      <p>Date de début : <strong>{{ productvote.voteDates[0] }} </strong> - Durée du vote : 7 jours</p>
     </mat-card>
   </div>
   <div class="col-sm-2" style="text-align: center; vertical-align: middle;display: table-cell">
