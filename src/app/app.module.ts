@@ -36,6 +36,7 @@ import {UserResultVoteComponent} from './content-votespage/user-result-vote/user
 import {UserFormVoteComponent} from './content-votespage/user-result-vote/user-form-vote/user-form-vote.component';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {Web3Service} from './util/web3.service';
+import { ResultVoteItemComponent } from './content-votespage/user-result-vote/result-vote-item/result-vote-item.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import {Web3Service} from './util/web3.service';
     UserHistoryComponent,
     UserSearchVoteComponent,
     UserResultVoteComponent,
-    UserFormVoteComponent
+    UserFormVoteComponent,
+    ResultVoteItemComponent
   ],
   imports: [
     BrowserAnimationsModule,

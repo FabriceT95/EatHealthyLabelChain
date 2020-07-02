@@ -22,21 +22,21 @@ contract DataTest {
 
   struct Product{
     // uint productId;
-    // uint productCode;
+    uint productCode;
     string productName;
     address productProposerAddress;
     string[] labels;
     uint nutrimentsId;
     string[] ingredients;
     string[] additifs;
-    string quantity;
+    uint quantity;
     string typeOfProduct;
     string[] packaging;
     uint totalVotes;
     uint forVotes;
     uint againstVotes;
-    uint created_t;
-    bytes32 hash;
+    uint[2] created_n_last_modif;
+    //  bytes32 hash;
     bool isValidated;
     bool isExist;
   }
@@ -57,6 +57,10 @@ contract DataTest {
   address private _owner;
 
   uint uniqueIdUser;
+
+  Product[] ProposalProducts;
+
+  Nutriments[] ProposalNutriments;
 
   mapping(address => User) public ownerToUser;
 
@@ -99,7 +103,7 @@ contract DataTest {
     string memory _productName,
     string[] memory _labels,
     string[] memory _ingredients,
-    string memory _quantity,
+    uint _quantity,
     string memory _typeOfProduct,
     string[] memory _packaging,
     Nutriments memory _nutriments,
@@ -108,7 +112,8 @@ contract DataTest {
   ) public {
     require(!productCodeToProduct[_productCode].isExist);
     Product memory _product;
-   // _product.productCode = _productCode;
+    Nutriments memory _nutrimentsObject;
+    _product.productCode = _productCode;
     _product.productName = _productName;
     _product.productProposerAddress = msg.sender;
     _product.labels = _labels;
@@ -119,11 +124,25 @@ contract DataTest {
     _product.packaging = _packaging;
     _product.isValidated = false;
     _product.isExist = true;
-    _product.created_t = now;
+    _product.created_n_last_modif = [now, now];
     _product.nutrimentsId = _productCode;
-    productCodeToNutriments[_productCode] = _nutriments;
-    _product.hash = keccak256(abi.encodePacked(_product.productName,_product.productProposerAddress, _product.quantity));
+    // productCodeToNutriments[_productCode] = _nutriments;
+   // _product.hash = keccak256(abi.encodePacked(_product.productName,_product.productProposerAddress, _product.quantity));
     productCodeToProposalProduct[_productCode] = _product;
+    ProposalProducts.push(_product);
+
+    _nutrimentsObject.carbohydrates = _nutriments.carbohydrates;
+    _nutrimentsObject.energy = _nutriments.energy;
+    _nutrimentsObject.energy_kcal = _nutriments.energy_kcal;
+    _nutrimentsObject.proteines = _nutriments.proteines;
+    _nutrimentsObject.salt = _nutriments.salt;
+    _nutrimentsObject.sugars = _nutriments.sugars;
+    _nutrimentsObject.fat = _nutriments.fat;
+    _nutrimentsObject.saturated_fat = _nutriments.saturated_fat;
+    _nutrimentsObject.fiber = _nutriments.fat;
+    _nutrimentsObject.sodium = _nutriments.sodium;
+    productCodeToNutriments[_productCode] = _nutrimentsObject;
+    ProposalNutriments.push(_nutrimentsObject);
     emit TriggerAddProduct(_productCode);
     // keccak256(abi.encodePacked(_productCode,_productName,msg.sender,_labels,_ingredients,_nutriments,_quantity,_typeOfProduct,_packaging))
   }
@@ -140,5 +159,9 @@ contract DataTest {
     }else{
       return false;
     }
+  }
+
+  function getProductsVoting() public view returns(Product[] memory, Nutriments[] memory){
+    return (ProposalProducts, ProposalNutriments);
   }
 }

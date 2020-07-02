@@ -14,6 +14,7 @@ import {Product} from '../../../shared/product.model';
 })
 export class FormInputProductComponent implements OnInit {
   codebarreProduct: number;
+
   constructor(
     private web3: Web3Service,
     private server: ServerService,
@@ -30,7 +31,6 @@ export class FormInputProductComponent implements OnInit {
   onNoClick(): void {
     this.dialogRef.close();
   }
-
 
 
   testQuaggaReading(codebarreInput) {
@@ -73,35 +73,36 @@ export class FormInputProductComponent implements OnInit {
 
   async getProducts() {
     const barcodeValue = 1234567891234;
-   // const product = await this.web3.contract.methods.getProduct(barcodeValue).call();
- //   console.log(product);
+    // const product = await this.web3.contract.methods.getProduct(barcodeValue).call();
+    //   console.log(product);
   }
 
-  async addProductInDatabase(productName, proteines, glucide, salt, sugars, energy, energy_kcal, fiber,  fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels, additifs ) {
-    console.log(energy.value);
+  async addProductInDatabase(productName, proteines, glucide, salt, sugars, energy, energy_kcal, fiber, fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels, additifs) {
     const newProduct = new Product(
-          this.codebarreProduct,
-          productName.value,
-          {
-            energy: energy.value,
-            energy_kcal: energy_kcal.value,
-            proteines: proteines.value,
-            carbohydrates : glucide.value,
-            salt : salt.value,
-            sugars : sugars.value,
-            fat: fat.value,
-            saturated_fat: saturated_fat.value,
-            fiber: fiber.value,
-            sodium : sodium.value
-          },
-          ingredients.value.split(','),
-          quantity.value,
-          typeOfProduct.value,
-          packaging.value.split(','),
-          labels.value.split(','),
-          additifs.value.split(',')
-  );
-      // Si Mysql Server is ON
+      '',
+      this.codebarreProduct,
+      productName.value,
+      {
+        energy: energy.value,
+        energy_kcal: energy_kcal.value,
+        proteines: proteines.value,
+        carbohydrates: glucide.value,
+        salt: salt.value,
+        sugars: sugars.value,
+        fat: fat.value,
+        saturated_fat: saturated_fat.value,
+        fiber: fiber.value,
+        sodium: sodium.value
+      },
+      ingredients.value.split(','),
+      quantity.value,
+      typeOfProduct.value,
+      packaging.value.split(','),
+      labels.value.split(','),
+      additifs.value.split(','),
+      []
+    );
+    // Si Mysql Server is ON
     if (this.server.isChecked && !this.web3.isChecked) {
       newProduct.nutriments = JSON.stringify(newProduct.nutriments);
       this.server.createProduct(newProduct).then((result) => {
@@ -109,23 +110,23 @@ export class FormInputProductComponent implements OnInit {
       });
     } else if (!this.server.isChecked && this.web3.isChecked) {
       const that = this;
-       this.web3.contract.methods.addProductToProposal(
-       newProduct.code,
-       newProduct.product_name,
-       newProduct.labels,
-       newProduct.ingredient,
-       newProduct.quantity,
-       newProduct.generic_name,
-       newProduct.packaging,
-       newProduct.nutriments,
-         newProduct.additifs)
-       .send({from: this.web3.accounts[0]})
-       .on('receipt', function(receipt) {
-         console.log(receipt);
-         that.onNoClick();
-         alert('Le produit suivant a été placé dans la liste d\'attente : ' + newProduct.code + ' - ' + newProduct.product_name);
-       });
-      /*this.web3.contract.events.TriggerAddProduct({
+      this.web3.contract.methods.addProductToProposal(
+        newProduct.code,
+        newProduct.product_name,
+        newProduct.labels,
+        newProduct.ingredients,
+        newProduct.quantity,
+        newProduct.generic_name,
+        newProduct.packaging,
+        newProduct.nutriments,
+        newProduct.additifs)
+        .send({from: this.web3.accounts[0]})
+        .on('receipt', function (receipt) {
+          console.log(receipt);
+          that.onNoClick();
+          alert('Le produit suivant a été placé dans la liste d\'attente : ' + newProduct.code + ' - ' + newProduct.product_name);
+        });
+     /* this.web3.contract.events.TriggerAddProduct({
         fromBlock: await this.web3.web3.eth.getBlockNumber()
       }, function(error, event) { console.log('Trigger Add Product : ' + event.returnValues.idProduct); })
         .on('data', function(event) {
@@ -134,9 +135,9 @@ export class FormInputProductComponent implements OnInit {
     }
 
 
-  //  } else {
-  //    console.log('bonjour');
-  //  }
+    //  } else {
+    //    console.log('bonjour');
+    //  }
   }
 
   addUserInDatabase(username, wallet) {
