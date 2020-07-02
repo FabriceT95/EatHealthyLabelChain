@@ -28,6 +28,7 @@ contract DataTest {
     string[] labels;
     uint nutrimentsId;
     string[] ingredients;
+    string[] additifs;
     string quantity;
     string typeOfProduct;
     string[] packaging;
@@ -101,7 +102,8 @@ contract DataTest {
     string memory _quantity,
     string memory _typeOfProduct,
     string[] memory _packaging,
-    Nutriments memory _nutriments
+    Nutriments memory _nutriments,
+    string[] memory _additifs
 
   ) public {
     require(!productCodeToProduct[_productCode].isExist);
@@ -111,6 +113,7 @@ contract DataTest {
     _product.productProposerAddress = msg.sender;
     _product.labels = _labels;
     _product.ingredients = _ingredients;
+    _product.additifs = _additifs;
     _product.quantity = _quantity;
     _product.typeOfProduct = _typeOfProduct;
     _product.packaging = _packaging;
@@ -119,8 +122,8 @@ contract DataTest {
     _product.created_t = now;
     _product.nutrimentsId = _productCode;
     productCodeToNutriments[_productCode] = _nutriments;
-    productCodeToProposalProduct[_productCode] = _product;
     _product.hash = keccak256(abi.encodePacked(_product.productName,_product.productProposerAddress, _product.quantity));
+    productCodeToProposalProduct[_productCode] = _product;
     emit TriggerAddProduct(_productCode);
     // keccak256(abi.encodePacked(_productCode,_productName,msg.sender,_labels,_ingredients,_nutriments,_quantity,_typeOfProduct,_packaging))
   }

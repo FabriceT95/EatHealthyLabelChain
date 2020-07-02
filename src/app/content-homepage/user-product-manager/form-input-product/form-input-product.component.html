@@ -4,7 +4,7 @@
   <h2>Nouveau Produit : <span  [innerText]='data.codebarreValue'></span></h2>
   <mat-divider></mat-divider>
 
-<form (ngSubmit)="addProductInDatabase(productName_inputText, proteines_inputText, glucide_inputText, sel_inputText, sucre_inputText, energie_inputText, energiekcal_inputText, fibre_inputText, matgra_inputText, acidegrassature_inputText, sodium_inputText, ingredients_inputText, quantite_inputText, type_inputText, emballage_inputText, labels_inputText)">
+<form (ngSubmit)="addProductInDatabase(productName_inputText, proteines_inputText, glucide_inputText, sel_inputText, sucre_inputText, energie_inputText, energiekcal_inputText, fibre_inputText, matgra_inputText, acidegrassature_inputText, sodium_inputText, ingredients_inputText, quantite_inputText, type_inputText, emballage_inputText, labels_inputText,additifs_inputText)">
     <div class="row" style="margin:auto; padding-top:10px">
       <div class="col-sm-3">
         <mat-form-field>
@@ -107,6 +107,11 @@
         <mat-form-field>
           <mat-label>Labels (Liste de labels séparés par une virgule)</mat-label>
           <input matInput #labels_inputText placeholder="Eg : Bio, Label Rouge" type="text">
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+          <mat-label>Additifs (Liste d'additifs séparés par une virgule)</mat-label>
+          <input matInput #additifs_inputText placeholder="Eg : e310" type="text">
         </mat-form-field>
       </div>
 

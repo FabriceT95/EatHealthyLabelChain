@@ -22,7 +22,7 @@ export class ServerService {
   }
 
   createProduct(event) {
-    return this.request('POST', `${environment.serverUrl}/add_new_product/${event.user_id}/${event.code}/${event.product_name}/${event.nutriments}/${event.ingredients}/${event.quantity}/${event.generic_name}/${event.packaging}/${event.labels}`, event);
+    return this.request('POST', `${environment.serverUrl}/add_new_product/${event.user_id}/${event.code}/${event.product_name}/${event.nutriments}/${event.ingredients}/${event.quantity}/${event.generic_name}/${event.packaging}/${event.labels}/${event.additifs}`, event);
   }
 
   updateUser(event) {

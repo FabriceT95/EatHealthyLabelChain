@@ -6,5 +6,6 @@ export class Product {
               public quantity: string,
               public generic_name: string,
               public packaging: string,
-              public labels: [] ) {}
+              public labels: [],
+              public additifs: []) {}
 }

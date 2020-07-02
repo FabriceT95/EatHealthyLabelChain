@@ -77,7 +77,7 @@ export class FormInputProductComponent implements OnInit {
  //   console.log(product);
   }
 
-  async addProductInDatabase(productName, proteines, glucide, salt, sugars, energy, energy_kcal, fiber,  fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels ) {
+  async addProductInDatabase(productName, proteines, glucide, salt, sugars, energy, energy_kcal, fiber,  fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels, additifs ) {
     console.log(energy.value);
     const newProduct = new Product(
           this.codebarreProduct,
@@ -98,7 +98,8 @@ export class FormInputProductComponent implements OnInit {
           quantity.value,
           typeOfProduct.value,
           packaging.value.split(','),
-          labels.value.split(',')
+          labels.value.split(','),
+          additifs.value.split(',')
   );
       // Si Mysql Server is ON
     if (this.server.isChecked && !this.web3.isChecked) {
@@ -108,7 +109,7 @@ export class FormInputProductComponent implements OnInit {
       });
     } else if (!this.server.isChecked && this.web3.isChecked) {
       const that = this;
-     this.web3.contract.methods.addProductToProposal(
+       this.web3.contract.methods.addProductToProposal(
        newProduct.code,
        newProduct.product_name,
        newProduct.labels,
@@ -116,7 +117,8 @@ export class FormInputProductComponent implements OnInit {
        newProduct.quantity,
        newProduct.generic_name,
        newProduct.packaging,
-       newProduct.nutriments)
+       newProduct.nutriments,
+         newProduct.additifs)
        .send({from: this.web3.accounts[0]})
        .on('receipt', function(receipt) {
          console.log(receipt);
