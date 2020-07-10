@@ -5,7 +5,7 @@
   <mat-divider></mat-divider>
 
   <form>
-    <div class="col-sm-4">
+    <div class="col-sm-4" style="word-break: break-all;">
       <div class="row" style="margin:5%">
         <ul style="list-style-type:none;">
           <li><span>Nom du produit : <strong>{{ productVote.product_name }}</strong></span></li>
@@ -15,12 +15,15 @@
           <li><span>Nombre de votes actuel : </span><strong>{{ productVote.totalVotes}}</strong></li>
         </ul>
       </div>
+      <div class="row" style="word-break: break-all;">
+        <mat-checkbox class="example-margin" [(ngModel)]="checked" name="none" (change)="help()">JE CERTIFIE D'AVOIR LE MILLIARD DE PAGES DE CGU AINSI QUE DE NE PAS ETRE UN GROS CONNARD</mat-checkbox>
+      </div>
       <div class="row" style="margin:20%">
         <div class="col-sm-6">
-          <button color="primary" mat-raised-button>POUR</button>
+          <button color="primary" mat-raised-button [disabled]="!checked">POUR</button>
         </div>
         <div class="col-sm-6">
-          <button color="danger" mat-raised-button>CONTRE</button>
+          <button color="danger" mat-raised-button [disabled]="!checked" disabled>CONTRE</button>
         </div>
 
       </div>
@@ -43,15 +46,16 @@
       <div class="row" style="margin:5%; text-align: center">
         <div class="col-sm-5">
           <h4 style="text-align: center">Section Nutrition</h4>
-          <p><span>Energie : </span><strong>{{ productVote.nutriments }}</strong></p>
-          <p><span>Energie (en kcal) : </span><strong>{{ productVote.nutriments }}</strong></p>
-          <p><span>Protéines : </span><strong>{{ productVote.nutriments }}</strong></p>
-          <p><span>Glucides : </span><strong>{{ productVote.nutriments }}</strong></p>
-          <p><span>Sel : </span><strong>{{ productVote.nutriments }}</strong></p>
-          <p><span>Graisses : </span><strong>{{ productVote.nutriments }}</strong></p>
-          <p><span>Dont Matières grasses : </span><strong>{{ productVote.nutriments }}</strong></p>
-          <p><span>Sucre : </span><strong>{{ productVote.nutriments }}</strong></p>
-          <p><span>Sodium : </span><strong>{{ productVote.nutriments }}</strong></p>
+          <p><span>Energie : </span><strong>{{ productVote.nutriments[0] }}</strong></p>
+          <p><span>Energie (en kcal) : </span><strong>{{ productVote.nutriments[1] }}</strong></p>
+          <p><span>Protéines : </span><strong>{{ productVote.nutriments[2] }}</strong></p>
+          <p><span>Glucides : </span><strong>{{ productVote.nutriments[3] }}</strong></p>
+          <p><span>Sel : </span><strong>{{ productVote.nutriments[4] }}</strong></p>
+          <p><span>Sucre : </span><strong>{{ productVote.nutriments[5] }}</strong></p>
+          <p><span>Graisses : </span><strong>{{ productVote.nutriments[6] }}</strong></p>
+          <p><span>Dont Matières grasses : </span><strong>{{ productVote.nutriments[7] }}</strong></p>
+          <p><span>Fibre : </span><strong>{{ productVote.nutriments[8] }}</strong></p>
+          <p><span>Sodium : </span><strong>{{ productVote.nutriments[9] }}</strong></p>
 <!--          <ul style="list-style-type:none;">-->
 <!--            <li ><p>Nom du produit : </p></li>-->
 <!--            <li><p>Proposeur : </p></li>-->

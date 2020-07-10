@@ -10,6 +10,7 @@ import {Product} from '../../../shared/product.model';
   styleUrls: ['./user-form-vote.component.css']
 })
 export class UserFormVoteComponent implements OnInit {
+  public checked = false;
   public productVote: Product;
   constructor(    private web3: Web3Service,
                   private server: ServerService,
@@ -23,5 +24,9 @@ export class UserFormVoteComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  help() {
+    console.log("check : " + this.checked);
   }
 }

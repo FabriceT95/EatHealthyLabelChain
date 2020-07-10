@@ -22,10 +22,11 @@ export class UserResultVoteComponent implements OnInit {
       await this.web3.contract.methods.getProductsVoting().call()
         .then((result) => {
           for (let i = 0; i < result[0].length; i++) {
-            const start_date = new Date(result[0][i].created_n_last_modif[0]).toLocaleDateString('en-fr');
-            const end_date = new Date(result[0][i].created_n_last_modif[1]).toLocaleDateString('en-fr');
-            console.log(start_date);
-            console.log(end_date);
+            const start_date = new Date(result[0][i].created_n_last_modif[0].toString()).toLocaleDateString('en-fr');
+            const end_date = new Date(result[0][i].created_n_last_modif[1].toString()).toLocaleDateString('en-fr');
+            console.log('TOUS LES NUTRIMENTS : ' + result[1][i]);
+            console.log(result[0][i].created_n_last_modif[0]);
+            console.log(result[0][i].created_n_last_modif[1]);
             const singleProduct = new Product(
               result[0][i].productProposerAddress,
               result[0][i].productCode,

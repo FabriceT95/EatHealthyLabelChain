@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="b979d4c8-985c-477d-b226-bf0a39cdf726" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/result-vote-item/result-vote-item.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/result-vote-item/result-vote-item.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-result-vote.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-result-vote.component.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +121,8 @@
       <workItem from="1593463585573" duration="600000" />
       <workItem from="1593542345934" duration="7675000" />
       <workItem from="1593603945764" duration="24010000" />
-      <workItem from="1593678161883" duration="28260000" />
+      <workItem from="1593678161883" duration="29706000" />
+      <workItem from="1594375136711" duration="2934000" />
     </task>
     <servers />
   </component>
