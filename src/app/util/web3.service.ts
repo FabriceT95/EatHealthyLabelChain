@@ -23,12 +23,13 @@ export class Web3Service {
   deployedNetwork: any;
   contract: any;
   role: any;
+  isBeingModified = false;
   constructor(@Inject(WEB3) public web3: Web3) {
     const that = this;
     this.getWeb3Provider();
     setInterval(() => {
       that.getAccount().then(function(result) {
-        if (that.accounts !== result) {
+        if (that.accounts !== result && !that.isBeingModified) {
           that.accountChanged.emit(that.accounts);
         }
         that.accounts = result;

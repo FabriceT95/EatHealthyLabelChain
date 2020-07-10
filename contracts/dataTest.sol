@@ -14,11 +14,13 @@ contract DataTest {
   enum Role {CUSTOMER, SELLER, ADMIN}
   struct User{
     uint userId;
-    string userName;
-    string userMail;
     Role role;
+    uint lastTimeTokenGiven;
+    int tokenNumber;
+    int reputation;
     bool isExist;
   }
+
 
   struct Product{
     // uint productId;
@@ -62,7 +64,7 @@ contract DataTest {
 
   Nutriments[] ProposalNutriments;
 
-  mapping(address => User) public ownerToUser;
+  mapping(address => User) public addressToUser;
 
   mapping(uint => Product) public productCodeToProposalProduct;
 
@@ -74,7 +76,8 @@ contract DataTest {
 
   constructor() public {
     _owner = msg.sender;
-    ownerToUser[_owner] = User(uniqueIdUser, "FABRIIIIIIIIIIICE", "yoip@yop.fr", Role.ADMIN, true);
+    addressToUser[_owner] = User(uniqueIdUser, Role.ADMIN, now, 10, 0,true);
+    uniqueIdUser++;
   }
 
 //  modifier checkProductIsNew (uint productCode) {
@@ -148,7 +151,7 @@ contract DataTest {
   }
 
   function getRole() public view returns (Role) {
-    return ownerToUser[msg.sender].role;
+    return addressToUser[msg.sender].role;
   }
 
 
@@ -163,5 +166,19 @@ contract DataTest {
 
   function getProductsVoting() public view returns(Product[] memory, Nutriments[] memory){
     return (ProposalProducts, ProposalNutriments);
+  }
+
+  function subscribeUser() public returns (User memory) {
+    require(addressToUser[msg.sender].isExist == false);
+    User memory user;
+    user.userId = uniqueIdUser;
+    user.role = Role.CUSTOMER;
+    user.lastTimeTokenGiven = now;
+    user.tokenNumber = 5;
+    user.reputation = 50;
+    user.isExist = true;
+    uniqueIdUser++;
+    addressToUser[msg.sender] = user;
+    return user;
   }
 }
