@@ -13,8 +13,13 @@
       <change beforePath="$PROJECT_DIR$/build/contracts/SafeMath32.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/SafeMath32.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/contracts/SignedSafeMath.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/SignedSafeMath.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/dataTest.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/dataTest.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-profile/user-profile.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-profile/user-profile.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/form-input-product/form-input-product.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/form-input-product/form-input-product.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-profile/user-profile.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-profile/user-profile.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/result-vote-item/result-vote-item.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/result-vote-item/result-vote-item.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-result-vote.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-result-vote.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/shared/product.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/shared/product.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/util/web3.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/util/web3.service.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -132,7 +137,12 @@
       <workItem from="1593542345934" duration="7675000" />
       <workItem from="1593603945764" duration="24010000" />
       <workItem from="1593678161883" duration="29706000" />
-      <workItem from="1594375136711" duration="23654000" />
+      <workItem from="1594375136711" duration="24589000" />
+      <workItem from="1594457270101" duration="8091000" />
+      <workItem from="1594480587702" duration="5463000" />
+      <workItem from="1594500559063" duration="5943000" />
+      <workItem from="1594565191891" duration="9285000" />
+      <workItem from="1594642862146" duration="7956000" />
     </task>
     <servers />
   </component>
@@ -172,10 +182,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="656" y="252" width="607" height="536" key="find.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592061580284" />
-    <state x="151" y="229" width="672" height="678" key="search.everywhere.popup" timestamp="1592399389784">
+    <state x="151" y="229" width="672" height="678" key="search.everywhere.popup" timestamp="1594588040660">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="151" y="229" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592399389784" />
+    <state x="151" y="229" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594588040660" />
     <state x="151" y="229" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592087942258" />
   </component>
 </project>

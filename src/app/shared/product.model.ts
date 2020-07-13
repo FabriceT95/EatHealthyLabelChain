@@ -13,6 +13,7 @@ export class Product {
               public voteDates: string[],
               public totalVotes: number = 0,
               public forVotes: number = 0,
-              public againstVotes: number = 0
+              public againstVotes: number = 0,
+              public alreadyVoted: {}
               )  {}
 }

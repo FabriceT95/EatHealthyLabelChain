@@ -100,7 +100,11 @@ export class FormInputProductComponent implements OnInit {
       packaging.value.split(','),
       labels.value.split(','),
       additifs.value.split(','),
-      []
+      [],
+      0,
+      0,
+      0,
+      {}
     );
     // Si Mysql Server is ON
     if (this.server.isChecked && !this.web3.isChecked) {

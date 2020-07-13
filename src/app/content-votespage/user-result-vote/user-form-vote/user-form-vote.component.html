@@ -13,19 +13,28 @@
           <li><span>Début du vote : </span><strong>{{ productVote.voteDates[0] }}</strong></li>
           <li><span>Fin du vote : </span><strong>{{ productVote.voteDates[1] }}</strong></li>
           <li><span>Nombre de votes actuel : </span><strong>{{ productVote.totalVotes}}</strong></li>
+          <li><span>Nombre de votes "Pour" actuel : </span><strong>{{ productVote.forVotes}}</strong></li>
+          <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ productVote.againstVotes}}</strong></li>
         </ul>
       </div>
-      <div class="row" style="word-break: break-all;">
-        <mat-checkbox class="example-margin" [(ngModel)]="checked" name="none" (change)="help()">JE CERTIFIE D'AVOIR LE MILLIARD DE PAGES DE CGU AINSI QUE DE NE PAS ETRE UN GROS CONNARD</mat-checkbox>
-      </div>
-      <div class="row" style="margin:20%">
-        <div class="col-sm-6">
-          <button color="primary" mat-raised-button [disabled]="!checked">POUR</button>
+      <div *ngIf="!this.isProductProposer && !this.alreadyVoted;">
+        <div class="row" style="word-break: break-all;">
+          <mat-checkbox class="example-margin" [(ngModel)]="checked" name="none" >JE CERTIFIE D'AVOIR LE MILLIARD DE PAGES DE CGU AINSI QUE DE NE PAS ETRE UN GROS CONNARD</mat-checkbox>
         </div>
-        <div class="col-sm-6">
-          <button color="danger" mat-raised-button [disabled]="!checked" disabled>CONTRE</button>
+        <div class="row" style="margin:20%">
+          <div class="col-sm-6">
+            <button color="primary" (click)="voting(true)"  mat-raised-button [disabled]="!checked">POUR</button>
+          </div>
+          <div class="col-sm-6">
+            <button color="danger" (click)="voting(false)" mat-raised-button [disabled]="!checked" disabled>CONTRE</button>
+          </div>
         </div>
-
+        </div>
+      <div *ngIf="this.isProductProposer">
+      CEST VOUS QUI PROPOSEZ BORDEEEEEEEEEEEEEEEL
+    </div>
+      <div *ngIf="this.alreadyVoted">
+        VOUS AVEZ DEJA VOTE PUTAIIIIIIIIIIIIIIN
       </div>
 
     </div>

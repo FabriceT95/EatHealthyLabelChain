@@ -16,7 +16,6 @@ export class UserProfileComponent implements OnInit {
 
   setUser(address) {
     this.web3.contract.methods.addressToUser(address).call().then((result) => {
-
       if (result.isExist === false && !this.singleRequest && !this.web3.isBeingModified) {
         this.singleRequest = true;
         this.web3.isBeingModified = true;
