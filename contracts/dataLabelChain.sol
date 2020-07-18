@@ -19,7 +19,7 @@ contract DataLabelChain {
 
   enum Role {CUSTOMER, SELLER, ADMIN}
 
-  struct User{
+  struct User {
     uint userId;
     string userName;
     string userMail;
@@ -33,7 +33,7 @@ contract DataLabelChain {
        bool isExist;
    }*/
 
-  struct Product{
+  struct Product {
     uint productId;
     uint productCode;
     string productName;
@@ -45,7 +45,7 @@ contract DataLabelChain {
     bool isExist;
   }
 
-  struct Label{
+  struct Label {
     uint labelId;
     string labelName;
     uint labelOwner;
@@ -110,10 +110,11 @@ contract DataLabelChain {
   function modifyDataFromUser() public {
 
   }
+
   function subscribeUser(string memory newUserName, string memory newUserMail, int _role) public checkUserIsNew {
-    if(_role == 0){
+    if (_role == 0) {
       ownerToUser[msg.sender] = User(uniqueIdUser, newUserName, newUserMail, Role.CUSTOMER, true);
-    }else{
+    } else {
       ownerToUser[msg.sender] = User(uniqueIdUser, newUserName, newUserMail, Role.SELLER, true);
     }
 
@@ -126,7 +127,7 @@ contract DataLabelChain {
       ownerToSeller[msg.sender] = Seller(uint256(keccak256(abi.encodePacked(newSellerName))), newSellerName, true);
   }*/
 
-  function getProduct(uint productCode) view public returns(Product memory){
+  function getProduct(uint productCode) view public returns (Product memory){
     return productCodeToProduct[productCode];
   }
 
@@ -161,10 +162,10 @@ contract DataLabelChain {
 
   function voteForProduct(uint productCode, bool opinion) public {
     require(ownerToUser[msg.sender].isExist && productCodeToProposalProduct[productCode].isExist);
-    if(opinion == true){
+    if (opinion == true) {
       // Trouver une formule pour différencier un utilisateur fiable d'un utilisateur mauvais
       productCodeToProposalProduct[productCode].forVotes.add(1);
-    }else{
+    } else {
       productCodeToProposalProduct[productCode].againstVotes.add(1);
     }
     emit triggerVote(productCode, opinion);
@@ -173,9 +174,6 @@ contract DataLabelChain {
   function getRole() public view returns (Role) {
     return ownerToUser[msg.sender].role;
   }
-
-
-
 
 
 }

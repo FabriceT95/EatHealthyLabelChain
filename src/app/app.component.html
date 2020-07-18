@@ -1,9 +1,10 @@
 <!--<mat-toolbar color="primary">Angular Truffle Box</mat-toolbar>-->
 <!--<app-meta-sender></app-meta-sender>-->
 <div style="margin:auto;">
-<app-header (changeDataSource)="onDataSourceChanged($event)" (pageSelected)="onNavigate($event)"></app-header>
+  <app-header (changeDataSource)="onDataSourceChanged($event)" (pageSelected)="onNavigate($event)"></app-header>
 </div>
 <div style="padding:50px; margin:auto; height:93%">
   <app-content-homepage *ngIf="loadedPage === 'accueil'"></app-content-homepage>
-    <app-content-votespage *ngIf="loadedPage !== 'accueil'"></app-content-votespage>
+  <app-content-votespage *ngIf="loadedPage === 'votePage'"></app-content-votespage>
+  <app-content-my-proposals *ngIf="loadedPage === 'myProposals'"></app-content-my-proposals>
 </div>

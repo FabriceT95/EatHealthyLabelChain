@@ -11,6 +11,7 @@ export class UserProfileComponent implements OnInit {
   reputationPoints: number;
   remainingVotes: number;
   singleRequest = false;
+
   constructor(public web3: Web3Service) {
   }
 
@@ -44,12 +45,12 @@ export class UserProfileComponent implements OnInit {
     }, 500);
     setTimeout(() => {
 
-    this.web3.accountChanged.subscribe(
-      (account: any) => {
-        this.walletAddress = account[0];
-        this.setUser(this.walletAddress);
-      });
-  }, 500);
+      this.web3.accountChanged.subscribe(
+        (account: any) => {
+          this.walletAddress = account[0];
+          this.setUser(this.walletAddress);
+        });
+    }, 500);
   }
 
 }

@@ -8,14 +8,14 @@
       <p>Entrez un nouveau code-barre ou un code-barre existant à modifier</p>
       <mat-form-field appearance="fill" style="margin:0 auto">
         <mat-label>Code Barre</mat-label>
-        <input (input)="checkStatusProduct(input_product_code)" matInput #input_product_code [(ngModel)]="barcode">
+        <input #input_product_code (input)="checkStatusProduct(input_product_code)" [(ngModel)]="barcode" matInput>
       </mat-form-field>
     </div>
     <div class="row" style="padding-top:2%; text-align: center; margin:auto">
-      <div style="display:none" #div_inputAddProduct>
+      <div #div_inputAddProduct style="display:none">
         <button (click)="openDialog()" color="primary" mat-raised-button>Ajouter un nouveau produit</button>
       </div>
-      <div style="display:none" #div_inputUpdateProduct>
+      <div #div_inputUpdateProduct style="display:none">
         <button (click)="openDialog()" color="accent" mat-raised-button>Mise à jour d'un produit</button>
       </div>
     </div>

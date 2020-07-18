@@ -11,7 +11,9 @@ import {Web3Service} from '../../../util/web3.service';
 })
 export class ResultVoteItemComponent implements OnInit {
   @Input() productvote: Product;
-  constructor(public dialog: MatDialog, private web3: Web3Service) { }
+
+  constructor(public dialog: MatDialog, private web3: Web3Service) {
+  }
 
   ngOnInit() {
     console.log(this.productvote.nutriments);
@@ -20,7 +22,7 @@ export class ResultVoteItemComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(UserFormVoteComponent, {
       width: '50%',
-      data : { productvote : this.productvote}
+      data: {productvote: this.productvote}
     });
 
     dialogRef.afterClosed().subscribe(result => {

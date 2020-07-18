@@ -14,6 +14,7 @@ export class UserFormVoteComponent implements OnInit {
   public productVote: Product;
   public isProductProposer: boolean;
   public alreadyVoted: boolean;
+  public isDateVotable: boolean;
 
   constructor(private web3: Web3Service,
               private server: ServerService,
@@ -32,6 +33,10 @@ export class UserFormVoteComponent implements OnInit {
               this.isProductProposer = result_;
             });
         }
+      });
+    this.web3.contract.methods.isDateOK(this.productVote.code).call()
+      .then((result) => {
+        this.isDateVotable = result;
       });
   }
 

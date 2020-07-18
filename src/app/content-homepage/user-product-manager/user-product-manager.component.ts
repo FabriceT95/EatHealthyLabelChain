@@ -23,12 +23,12 @@ export class UserProductManagerComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(FormInputProductComponent, {
       width: '50%',
-      data : { codebarreValue : this.barcode}
+      data: {codebarreValue: this.barcode}
     });
 
-  /*  const sub = dialogRef.componentInstance.onAdd.subscribe(() => {
-      // do something
-    });*/
+    /*  const sub = dialogRef.componentInstance.onAdd.subscribe(() => {
+        // do something
+      });*/
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
@@ -39,7 +39,7 @@ export class UserProductManagerComponent implements OnInit {
   }
 
   async checkStatusProduct(input_product_code) {
-   const barcodeValue = input_product_code.value;
+    const barcodeValue = input_product_code.value;
     if (Number(barcodeValue) && barcodeValue.length === 13) {
       const isNewProduct = await this.web3.contract.methods.checkProductIsNew(barcodeValue).call();
       console.log(isNewProduct);
@@ -52,6 +52,6 @@ export class UserProductManagerComponent implements OnInit {
       this.div_inputAddProductRef.nativeElement.style.display = 'none';
       this.div_inputUpdateProductRef.nativeElement.style.display = 'none';
     }
-}
+  }
 }
 

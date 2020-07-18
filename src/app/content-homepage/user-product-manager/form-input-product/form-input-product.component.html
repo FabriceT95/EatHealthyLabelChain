@@ -1,10 +1,11 @@
 <mat-dialog-content>
   <!-- ADD NEW PRODUCT -->
 
-  <h2>Nouveau Produit : <span  [innerText]='data.codebarreValue'></span></h2>
+  <h2>Nouveau Produit : <span [innerText]='data.codebarreValue'></span></h2>
   <mat-divider></mat-divider>
 
-<form (ngSubmit)="addProductInDatabase(productName_inputText, proteines_inputText, glucide_inputText, sel_inputText, sucre_inputText, energie_inputText, energiekcal_inputText, fibre_inputText, matgra_inputText, acidegrassature_inputText, sodium_inputText, ingredients_inputText, quantite_inputText, type_inputText, emballage_inputText, labels_inputText,additifs_inputText)">
+  <form
+    (ngSubmit)="addProductInDatabase(productName_inputText, proteines_inputText, glucide_inputText, sel_inputText, sucre_inputText, energie_inputText, energiekcal_inputText, fibre_inputText, matgra_inputText, acidegrassature_inputText, sodium_inputText, ingredients_inputText, quantite_inputText, type_inputText, emballage_inputText, labels_inputText,additifs_inputText)">
     <div class="row" style="margin:auto; padding-top:10px">
       <div class="col-sm-3">
         <mat-form-field>
@@ -13,25 +14,26 @@
                  placeholder="Entrez un nom de produit" type="text">
         </mat-form-field>
         <br>
-<!--        <mat-form-field>-->
-<!--          <mat-label>ID User</mat-label>-->
-<!--          <input #idUser_inputText id="idUser_inputText" matInput name="codebarre_inputText" placeholder="Votre identifiant"-->
-<!--                 type="text">-->
-<!--        </mat-form-field>-->
-<!--        <br>-->
+        <!--        <mat-form-field>-->
+        <!--          <mat-label>ID User</mat-label>-->
+        <!--          <input #idUser_inputText id="idUser_inputText" matInput name="codebarre_inputText" placeholder="Votre identifiant"-->
+        <!--                 type="text">-->
+        <!--        </mat-form-field>-->
+        <!--        <br>-->
         <mat-form-field>
           <mat-label>Protéines (en g)</mat-label>
-          <input #proteines_inputText matInput name="codebarre_inputText" placeholder="Entrez la quantité en protéines du produit"
+          <input #proteines_inputText matInput name="codebarre_inputText"
+                 placeholder="Entrez la quantité en protéines du produit"
                  type="text">
         </mat-form-field>
-<!--        <div mat-dialog-actions>-->
-<!--          <button mat-button type="submit">Add Product</button>-->
-<!--        </div>-->
+        <!--        <div mat-dialog-actions>-->
+        <!--          <button mat-button type="submit">Add Product</button>-->
+        <!--        </div>-->
       </div>
       <div class="col-sm-3">
         <mat-form-field>
           <mat-label>Glucides (en g)</mat-label>
-          <input matInput  #glucide_inputText placeholder="Entrez la quantité en glucide du produit"
+          <input #glucide_inputText matInput placeholder="Entrez la quantité en glucide du produit"
                  type="text">
         </mat-form-field>
         <br>
@@ -43,7 +45,8 @@
         <br>
         <mat-form-field>
           <mat-label>Sucre (en g)</mat-label>
-          <input #sucre_inputText matInput name="codebarre_inputText" placeholder="Entrez la quantité de sucre du produit"
+          <input #sucre_inputText matInput name="codebarre_inputText"
+                 placeholder="Entrez la quantité de sucre du produit"
                  type="text">
         </mat-form-field>
       </div>
@@ -67,17 +70,18 @@
       <div class="col-sm-3">
         <mat-form-field>
           <mat-label>Matière grasse (en g)</mat-label>
-          <input #matgra_inputText  matInput placeholder="Entrez la quantité de matière grasse du produit" type="text">
+          <input #matgra_inputText matInput placeholder="Entrez la quantité de matière grasse du produit" type="text">
         </mat-form-field>
         <br>
         <mat-form-field>
           <mat-label>Acides gras saturés (en g)</mat-label>
-          <input #acidegrassature_inputText matInput placeholder="Entrez la quantité en acides gras saturés" type="text">
+          <input #acidegrassature_inputText matInput placeholder="Entrez la quantité en acides gras saturés"
+                 type="text">
         </mat-form-field>
         <br>
         <mat-form-field>
           <mat-label>Sodium</mat-label>
-          <input #sodium_inputText  matInput  placeholder="Entrez la quantité en sodium du produit" type="text">
+          <input #sodium_inputText matInput placeholder="Entrez la quantité en sodium du produit" type="text">
         </mat-form-field>
       </div>
     </div>
@@ -85,33 +89,34 @@
       <div class="col-sm-3">
         <mat-form-field>
           <mat-label>Ingredients (Liste d'ingrédients séparés par une virgule)</mat-label>
-          <input #ingredients_inputText matInput  placeholder="Entrez les ingrédients du produit (séparés par virgule)" type="text">
+          <input #ingredients_inputText matInput placeholder="Entrez les ingrédients du produit (séparés par virgule)"
+                 type="text">
         </mat-form-field>
         <br>
         <mat-form-field>
           <mat-label>Quantité (en g)</mat-label>
-          <input #quantite_inputText matInput  placeholder="Entrez le poids du produit" type="text">
+          <input #quantite_inputText matInput placeholder="Entrez le poids du produit" type="text">
         </mat-form-field>
         <br>
         <mat-form-field>
           <mat-label>Type de produit</mat-label>
-          <input #type_inputText  matInput  placeholder="Eg : Sauce" type="text">
+          <input #type_inputText matInput placeholder="Eg : Sauce" type="text">
         </mat-form-field>
       </div>
       <div class="col-sm-3">
         <mat-form-field>
           <mat-label>Emballage (Liste d'emballages séparés par une virgule)</mat-label>
-          <input matInput #emballage_inputText placeholder="Eg: Plastique" type="text">
+          <input #emballage_inputText matInput placeholder="Eg: Plastique" type="text">
         </mat-form-field>
         <br>
         <mat-form-field>
           <mat-label>Labels (Liste de labels séparés par une virgule)</mat-label>
-          <input matInput #labels_inputText placeholder="Eg : Bio, Label Rouge" type="text">
+          <input #labels_inputText matInput placeholder="Eg : Bio, Label Rouge" type="text">
         </mat-form-field>
         <br>
         <mat-form-field>
           <mat-label>Additifs (Liste d'additifs séparés par une virgule)</mat-label>
-          <input matInput #additifs_inputText placeholder="Eg : e310" type="text">
+          <input #additifs_inputText matInput placeholder="Eg : e310" type="text">
         </mat-form-field>
       </div>
 

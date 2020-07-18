@@ -130,12 +130,12 @@ export class FormInputProductComponent implements OnInit {
           that.onNoClick();
           alert('Le produit suivant a été placé dans la liste d\'attente : ' + newProduct.code + ' - ' + newProduct.product_name);
         });
-     /* this.web3.contract.events.TriggerAddProduct({
-        fromBlock: await this.web3.web3.eth.getBlockNumber()
-      }, function(error, event) { console.log('Trigger Add Product : ' + event.returnValues.idProduct); })
-        .on('data', function(event) {
-          console.log("from data event " + event.returnValues.idProduct); // same results as the optional callback above
-        });*/
+      /* this.web3.contract.events.TriggerAddProduct({
+         fromBlock: await this.web3.web3.eth.getBlockNumber()
+       }, function(error, event) { console.log('Trigger Add Product : ' + event.returnValues.idProduct); })
+         .on('data', function(event) {
+           console.log("from data event " + event.returnValues.idProduct); // same results as the optional callback above
+         });*/
     }
 
 

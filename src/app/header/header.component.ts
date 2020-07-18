@@ -29,7 +29,7 @@ export class HeaderComponent implements OnInit {
   }
 
   onChangeDataSource(SourceData) {
-  //  this.changeDataSource.emit(SourceData._checked);
+    //  this.changeDataSource.emit(SourceData._checked);
     console.log('Source data : ' + SourceData._checked);
     this.web3.isChecked = !SourceData._checked;
     this.server.isChecked = SourceData._checked;

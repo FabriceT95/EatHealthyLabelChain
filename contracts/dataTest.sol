@@ -1,8 +1,8 @@
 pragma solidity 0.5.16;
 
+import "./LabelChainHelper.sol";
+
 pragma experimental ABIEncoderV2;
-
-
 
 
 /**
@@ -11,90 +11,10 @@ pragma experimental ABIEncoderV2;
  @dev Contract which is a part of the Alyra's Final Project : Eat Healthy LabelChain
  */
 
-contract DataTest {
+contract DataTest is LabelChainHelper {
 
-  // Option : define roles depending on the user status
-  enum Role {CUSTOMER, SELLER, ADMIN}
-
-  // Basic User structure with useful parameters.
-  // In particular, token date, token number and reputation
-  // needed for the consensus
-  struct User{
-    uint userId;
-    Role role;
-    uint lastTimeTokenGiven;
-    int tokenNumber;
-    int reputation;
-    bool isExist;
-  }
-
-  // Basic Product definition containing values about the product itself
-  // but also about consensus
-  struct Product{
-    uint productId;
-    uint productCode;
-    string productName;
-    address productProposerAddress;
-    string[] labels;
-    uint nutrimentsId;
-    string[] ingredients;
-    string[] additifs;
-    uint quantity;
-    string typeOfProduct;
-    string[] packaging;
-    uint totalVotes;
-    uint forVotes;
-    uint againstVotes;
-    // mapping(address => bool) alreadyVoted;
-    // address[] alreadyVoted;
-    uint[2] created_n_last_modif;
-    //  bytes32 hash;
-    bool isValidated;
-    bool isExist;
-  }
-
-  mapping(uint => mapping(address => bool)) public alreadyVoted;
-
-  // Basic Nutriment structure needed for the Product structure
-  // A way to divide Product content
-  struct Nutriments {
-    string energy;
-    string energy_kcal;
-    string proteines;
-    string carbohydrates;
-    string salt;
-    string sugars;
-    string fat;
-    string saturated_fat;
-    string fiber;
-    string sodium;
-  }
 
   address private _owner;
-
-  // Integer needed for the implicit user registration
-  // for the first time he proposed a product
-  uint uniqueIdUser;
-
-  uint uniqueProductId;
-
-  // Getter of all products in proposal phase
-  Product[] ProposalProducts;
-
-  // Getter of all nutriments products in proposal phase
-  Nutriments[] ProposalNutriments;
-
-  // Accessing to a User structure by his address
-  mapping(address => User) public addressToUser;
-
-  // Accessing to a Product in proposal phase by his code
-  mapping(uint => Product) public productCodeToProposalProduct;
-
-  // Accessing to a Product adopted by his code
-  mapping(uint => Product) public productCodeToProduct;
-
-  // Accessing to Nutriments of a Product adopted by his code
-  mapping(uint => Nutriments) public productCodeToNutriments;
 
   // Simple event when a product is added to the product proposal phase
   event TriggerAddProduct(uint indexed idProduct);
@@ -102,29 +22,29 @@ contract DataTest {
   // Setting up the owner as a user (may not be needed)
   constructor() public {
     _owner = msg.sender;
-    addressToUser[_owner] = User(uniqueIdUser, Role.ADMIN, now, 10, 0,true);
+    addressToUser[_owner] = User(uniqueIdUser, Role.ADMIN, now, 10, 0, true);
     uniqueIdUser++;
   }
 
-//  modifier checkProductIsNew (uint productCode) {
-//    require(!productCodeToProduct[productCode].isExist);
-//    _;
-//  }
-//
-//
-//  modifier checkProductProposalIsNew (uint productCode) {
-//    require(!productCodeToProduct[productCode].isExist);
-//    _;
-//  }
+  //  modifier checkProductIsNew (uint productCode) {
+  //    require(!productCodeToProduct[productCode].isExist);
+  //    _;
+  //  }
+  //
+  //
+  //  modifier checkProductProposalIsNew (uint productCode) {
+  //    require(!productCodeToProduct[productCode].isExist);
+  //    _;
+  //  }
 
   modifier checkLengthGS1 (uint productCode){
     require(productCode > 1111111111111);
     _;
   }
-/*
-  function getProduct(uint productCode) view public returns(Product){
-    return productCodeToProduct[productCode];
-  }*/
+  /*
+    function getProduct(uint productCode) view public returns(Product){
+      return productCodeToProduct[productCode];
+    }*/
 
 
   /**
@@ -146,13 +66,13 @@ contract DataTest {
     uint _quantity,
     string memory _typeOfProduct,
     string[] memory _packaging,
-    Nutriments memory _nutriments,
+    Nutriment memory _nutriments,
     string[] memory _additifs
 
   ) public {
     require(!productCodeToProduct[_productCode].isExist);
     Product memory _product;
-    Nutriments memory _nutrimentsObject;
+    Nutriment memory _nutrimentsObject;
     _product.productId = uniqueProductId;
     _product.productCode = _productCode;
     _product.productName = _productName;
@@ -163,15 +83,15 @@ contract DataTest {
     _product.quantity = _quantity;
     _product.typeOfProduct = _typeOfProduct;
     _product.packaging = _packaging;
-    //_product.isValidated = false;
     _product.isExist = true;
     _product.created_n_last_modif = [now, now];
-    _product.nutrimentsId = _productCode;
+    _product.endDate = now + 5 minutes;
+    // _product.nutrimentsId = _productCode;
     _product.forVotes = 0;
     _product.againstVotes = 0;
     _product.totalVotes = 0;
     // productCodeToNutriments[_productCode] = _nutriments;
-   // _product.hash = keccak256(abi.encodePacked(_product.productName,_product.productProposerAddress, _product.quantity));
+    // _product.hash = keccak256(abi.encodePacked(_product.productName,_product.productProposerAddress, _product.quantity));
     productCodeToProposalProduct[_productCode] = _product;
     ProposalProducts.push(_product);
 
@@ -185,10 +105,15 @@ contract DataTest {
     _nutrimentsObject.saturated_fat = _nutriments.saturated_fat;
     _nutrimentsObject.fiber = _nutriments.fat;
     _nutrimentsObject.sodium = _nutriments.sodium;
-    productCodeToNutriments[_productCode] = _nutrimentsObject;
+    productCodeToProposalNutriments[_productCode] = _nutrimentsObject;
     ProposalNutriments.push(_nutrimentsObject);
 
     uniqueProductId++;
+
+    addressToProducts[msg.sender][_productCode] = _product;
+    addressToNutriments[msg.sender][_productCode] = _nutrimentsObject;
+    //    addressToProduct[msg.sender][_productCode] = _product;
+    //    addressToNutriments[msg.sender][_product] = _nutrimentsObject;
 
     emit TriggerAddProduct(_productCode);
     // keccak256(abi.encodePacked(_productCode,_productName,msg.sender,_labels,_ingredients,_nutriments,_quantity,_typeOfProduct,_packaging))
@@ -201,10 +126,10 @@ contract DataTest {
 
 
   // To add a product in proposal, we need to check if the product doesn't already exist in mappings of products
-  function checkProductIsNew (uint _productCode) public view checkLengthGS1(_productCode) returns (bool) {
-    if(!productCodeToProposalProduct[_productCode].isExist && !productCodeToProduct[_productCode].isExist){
+  function checkProductIsNew(uint _productCode) public view checkLengthGS1(_productCode) returns (bool) {
+    if (!productCodeToProposalProduct[_productCode].isExist && !productCodeToProduct[_productCode].isExist) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -240,30 +165,41 @@ contract DataTest {
  */
   function vote(bool _opinion, uint _productCode) public {
     require(addressToUser[msg.sender].tokenNumber > 0);
+    // require(productCodeToProduct[_productCode].created_n_last_modif[1] < productCodeToProduct[_productCode].created_n_last_modif[1] + 7 days);
+    require(productCodeToProduct[_productCode].created_n_last_modif[1] < productCodeToProduct[_productCode].endDate);
     // require(productCodeToProduct[_productCode].isExist && addressToUser[msg.sender].isExist && !alreadyVoted[_productCode][msg.sender] && productCodeToProduct[_productCode].productProposerAddress != msg.sender);
-    alreadyVoted[_productCode][msg.sender] = true;
-    if(_opinion == true){
+    alreadyVoted[_productCode][msg.sender][0] = true;
+    if (_opinion == true) {
       productCodeToProposalProduct[_productCode].forVotes++;
       ProposalProducts[productCodeToProposalProduct[_productCode].productId].forVotes++;
-    }else{
+    } else {
       productCodeToProposalProduct[_productCode].againstVotes++;
       ProposalProducts[productCodeToProposalProduct[_productCode].productId].againstVotes++;
     }
+    alreadyVoted[_productCode][msg.sender][1] = _opinion;
     productCodeToProposalProduct[_productCode].totalVotes++;
     ProposalProducts[productCodeToProposalProduct[_productCode].productId].totalVotes++;
     addressToUser[msg.sender].tokenNumber--;
   }
 
-  function getProductsVoting() public view returns(Product[] memory, Nutriments[] memory){
-    return (ProposalProducts, ProposalNutriments);
-  }
+  function endVote(uint _productCode, address proposerAddress) public {
+    require(now >= productCodeToProposalProduct[_productCode].endDate);
+    require(productCodeToProposalProduct[_productCode].isExist && !productCodeToProposalProduct[_productCode].isValidated);
 
-  function isAlreadyVotedByCurrentUser(uint _productCode) public view returns (bool){
-    return alreadyVoted[_productCode][msg.sender];
-  }
-
-  function isProposer(uint _productCode) public view returns (bool){
-    return productCodeToProposalProduct[_productCode].productProposerAddress == msg.sender;
+    if (productCodeToProposalProduct[_productCode].forVotes >= productCodeToProposalProduct[_productCode].againstVotes) {
+      productCodeToProposalProduct[_productCode].isValidated = true;
+      addressToProducts[proposerAddress][_productCode].isValidated = true;
+      productCodeToProduct[_productCode] = productCodeToProposalProduct[_productCode];
+      Products.push(productCodeToProduct[_productCode]);
+      Nutriments.push(productCodeToProposalNutriments[_productCode]);
+    } else {
+      DeniedProducts.push(productCodeToProduct[_productCode]);
+      DeniedNutriments.push(productCodeToProposalNutriments[_productCode]);
+    }
+    delete productCodeToProposalProduct[_productCode];
+    delete productCodeToProposalNutriments[_productCode];
+    delete ProposalProducts[addressToProducts[proposerAddress][_productCode].productId];
+    delete ProposalNutriments[addressToProducts[proposerAddress][_productCode].productId];
   }
 
 }

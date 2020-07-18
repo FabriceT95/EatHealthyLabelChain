@@ -27,6 +27,7 @@
     "@truffle/contract": "^4.0.33",
     "bootstrap": "^3.4.1",
     "core-js": "2.5.7",
+    "ethereumjs-tx": "^2.1.2",
     "ethers": "^4.0.37",
     "javascript-barcode-reader": "^0.6.8",
     "node-sass": "4.12.0",

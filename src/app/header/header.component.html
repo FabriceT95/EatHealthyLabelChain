@@ -4,6 +4,8 @@
     <div>
       <a (click)="onSelect('accueil')" mat-button> Accueil </a>
       <a (click)="onSelect('votePage')" mat-button> Articles en cours de vote </a>
+      <a (click)="onSelect('myProposals')" mat-button> Mes propositions en cours de vote </a>
+
 
       <mat-slide-toggle #toggleDataSource (change)="onChangeDataSource(toggleDataSource)">
         <strong *ngIf="toggleDataSource._checked">MySQL</strong>

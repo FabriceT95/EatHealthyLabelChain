@@ -1,0 +1,9 @@
+<div class="row" style="height:100%">
+  <div class="col-sm-12" style="height:100%">
+    <mat-card style="height:100%">
+      <app-user-proposal-item *ngFor="let product of UserProductsProposal; let i=index" [productIndex]="i"
+                              [product]="product"></app-user-proposal-item>
+    </mat-card>
+  </div>
+</div>
+

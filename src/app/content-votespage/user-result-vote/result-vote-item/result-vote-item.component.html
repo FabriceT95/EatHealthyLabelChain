@@ -1,12 +1,14 @@
 <div class="row" style="padding:1%">
   <div class="col-sm-10">
     <mat-card style="word-break: break-word">
-      <p>Le produit <strong>{{ productvote.product_name }}</strong> avec le code-barre <strong>{{ productvote.code }}</strong> proposé par <strong>{{ productvote.addressProposer}}</strong>:</p>
-      <p>Date de début : <strong>{{ productvote.voteDates[0] }} </strong> - Durée du vote : 7 jours</p>
+      <p>Le produit <strong>{{ productvote.product_name }}</strong> avec le code-barre
+        <strong>{{ productvote.code }}</strong> proposé par <strong>{{ productvote.addressProposer}}</strong>:</p>
+      <p>Date de début : <strong>{{ productvote.voteDates[0] }} </strong> - Date de fin :
+        <strong>{{ productvote.voteDates[1] }} </strong> - Durée du vote : 7 jours</p>
     </mat-card>
   </div>
   <div class="col-sm-2" style="text-align: center; vertical-align: middle;display: table-cell">
-    <button color="primary" (click)="openDialog()" mat-raised-button>Détails + Vote</button>
+    <button (click)="openDialog()" color="primary" mat-raised-button>Détails + Vote</button>
 
   </div>
 </div>
