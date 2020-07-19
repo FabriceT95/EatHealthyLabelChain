@@ -17,6 +17,7 @@
           <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ productVote.againstVotes}}</strong></li>
         </ul>
       </div>
+    </div>
       <div *ngIf="this.isDateVotable; else clos">
         <div *ngIf="!this.isProductProposer && !this.alreadyVoted;">
           <div class="row" style="word-break: break-all;">
@@ -41,10 +42,9 @@
           VOUS AVEZ DEJA VOTE PUTAIIIIIIIIIIIIIIN
         </div>
       </div>
-      <div #clos>
+        <ng-template #clos>
         Ce vote est clos. Vous pouvez toujours regarder le contenu de ce produit !
-      </div>
-
+        </ng-template>
       <div class="col-sm-8">
         <div class="row" style="margin:5%; text-align: center">
           <div class="col-sm-5">
@@ -80,7 +80,6 @@
         </div>
 
       </div>
-    </div>
 
   </form>
 </mat-dialog-content>

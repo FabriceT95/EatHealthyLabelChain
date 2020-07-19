@@ -39,6 +39,9 @@ import {Web3Service} from './util/web3.service';
 import {ResultVoteItemComponent} from './content-votespage/user-result-vote/result-vote-item/result-vote-item.component';
 import {ContentMyProposalsComponent} from './content-my-proposals/content-my-proposals.component';
 import {UserProposalItemComponent} from './content-my-proposals/user-proposal-item/user-proposal-item.component';
+import { UserSearchResultItemComponent } from './content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component';
+import { ModalProductDetailsComponent } from './content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component';
+import {MatChipsModule} from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -60,7 +63,9 @@ import {UserProposalItemComponent} from './content-my-proposals/user-proposal-it
     UserFormVoteComponent,
     ResultVoteItemComponent,
     ContentMyProposalsComponent,
-    UserProposalItemComponent
+    UserProposalItemComponent,
+    UserSearchResultItemComponent,
+    ModalProductDetailsComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -78,13 +83,15 @@ import {UserProposalItemComponent} from './content-my-proposals/user-proposal-it
     MatDividerModule,
     MatDialogModule,
     MatCheckboxModule,
-    MatGridListModule
+    MatGridListModule,
+    MatChipsModule
   ],
   providers: [Web3Service, ServerService, AppComponent],
   bootstrap: [AppComponent],
   entryComponents: [
     UserFormVoteComponent,
     FormInputProductComponent,
+    ModalProductDetailsComponent
   ]
 })
 export class AppModule {

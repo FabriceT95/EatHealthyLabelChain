@@ -1,0 +1,165 @@
+<mat-dialog-content>
+  <!-- ADD NEW PRODUCT -->
+
+  <h2>Détails du produit {{ product.product_name }} ({{ product.code }})</h2>
+  <mat-divider></mat-divider>
+
+  <div class="col-sm-4" style="word-break: break-all;">
+    <div class="row" style="margin:5%">
+      <ul style="list-style-type:none;">
+        <li>
+          <mat-form-field>
+            <mat-label>Nom du produit :</mat-label>
+            <input [readonly]="readOnly" matInput value="{{ product.product_name }}">
+          </mat-form-field>
+        </li>
+        <!--          <li><span>Nom du produit : <strong>{{ product.product_name }}</strong></span></li>-->
+        <li>
+          <span>Proposeur : </span> <strong>{{ product.addressProposer}}</strong>
+        </li>
+        <li><span>Début du vote : </span><strong>{{ product.voteDates[0] }}</strong></li>
+        <li><span>Fin du vote : </span><strong>{{ product.voteDates[1] }}</strong></li>
+        <li><span>Nombre de votes actuel : </span><strong>{{ product.totalVotes}}</strong></li>
+        <li><span>Nombre de votes "Pour" actuel : </span><strong>{{ product.forVotes}}</strong></li>
+        <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ product.againstVotes}}</strong></li>
+      </ul>
+    </div>
+    <mat-checkbox (change)="activateModification()" class="example-margin" name="none">JE CERTIFIE D'AVOIR LE MILLIARD DE
+      PAGES DE CGU AINSI QUE DE NE PAS ETRE UN GROS CONNARD
+    </mat-checkbox>
+    <div class="row" style="margin:5%">
+      <div class="col-sm-6">
+        <button [disabled]="readOnly" color="primary" mat-raised-button>PROPOSER MA MODIFICATION</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-8">
+    <div class="row" style="margin:5%; text-align: center">
+      <div class="col-sm-5">
+        <h4 style="text-align: center">Section Labels</h4>
+        <mat-form-field>
+          <mat-chip-list #chipList aria-label="Fruit selection">
+            <mat-chip (removed)="remove(label,1)" *ngFor="let label of product.labels"
+                      [removable]="!readOnly" [selectable]="selectable">
+              {{label}}
+              <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input *ngIf="!readOnly" (matChipInputTokenEnd)="add($event,1)"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   [matChipInputFor]="chipList"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   placeholder="Nouveaux labels...">
+          </mat-chip-list>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-chip-list #chipList aria-label="Fruit selection">
+            <mat-chip (removed)="remove(additif,2)" *ngFor="let additif of product.additifs"
+                      [removable]="!readOnly" [selectable]="selectable">
+              {{additif}}
+              <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input *ngIf="!readOnly" (matChipInputTokenEnd)="add($event,2)"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   [matChipInputFor]="chipList"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   placeholder="Nouveaux additifs...">
+          </mat-chip-list>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-5">
+        <h4 style="text-align: center">Section Ingredients</h4>
+        <mat-form-field>
+          <mat-chip-list #chipList aria-label="Fruit selection">
+            <mat-chip (removed)="remove(ingredient,3)" *ngFor="let ingredient of product.ingredients"
+                      [removable]="!readOnly" [selectable]="selectable">
+              {{ingredient}}
+              <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input *ngIf="!readOnly" (matChipInputTokenEnd)="add($event,3)"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   [matChipInputFor]="chipList"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   placeholder="Nouveau Ingrédients...">
+          </mat-chip-list>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row" style="margin:5%; text-align: center">
+      <div class="col-sm-5">
+        <h4 style="text-align: center">Section Nutrition</h4>
+        <mat-form-field>
+          <mat-label>Energie :</mat-label>
+          <input [readonly]="readOnly" matInput value="{{ product.nutriments[0] }}">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Energie (en kcal) :</mat-label>
+          <input [readonly]="readOnly" matInput value="{{ product.nutriments[1] }}">
+        </mat-form-field>
+        <mat-form-field>
+        <mat-label>Protéines :</mat-label>
+        <input [readonly]="readOnly" matInput value="{{ product.nutriments[2] }}">
+      </mat-form-field>
+        <mat-form-field>
+          <mat-label>Glucides :</mat-label>
+          <input [readonly]="readOnly" matInput value="{{ product.nutriments[3] }}">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Sel :</mat-label>
+          <input [readonly]="readOnly" matInput value="{{ product.nutriments[4] }}">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Sucre :</mat-label>
+          <input [readonly]="readOnly" matInput value="{{ product.nutriments[5] }}">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Graisses :</mat-label>
+          <input [readonly]="readOnly" matInput value="{{ product.nutriments[6] }}">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Dont matières grasses :</mat-label>
+          <input [readonly]="readOnly" matInput value="{{ product.nutriments[7] }}">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Fibre :</mat-label>
+          <input [readonly]="readOnly" matInput value="{{ product.nutriments[8] }}">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Sodium :</mat-label>
+          <input [readonly]="readOnly" matInput value="{{ product.nutriments[9] }}">
+        </mat-form-field>
+
+
+<!--        <p><span>Energie : </span><strong>{{ product.nutriments[0] }}</strong></p>-->
+<!--        <p><span>Energie (en kcal) : </span><strong>{{ product.nutriments[1] }}</strong></p>-->
+<!--        <p><span>Protéines : </span><strong>{{ product.nutriments[2] }}</strong></p>-->
+<!--        <p><span>Glucides : </span><strong>{{ product.nutriments[3] }}</strong></p>-->
+<!--        <p><span>Sel : </span><strong>{{ product.nutriments[4] }}</strong></p>-->
+<!--        <p><span>Sucre : </span><strong>{{ product.nutriments[5] }}</strong></p>-->
+<!--        <p><span>Graisses : </span><strong>{{ product.nutriments[6] }}</strong></p>-->
+<!--        <p><span>Dont Matières grasses : </span><strong>{{ product.nutriments[7] }}</strong></p>-->
+<!--        <p><span>Fibre : </span><strong>{{ product.nutriments[8] }}</strong></p>-->
+<!--        <p><span>Sodium : </span><strong>{{ product.nutriments[9] }}</strong></p>-->
+      </div>
+      <div class="col-sm-5">
+        <h4 style="text-align: center">Section Divers</h4>
+        <mat-form-field>
+          <mat-label>Type de produit : </mat-label>
+          <input [readonly]="readOnly" matInput value="{{ product.generic_name }}">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Emballage : </mat-label>
+          <input [readonly]="readOnly" matInput value="{{ product.packaging }}">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Quantité :</mat-label>
+          <input [readonly]="readOnly" matInput value="{{ product.quantity }}">
+        </mat-form-field>
+<!--        <p><span>Type de produit : </span><strong>{{ product.generic_name }}</strong></p>-->
+<!--        <p><span>Emballage : </span><strong>{{ product.packaging }}</strong></p>-->
+<!--        <p><span>Quantité : </span><strong>{{ product.quantity }}</strong></p>-->
+      </div>
+    </div>
+
+  </div>
+</mat-dialog-content>

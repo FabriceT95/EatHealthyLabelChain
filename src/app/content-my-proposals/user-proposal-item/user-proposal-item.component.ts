@@ -11,7 +11,6 @@ export class UserProposalItemComponent implements OnInit {
   @Input() product: Product;
   @Input() productIndex: number;
   timeLeft: string;
-  isStillAvailable: boolean;
   getTimeLeftInterval;
 
   constructor(private web3: Web3Service) {

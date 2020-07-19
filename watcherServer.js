@@ -88,12 +88,6 @@ class Web3Worker {
   async sendTransaction(productVoteIsEnded) {
       await worker.getTransactionCount().then(async function (nonce) {
         worker.nonce = nonce.toString(16);
-        console.log('Il existe ? : ' + productVoteIsEnded.isExist);
-        console.log('Il est valide ? : ' + productVoteIsEnded.isValidated);
-
-        //   let gasEstime = await web3.eth.estimateGas({ to : worker.deployedNetwork.address, data:worker.contract.methods.endVote(productVoteIsEndedArray[0].productCode).encodeABI() });
-        //const estimatedGas = gasEstime.toString(16);
-        //  const test = async () => {
         const rawTX = {
           gasPrice: '0x1111', //worker.GasPrice,
           gasLimit: '0x6691B7',
@@ -115,7 +109,6 @@ class Web3Worker {
   }
 
 }
-
 
 const worker = new Web3Worker(web3);
 worker.launcher();
@@ -142,7 +135,6 @@ worker.init().then(() => {
     });
 
   }, 5000);
-})
-;
+});
 
 

@@ -16,7 +16,6 @@ export class ResultVoteItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.productvote.nutriments);
   }
 
   openDialog(): void {

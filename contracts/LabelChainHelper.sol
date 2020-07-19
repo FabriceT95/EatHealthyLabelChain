@@ -117,6 +117,14 @@ contract LabelChainHelper {
     return (ProposalProducts, ProposalNutriments);
   }
 
+  function getProductsAccepted() public view returns (Product[] memory, Nutriment[] memory){
+    return (Products, Nutriments);
+  }
+
+  function getParticularProduct(uint _productCode) public view returns (Product memory, Nutriment memory){
+    return (productCodeToProduct[_productCode], productCodeToProposalNutriments[_productCode]);
+  }
+
 
   function isAlreadyVotedByCurrentUser(uint _productCode) public view returns (bool){
     return alreadyVoted[_productCode][msg.sender][0];
