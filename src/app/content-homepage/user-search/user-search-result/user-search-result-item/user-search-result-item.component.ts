@@ -10,7 +10,7 @@ import {ModalProductDetailsComponent} from '../modal-product-details/modal-produ
   styleUrls: ['./user-search-result-item.component.css']
 })
 export class UserSearchResultItemComponent implements OnInit {
-  @Input() product: Product;
+  @Input() product: Product[];
   constructor(public dialog: MatDialog) {
   }
 

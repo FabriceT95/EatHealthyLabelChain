@@ -11,7 +11,7 @@ import {Product} from '../../../shared/product.model';
 })
 export class UserFormVoteComponent implements OnInit {
   public checked = false;
-  public productVote: Product;
+  public productVote: Product[];
   public isProductProposer: boolean;
   public alreadyVoted: boolean;
   public isDateVotable: boolean;
@@ -24,17 +24,17 @@ export class UserFormVoteComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.web3.contract.methods.isAlreadyVotedByCurrentUser(this.productVote.code).call({from: this.web3.accounts[0]})
+    this.web3.contract.methods.isAlreadyVotedByCurrentUser(this.productVote[0].code).call({from: this.web3.accounts[0]})
       .then((result) => {
         this.alreadyVoted = result;
         if (this.alreadyVoted === false) {
-          this.web3.contract.methods.isProposer(this.productVote.code).call({from: this.web3.accounts[0]})
+          this.web3.contract.methods.isProposer(this.productVote[0].code).call({from: this.web3.accounts[0]})
             .then((result_) => {
               this.isProductProposer = result_;
             });
         }
       });
-    this.web3.contract.methods.isDateOK(this.productVote.code).call()
+    this.web3.contract.methods.isDateOK(this.productVote[0].code).call()
       .then((result) => {
         this.isDateVotable = result;
       });
@@ -47,16 +47,16 @@ export class UserFormVoteComponent implements OnInit {
   voting(opinion) {
     const that = this;
     console.log('Mon vote : ' + opinion);
-    console.log('Le produit pour lequel je vote : ' + this.productVote.code);
-    this.web3.contract.methods.vote(opinion, this.productVote.code).send({from: this.web3.accounts[0]})
+    console.log('Le produit pour lequel je vote : ' + this.productVote[0].code);
+    this.web3.contract.methods.vote(opinion, this.productVote[0].code).send({from: this.web3.accounts[0]})
       .on('receipt', (receipt) => {
         that.web3.newVote.emit();
         if (opinion === true) {
-          this.productVote.forVotes++;
+          this.productVote[0].forVotes++;
         } else {
-          this.productVote.againstVotes++;
+          this.productVote[0].againstVotes++;
         }
-        this.productVote.totalVotes++;
+       // this.productVote.totalVotes++;
         alert('Votre vote a bien été pris en compte ! Merci, bisous distancés !');
 
       })

@@ -4,22 +4,33 @@
     <list default="true" id="b979d4c8-985c-477d-b226-bf0a39cdf726" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/contracts/DataLabelChain.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/DataLabelChain.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/DataTest.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/DataTest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/LabelChainHelper.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/LabelChainHelper.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/contracts/DataTest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/contracts/LabelChainHelper.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/contracts/Migrations.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/Migrations.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/contracts/SafeMath.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/SafeMath.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/contracts/SafeMath16.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/SafeMath16.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/contracts/SafeMath32.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/SafeMath32.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/contracts/SignedSafeMath.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/SignedSafeMath.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/LabelChainHelper.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/LabelChainHelper.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/dataLabelChain.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/dataLabelChain.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/dataTest.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/dataTest.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/form-input-product/form-input-product.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/form-input-product/form-input-product.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/user-product-manager.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/user-product-manager.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/user-product-manager.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/user-product-manager.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-my-proposals/user-proposal-item/user-proposal-item.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-my-proposals/user-proposal-item/user-proposal-item.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-my-proposals/content-my-proposals.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-my-proposals/content-my-proposals.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/result-vote-item/result-vote-item.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/result-vote-item/result-vote-item.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/result-vote-item/result-vote-item.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/result-vote-item/result-vote-item.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-result-vote.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-result-vote.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/shared/product.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/shared/product.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/util/web3.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/util/web3.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/truffle-config.js" beforeDir="false" afterPath="$PROJECT_DIR$/truffle-config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/watcherServer.js" beforeDir="false" afterPath="$PROJECT_DIR$/watcherServer.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -31,8 +42,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="TypeScript File" />
-        <option value="Solidity Contract" />
         <option value="JavaScript File" />
+        <option value="Solidity Contract" />
       </list>
     </option>
   </component>
@@ -53,6 +64,7 @@
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs.cucumber.cucumber_node_package_dir" value="" />
     <property name="nodejs.protractor.protractor_package" value="$PROJECT_DIR$/node_modules/protractor" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="ts.external.directory.path" value="C:\Users\Fabrice\Desktop\Project_EatHealthyLabelChain\EatHealthyLabelChain\node_modules\typescript\lib" />
@@ -154,6 +166,11 @@
       <workItem from="1595006922072" duration="7201000" />
       <workItem from="1595072882708" duration="15204000" />
       <workItem from="1595153103276" duration="10266000" />
+      <workItem from="1595191701131" duration="4829000" />
+      <workItem from="1595249614507" duration="9526000" />
+      <workItem from="1595335219779" duration="19944000" />
+      <workItem from="1595416762583" duration="22915000" />
+      <workItem from="1595497764961" duration="3160000" />
     </task>
     <servers />
   </component>
@@ -165,26 +182,34 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="178" key="#TSLint/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1593289083841" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595431956672">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595431956672" />
     <state x="239" y="323" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1592079773503">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="239" y="323" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592079773503" />
-    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1594740350532">
+    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1595351908493">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594740350532" />
+    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595351908493" />
     <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1594999323827">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1594999323827" />
+    <state x="540" y="263" key="IDE.errors.dialog" timestamp="1595363005719">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="540" y="263" key="IDE.errors.dialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595363005719" />
     <state width="498" height="446" key="SwitcherDM" timestamp="1593694276017">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1593694276017" />
-    <state x="606" y="135" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1592066528350">
+    <state x="606" y="135" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1595345883342">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="606" y="135" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592066528350" />
+    <state x="606" y="135" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595345883342" />
     <state x="769" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1593543388255">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

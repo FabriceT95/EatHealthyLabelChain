@@ -1,35 +1,35 @@
 <mat-dialog-content>
   <!-- ADD NEW PRODUCT -->
 
-  <h2>Détails du produit {{ product.product_name }} ({{ product.code }})</h2>
+  <h2>Détails du produit {{ product[0].product_name }} ({{ product[0].code }})</h2>
   <mat-divider></mat-divider>
-
+  <form (ngSubmit)="modifyProduct()">
   <div class="col-sm-4" style="word-break: break-all;">
     <div class="row" style="margin:5%">
       <ul style="list-style-type:none;">
         <li>
           <mat-form-field>
             <mat-label>Nom du produit :</mat-label>
-            <input [readonly]="readOnly" matInput value="{{ product.product_name }}">
+            <input [readonly]="readOnly" matInput value="{{ product[0].product_name }}">
           </mat-form-field>
         </li>
         <!--          <li><span>Nom du produit : <strong>{{ product.product_name }}</strong></span></li>-->
         <li>
-          <span>Proposeur : </span> <strong>{{ product.addressProposer}}</strong>
+          <span>Proposeur : </span> <strong>{{ product[0].addressProposer}}</strong>
         </li>
-        <li><span>Début du vote : </span><strong>{{ product.voteDates[0] }}</strong></li>
-        <li><span>Fin du vote : </span><strong>{{ product.voteDates[1] }}</strong></li>
-        <li><span>Nombre de votes actuel : </span><strong>{{ product.totalVotes}}</strong></li>
-        <li><span>Nombre de votes "Pour" actuel : </span><strong>{{ product.forVotes}}</strong></li>
-        <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ product.againstVotes}}</strong></li>
+        <li><span>Début du vote : </span><strong>{{ product[0].voteDates[0] }}</strong></li>
+        <li><span>Fin du vote : </span><strong>{{ product[0].voteDates[1] }}</strong></li>
+<!--        <li><span>Nombre de votes actuel : </span><strong>{{ product[0].totalVotes}}</strong></li>-->
+        <li><span>Nombre de votes "Pour" actuel : </span><strong>{{ product[0].forVotes}}</strong></li>
+        <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ product[0].againstVotes}}</strong></li>
       </ul>
     </div>
-    <mat-checkbox (change)="activateModification()" class="example-margin" name="none">JE CERTIFIE D'AVOIR LE MILLIARD DE
+    <mat-checkbox (change)="activateFields()" class="example-margin" name="none">JE CERTIFIE D'AVOIR LE MILLIARD DE
       PAGES DE CGU AINSI QUE DE NE PAS ETRE UN GROS CONNARD
     </mat-checkbox>
     <div class="row" style="margin:5%">
       <div class="col-sm-6">
-        <button [disabled]="readOnly" color="primary" mat-raised-button>PROPOSER MA MODIFICATION</button>
+        <button [disabled]="sameObject" type="submit" color="primary" mat-raised-button>PROPOSER MA MODIFICATION</button>
       </div>
     </div>
   </div>
@@ -40,7 +40,7 @@
         <h4 style="text-align: center">Section Labels</h4>
         <mat-form-field>
           <mat-chip-list #chipList aria-label="Fruit selection">
-            <mat-chip (removed)="remove(label,1)" *ngFor="let label of product.labels"
+            <mat-chip (removed)="remove(label,1)" *ngFor="let label of modifiedProduct.labels"
                       [removable]="!readOnly" [selectable]="selectable">
               {{label}}
               <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
@@ -54,7 +54,7 @@
         </mat-form-field>
         <mat-form-field>
           <mat-chip-list #chipList aria-label="Fruit selection">
-            <mat-chip (removed)="remove(additif,2)" *ngFor="let additif of product.additifs"
+            <mat-chip (removed)="remove(additif,2)" *ngFor="let additif of modifiedProduct.additifs"
                       [removable]="!readOnly" [selectable]="selectable">
               {{additif}}
               <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
@@ -71,7 +71,7 @@
         <h4 style="text-align: center">Section Ingredients</h4>
         <mat-form-field>
           <mat-chip-list #chipList aria-label="Fruit selection">
-            <mat-chip (removed)="remove(ingredient,3)" *ngFor="let ingredient of product.ingredients"
+            <mat-chip (removed)="remove(ingredient,3)" *ngFor="let ingredient of modifiedProduct.ingredients"
                       [removable]="!readOnly" [selectable]="selectable">
               {{ingredient}}
               <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
@@ -90,43 +90,43 @@
         <h4 style="text-align: center">Section Nutrition</h4>
         <mat-form-field>
           <mat-label>Energie :</mat-label>
-          <input [readonly]="readOnly" matInput value="{{ product.nutriments[0] }}">
+          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[0]" value="{{ product[0].nutriments[0] }}">
         </mat-form-field>
         <mat-form-field>
           <mat-label>Energie (en kcal) :</mat-label>
-          <input [readonly]="readOnly" matInput value="{{ product.nutriments[1] }}">
+          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[1]" value="{{ product[0].nutriments[1] }}">
         </mat-form-field>
         <mat-form-field>
         <mat-label>Protéines :</mat-label>
-        <input [readonly]="readOnly" matInput value="{{ product.nutriments[2] }}">
+        <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[2]" value="{{ product[0].nutriments[2] }}">
       </mat-form-field>
         <mat-form-field>
           <mat-label>Glucides :</mat-label>
-          <input [readonly]="readOnly" matInput value="{{ product.nutriments[3] }}">
+          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[3]" value="{{ product[0].nutriments[3] }}">
         </mat-form-field>
         <mat-form-field>
           <mat-label>Sel :</mat-label>
-          <input [readonly]="readOnly" matInput value="{{ product.nutriments[4] }}">
+          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[4]" value="{{ product[0].nutriments[4] }}">
         </mat-form-field>
         <mat-form-field>
           <mat-label>Sucre :</mat-label>
-          <input [readonly]="readOnly" matInput value="{{ product.nutriments[5] }}">
+          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[5]" value="{{ product[0].nutriments[5] }}">
         </mat-form-field>
         <mat-form-field>
           <mat-label>Graisses :</mat-label>
-          <input [readonly]="readOnly" matInput value="{{ product.nutriments[6] }}">
+          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[6]" value="{{ product[0].nutriments[6] }}">
         </mat-form-field>
         <mat-form-field>
           <mat-label>Dont matières grasses :</mat-label>
-          <input [readonly]="readOnly" matInput value="{{ product.nutriments[7] }}">
+          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[7]" value="{{ product[0].nutriments[7] }}">
         </mat-form-field>
         <mat-form-field>
           <mat-label>Fibre :</mat-label>
-          <input [readonly]="readOnly" matInput value="{{ product.nutriments[8] }}">
+          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[8]" value="{{ product[0].nutriments[8] }}">
         </mat-form-field>
         <mat-form-field>
           <mat-label>Sodium :</mat-label>
-          <input [readonly]="readOnly" matInput value="{{ product.nutriments[9] }}">
+          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[9]" value="{{ product[0].nutriments[9] }}">
         </mat-form-field>
 
 
@@ -145,15 +145,15 @@
         <h4 style="text-align: center">Section Divers</h4>
         <mat-form-field>
           <mat-label>Type de produit : </mat-label>
-          <input [readonly]="readOnly" matInput value="{{ product.generic_name }}">
+          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.generic_name" value="{{ product[0].generic_name }}">
         </mat-form-field>
         <mat-form-field>
           <mat-label>Emballage : </mat-label>
-          <input [readonly]="readOnly" matInput value="{{ product.packaging }}">
+          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.packaging" value="{{ product[0].packaging }}">
         </mat-form-field>
         <mat-form-field>
           <mat-label>Quantité :</mat-label>
-          <input [readonly]="readOnly" matInput value="{{ product.quantity }}">
+          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.quantity" value="{{ product[0].quantity }}">
         </mat-form-field>
 <!--        <p><span>Type de produit : </span><strong>{{ product.generic_name }}</strong></p>-->
 <!--        <p><span>Emballage : </span><strong>{{ product.packaging }}</strong></p>-->
@@ -162,4 +162,5 @@
     </div>
 
   </div>
+  </form>
 </mat-dialog-content>

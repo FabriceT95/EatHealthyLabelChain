@@ -10,9 +10,9 @@ import {Web3Service} from '../../../util/web3.service';
   styleUrls: ['./result-vote-item.component.css']
 })
 export class ResultVoteItemComponent implements OnInit {
-  @Input() productvote: Product;
+  @Input() productvote: Product[];
 
-  constructor(public dialog: MatDialog, private web3: Web3Service) {
+  constructor(public dialog: MatDialog) {
   }
 
   ngOnInit() {

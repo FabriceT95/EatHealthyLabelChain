@@ -29,6 +29,7 @@ export class Web3Service {
 
   constructor(@Inject(WEB3) public web3: Web3) {
     const that = this;
+    console.log('CEST MON WEB3 : ' + that.web3.utils.fromAscii());
     this.getWeb3Provider();
     setInterval(() => {
       that.getAccount().then(function (result) {
@@ -39,10 +40,6 @@ export class Web3Service {
         console.log('GetAccount in Web3Service : ' + that.accounts[0]);
       });
     }, 100);
-    /*  this.getAccount().then(function(result) {
-        that.accounts = result;
-        console.log('GetAccount in Web3Service : ' + that.accounts);
-      });*/
     this.getNetworkId().then(function (result) {
       that.networkId = result;
       that.deployedNetwork = dataTest.networks[that.networkId];
@@ -53,7 +50,7 @@ export class Web3Service {
       that.getContract().then(function (result) {
         that.contract = result;
         // Define functions which are needed to be launched on load just after getContract is setup
-        that.getMyRole();
+       // that.getMyRole();
         console.log('GetContract in Web3Service : ' + that.contract);
       });
     }, 500);
@@ -69,7 +66,6 @@ export class Web3Service {
     const web3Provider = this.web3;
     return new Promise(function (resolve, reject) {
       resolve(web3Provider.eth.getAccounts());
-      // console.log('bimbam : ' + that.accounts);
     });
   }
 
@@ -91,10 +87,10 @@ export class Web3Service {
     });
   }
 
-  async getMyRole() {
-    this.role = await this.contract.methods.getRole().call({from: this.accounts[0]});
-    console.log('Mon rôle : ' + this.role);
-  }
+  // async getMyRole() {
+  //   this.role = await this.contract.methods.getRole().call({from: this.accounts[0]});
+  //   console.log('Mon rôle : ' + this.role);
+  // }
 
 }
 

@@ -11,11 +11,12 @@ export class Product {
     public labels: string[],
     public additifs: string[],
     public voteDates: string[],
-    public totalVotes: number = 0,
+   // public totalVotes: number = 0,
     public forVotes: number = 0,
     public againstVotes: number = 0,
     public alreadyVoted: {},
-    public endDate: number = 0
+    public endDate: number = 0,
+    public status: number
   ) {
   }
 }

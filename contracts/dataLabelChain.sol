@@ -111,17 +111,17 @@ contract DataLabelChain {
 
   }
 
-  function subscribeUser(string memory newUserName, string memory newUserMail, int _role) public checkUserIsNew {
-    if (_role == 0) {
-      ownerToUser[msg.sender] = User(uniqueIdUser, newUserName, newUserMail, Role.CUSTOMER, true);
-    } else {
-      ownerToUser[msg.sender] = User(uniqueIdUser, newUserName, newUserMail, Role.SELLER, true);
-    }
-
-    ownerToReputation[msg.sender] = 50;
-    emit triggerSubscribe(uniqueIdUser, ownerToUser[msg.sender].role);
-    uniqueIdUser++;
-  }
+//  function subscribeUser(string memory newUserName, string memory newUserMail, int _role) public checkUserIsNew {
+//    if (_role == 0) {
+//      ownerToUser[msg.sender] = User(uniqueIdUser, newUserName, newUserMail, Role.CUSTOMER, true);
+//    } else {
+//      ownerToUser[msg.sender] = User(uniqueIdUser, newUserName, newUserMail, Role.SELLER, true);
+//    }
+//
+//    ownerToReputation[msg.sender] = 50;
+//    emit triggerSubscribe(uniqueIdUser, ownerToUser[msg.sender].role);
+//    uniqueIdUser++;
+//  }
 
   /*function subscribeSeller(string memory newSellerName) public checkSellerIsNew {
       ownerToSeller[msg.sender] = Seller(uint256(keccak256(abi.encodePacked(newSellerName))), newSellerName, true);

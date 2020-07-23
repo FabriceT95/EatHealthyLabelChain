@@ -1,14 +1,14 @@
 <div class="row" style="padding:1%">
   <div class="col-sm-10">
     <mat-card style="word-break: break-word">
-      <p>Le produit <strong>{{ productvote.product_name }}</strong> avec le code-barre
-        <strong>{{ productvote.code }}</strong> proposé par <strong>{{ productvote.addressProposer}}</strong>:</p>
-      <p>Date de début : <strong>{{ productvote.voteDates[0] }} </strong> - Date de fin :
-        <strong>{{ productvote.voteDates[1] }} </strong> - Durée du vote : 7 jours</p>
+      <p>Le produit <strong>{{ productvote[0].product_name }}</strong> avec le code-barre
+        <strong>{{ productvote[0].code }}</strong> proposé par <strong>{{ productvote[0].addressProposer}}</strong>:</p>
+      <p>Date de début : <strong>{{ productvote[0].voteDates[0] }} </strong> - Date de fin :
+        <strong>{{ productvote[0].voteDates[1] }} </strong> - Durée du vote : 7 jours</p>
+      <p *ngIf="productvote[1] != null">Il s'agit ici d'une proposition de modification de produit ! Visualisez les détails pour plus d'infos !</p>
     </mat-card>
   </div>
   <div class="col-sm-2" style="text-align: center; vertical-align: middle;display: table-cell">
     <button (click)="openDialog()" color="primary" mat-raised-button>Détails + Vote</button>
-
   </div>
 </div>

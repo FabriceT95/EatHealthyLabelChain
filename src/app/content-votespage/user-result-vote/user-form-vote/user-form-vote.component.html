@@ -8,13 +8,13 @@
     <div class="col-sm-4" style="word-break: break-all;">
       <div class="row" style="margin:5%">
         <ul style="list-style-type:none;">
-          <li><span>Nom du produit : <strong>{{ productVote.product_name }}</strong></span></li>
-          <li><span>Proposeur : </span> <strong>{{ productVote.addressProposer}}</strong></li>
-          <li><span>Début du vote : </span><strong>{{ productVote.voteDates[0] }}</strong></li>
-          <li><span>Fin du vote : </span><strong>{{ productVote.voteDates[1] }}</strong></li>
-          <li><span>Nombre de votes actuel : </span><strong>{{ productVote.totalVotes}}</strong></li>
-          <li><span>Nombre de votes "Pour" actuel : </span><strong>{{ productVote.forVotes}}</strong></li>
-          <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ productVote.againstVotes}}</strong></li>
+          <li><span>Nom du produit : <strong><span *ngIf="productVote[1] != null">{{ productVote[1].product_name }} -></span>{{ productVote[0].product_name }}</strong></span></li>
+          <li><span>Proposeur : </span> <strong>{{ productVote[0].addressProposer}}</strong></li>
+          <li><span>Début du vote : </span><strong>{{ productVote[0].voteDates[0] }}</strong></li>
+          <li><span>Fin du vote : </span><strong>{{ productVote[0].voteDates[1] }}</strong></li>
+<!--          <li><span>Nombre de votes actuel : </span><strong>{{ productVote.totalVotes}}</strong></li>-->
+          <li><span>Nombre de votes "Pour" actuel : </span><strong>{{ productVote[0].forVotes}}</strong></li>
+          <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ productVote[0].againstVotes}}</strong></li>
         </ul>
       </div>
     </div>
@@ -49,33 +49,33 @@
         <div class="row" style="margin:5%; text-align: center">
           <div class="col-sm-5">
             <h4 style="text-align: center">Section Labels</h4>
-            <p><span>Labels : </span><strong>{{ productVote.labels }}</strong></p>
-            <p><span>Additifs : </span><strong>{{ productVote.additifs }}</strong></p>
+            <p><span>Labels : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].labels }} -> </span>{{ productVote[0].labels }}</strong></p>
+            <p><span>Additifs : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].additifs }} -> </span>{{ productVote[0].additifs }}</strong></p>
           </div>
           <div class="col-sm-5">
             <h4 style="text-align: center">Section Ingredients</h4>
-            <p><strong>{{ productVote.ingredients }}</strong></p>
+            <p><strong><span *ngIf="productVote[1] != null">{{ productVote[1].ingredients }} -> </span> {{ productVote[0].ingredients }}</strong></p>
           </div>
         </div>
         <div class="row" style="margin:5%; text-align: center">
           <div class="col-sm-5">
             <h4 style="text-align: center">Section Nutrition</h4>
-            <p><span>Energie : </span><strong>{{ productVote.nutriments[0] }}</strong></p>
-            <p><span>Energie (en kcal) : </span><strong>{{ productVote.nutriments[1] }}</strong></p>
-            <p><span>Protéines : </span><strong>{{ productVote.nutriments[2] }}</strong></p>
-            <p><span>Glucides : </span><strong>{{ productVote.nutriments[3] }}</strong></p>
-            <p><span>Sel : </span><strong>{{ productVote.nutriments[4] }}</strong></p>
-            <p><span>Sucre : </span><strong>{{ productVote.nutriments[5] }}</strong></p>
-            <p><span>Graisses : </span><strong>{{ productVote.nutriments[6] }}</strong></p>
-            <p><span>Dont Matières grasses : </span><strong>{{ productVote.nutriments[7] }}</strong></p>
-            <p><span>Fibre : </span><strong>{{ productVote.nutriments[8] }}</strong></p>
-            <p><span>Sodium : </span><strong>{{ productVote.nutriments[9] }}</strong></p>
+            <p><span>Energie : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].nutriments[0] }} -> </span>{{ productVote[0].nutriments[0] }}</strong></p>
+            <p><span>Energie (en kcal) : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].nutriments[1] }} -> </span>{{ productVote[0].nutriments[1] }}</strong></p>
+            <p><span>Protéines : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].nutriments[2] }} -> </span>{{ productVote[0].nutriments[2] }}</strong></p>
+            <p><span>Glucides : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].nutriments[3] }} -> </span>{{ productVote[0].nutriments[3] }}</strong></p>
+            <p><span>Sel : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].nutriments[4] }} -> </span>{{ productVote[0].nutriments[4] }}</strong></p>
+            <p><span>Sucre : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].nutriments[5] }} -> </span>{{ productVote[0].nutriments[5] }}</strong></p>
+            <p><span>Graisses : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].nutriments[6] }} -> </span>{{ productVote[0].nutriments[6] }}</strong></p>
+            <p><span>Dont Matières grasses : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].nutriments[7] }} -> </span>{{ productVote[0].nutriments[7] }}</strong></p>
+            <p><span>Fibre : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].nutriments[8] }} -> </span>{{ productVote[0].nutriments[8] }}</strong></p>
+            <p><span>Sodium : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].nutriments[9] }} -> </span>{{ productVote[0].nutriments[9] }}</strong></p>
           </div>
           <div class="col-sm-5">
             <h4 style="text-align: center">Section Divers</h4>
-            <p><span>Type de produit : </span><strong>{{ productVote.generic_name }}</strong></p>
-            <p><span>Emballage : </span><strong>{{ productVote.packaging }}</strong></p>
-            <p><span>Quantité : </span><strong>{{ productVote.quantity }}</strong></p>
+            <p><span>Type de produit : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].generic_name }} -> </span>{{ productVote[0].generic_name }}</strong></p>
+            <p><span>Emballage : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].packaging }} -> </span>{{ productVote[0].packaging }}</strong></p>
+            <p><span>Quantité : </span><strong><span *ngIf="productVote[1] != null">{{ productVote[1].quantity }} -> </span>{{ productVote[0].quantity }}</strong></p>
           </div>
         </div>
 

@@ -25,7 +25,6 @@ export class FormInputProductComponent implements OnInit {
   }
 
   ngOnInit() {
-    // console.log(this.web3);
   }
 
   onNoClick(): void {
@@ -76,23 +75,23 @@ export class FormInputProductComponent implements OnInit {
     // const product = await this.web3.contract.methods.getProduct(barcodeValue).call();
     //   console.log(product);
   }
-
-  async addProductInDatabase(productName, proteines, glucide, salt, sugars, energy, energy_kcal, fiber, fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels, additifs) {
+  async addProductInDatabase(productName, proteines, glucide, salt, sugars, energy, energy_kcal, fiber,
+                             fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels, additifs) {
     const newProduct = new Product(
       '',
       this.codebarreProduct,
       productName.value,
       {
-        energy: energy.value,
-        energy_kcal: energy_kcal.value,
-        proteines: proteines.value,
-        carbohydrates: glucide.value,
-        salt: salt.value,
-        sugars: sugars.value,
-        fat: fat.value,
-        saturated_fat: saturated_fat.value,
-        fiber: fiber.value,
-        sodium: sodium.value
+        energy: this.web3.web3.utils.fromAscii(energy.value),
+        energy_kcal: this.web3.web3.utils.fromAscii(energy_kcal.value),
+        proteines: this.web3.web3.utils.fromAscii(proteines.value),
+        carbohydrates: this.web3.web3.utils.fromAscii(glucide.value),
+        salt: this.web3.web3.utils.fromAscii(salt.value),
+        sugars: this.web3.web3.utils.fromAscii(sugars.value),
+        fat: this.web3.web3.utils.fromAscii(fat.value),
+        saturated_fat: this.web3.web3.utils.fromAscii(saturated_fat.value),
+        fiber: this.web3.web3.utils.fromAscii(fiber.value),
+        sodium: this.web3.web3.utils.fromAscii(sodium.value)
       },
       ingredients.value.split(','),
       quantity.value,
@@ -103,8 +102,9 @@ export class FormInputProductComponent implements OnInit {
       [],
       0,
       0,
-      0,
-      {}
+      {},
+      null,
+       1
     );
     // Si Mysql Server is ON
     if (this.server.isChecked && !this.web3.isChecked) {
@@ -123,7 +123,8 @@ export class FormInputProductComponent implements OnInit {
         newProduct.generic_name,
         newProduct.packaging,
         newProduct.nutriments,
-        newProduct.additifs)
+        newProduct.additifs,
+        newProduct.status)
         .send({from: this.web3.accounts[0]})
         .on('receipt', function (receipt) {
           console.log(receipt);

@@ -51,9 +51,6 @@ class Web3Worker {
     const that = this;
     return new Promise(function (resolve, reject) {
       resolve(web3Provider.eth.getTransactionCount(that.accounts[7]));
-      //.then(_nonce => {
-      //nonce = _nonce.toString(16)
-      // }
     })
   }
 
@@ -62,7 +59,6 @@ class Web3Worker {
     const web3Provider = this.web3;
     return new Promise(function (resolve, reject) {
       resolve(web3Provider.eth.getAccounts());
-      // console.log('bimbam : ' + that.accounts);
     });
   }
 
@@ -89,7 +85,7 @@ class Web3Worker {
       await worker.getTransactionCount().then(async function (nonce) {
         worker.nonce = nonce.toString(16);
         const rawTX = {
-          gasPrice: '0x1111', //worker.GasPrice,
+          gasPrice: '0x1111',
           gasLimit: '0x6691B7',
           to: worker.deployedNetwork.address,
           data: worker.contract.methods.endVote(productVoteIsEnded.productCode, productVoteIsEnded.productProposerAddress).encodeABI(),
@@ -114,7 +110,7 @@ const worker = new Web3Worker(web3);
 worker.launcher();
 worker.init().then(() => {
   setInterval(async () => {
-    console.log('--------------------- RECHERCHE DE PRODUIT EN FIN DE PERIODE DE VOTE ---------------------')
+    console.log('--------------------- RECHERCHE DE PRODUIT EN FIN DE PERIODE DE VOTE ---------------------');
     await worker.contract.methods.getProductsVoting().call().then(async (result) => {
       let productVoteIsEndedArray = [];
       for (let i = 0; i < result[0].length; i++) {
@@ -129,7 +125,7 @@ worker.init().then(() => {
           console.log('Le vote du produit ' + productVoteIsEndedArray[i].productCode + ' a bien été cloturé');
         }
       } else{
-        console.log('--------------------- AUCUN : PROCHAIN ESSAI DANS 5 SECONDES ---------------------')
+        console.log('--------------------- AUCUN : PROCHAIN ESSAI DANS 5 SECONDES ---------------------');
       }
 
     });
