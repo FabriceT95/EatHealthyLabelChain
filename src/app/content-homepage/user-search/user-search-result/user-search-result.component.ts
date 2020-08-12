@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Product} from '../../../shared/product.model';
 import {Web3Service} from '../../../util/web3.service';
+import {ServerSCService} from '../../../server-sc.service';
+import {ProductService} from '../../../product.service';
+
 
 @Component({
   selector: 'app-user-search-result',
@@ -8,78 +11,52 @@ import {Web3Service} from '../../../util/web3.service';
   styleUrls: ['./user-search-result.component.css']
 })
 export class UserSearchResultComponent implements OnInit {
-  AcceptedProduct: Product[][] = [];
+  // private AcceptedProduct:  Map <number, [Product, Product[]?]> = new Map <number, [Product, Product[]?]>();
+  private AcceptedProduct: { [productCode: number]: [Product, Product[]?] } = {};
+  private AcceptedProductArray: [Product, Product[]][] = [];
+  private indexAcceptedProductArray = 0;
 
-  constructor(private web3: Web3Service) {
+  constructor(private web3: Web3Service,
+              private server_sc: ServerSCService,
+              private product: ProductService) {
   }
 
   ngOnInit() {
-    setTimeout(() => {
-      this.getProducts();
-    }, 500);
+    this.getAllAcceptedProducts();
+    this.server_sc.content_vote_page_change_accepted.subscribe(
+      (ProductAcceptedSearch: [Product, Product[]][] ) => {
+        this.AcceptedProductArray = [];
+        this.AcceptedProductArray = ProductAcceptedSearch;
+      });
 
   }
 
-  async getProducts () {
-    await this.web3.contract.methods.getProductsAccepted().call()
-      .then(async (result) => {
-        for (let i = 0; i < result[0].length; i++) {
-          if (result[0][i].productProposerAddress !== '0x0000000000000000000000000000000000000000') {
-            const start_date = new Date(result[0][i].created_t * 1000).toString();
-            const end_date = new Date(result[0][i].endDate * 1000).toString();
-            const singleProduct = new Product(
-              result[0][i].productProposerAddress,
-              result[0][i].productCode,
-              result[0][i].productName,
-              result[1][i],
-              result[0][i].ingredients,
-              result[0][i].quantity,
-              result[0][i].typeOfProduct,
-              result[0][i].packaging,
-              result[0][i].labels,
-              result[0][i].additifs,
-              [start_date, end_date],
-              result[0][i].forVotes,
-              result[0][i].againstVotes,
-              result[0][i].alreadyVoted,
-              result[0][i].endDate,
-              result[0][i].status
-            );
-            console.log('Status modify depuis result : ' + result[0][i].status);
+  async getAllAcceptedProducts() {
+    const that = this;
+    this.server_sc.getAllAcceptedProducts().then((result: []) => {
+      for (let i = 0; i < result.length; i++) {
+        const uniqueSqlResult = result[i] as any;
+        const singleProduct = this.product.createProduct(uniqueSqlResult);
+        if (uniqueSqlResult.status === 'ACCEPTED') {
+          that.AcceptedProduct[singleProduct.code] = [singleProduct, []];
+        } else {
+          that.AcceptedProduct[singleProduct.code][1].push(singleProduct);
+        }
 
-            if (parseInt(result[0][i].status, 10) === 3) {
-              console.log('LALALALALALALALALALALALALA');
-              await this.web3.contract.methods.getProduct(result[0][i].productCode).call().then( async (result2) => {
-                const start_date_2 = new Date(result[0][i].created_t * 1000).toString();
-                const end_date_2 = new Date(result[0][i].endDate * 1000).toString();
-                const beforeModificationProduct = new Product(
-                  result2[0].productProposerAddress,
-                  result2[0].productCode,
-                  result2[0].productName,
-                  result2[1],
-                  result2[0].ingredients,
-                  result2[0].quantity,
-                  result2[0].typeOfProduct,
-                  result2[0].packaging,
-                  result2[0].labels,
-                  result2[0].additifs,
-                  [start_date_2, end_date_2],
-                  result2[0].forVotes,
-                  result2[0].againstVotes,
-                  result2[0].alreadyVoted,
-                  result2[0].endDate,
-                  result2[0].status
-                );
-                this.AcceptedProduct.push([singleProduct, beforeModificationProduct]);
-              });
-            } else {
-              this.AcceptedProduct.push([singleProduct, null]);
+      }
+      for (const key in that.AcceptedProduct) {
+        if (that.AcceptedProduct[key][0] !== null) {
+          that.AcceptedProductArray[that.indexAcceptedProductArray] = [that.AcceptedProduct[key][0], []];
+          if (that.AcceptedProduct[key][1][0] !== null) {
+            for (let i = 0; i < that.AcceptedProduct[key][1].length; i++) {
+              that.AcceptedProductArray[that.indexAcceptedProductArray][1].push(that.AcceptedProduct[key][1][i]);
             }
           }
+          that.indexAcceptedProductArray++;
         }
-      });
+      }
+    });
   }
-
 
 
 }

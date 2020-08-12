@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, AfterViewInit} from '@angular/core';
 import {ServerSCService} from '../../../server-sc.service';
 
 interface InputType {
@@ -7,11 +7,12 @@ interface InputType {
 }
 
 @Component({
-  selector: 'app-user-search-filter',
-  templateUrl: './user-search-filter.component.html',
-  styleUrls: ['./user-search-filter.component.css']
+  selector: 'app-user-search-vote-filter',
+  templateUrl: './user-search-vote-filter.component.html',
+  styleUrls: ['./user-search-vote-filter.component.css']
 })
-export class UserSearchFilterComponent implements OnInit {
+export class UserSearchVoteFilterComponent implements OnInit, AfterViewInit {
+
   categories: InputType[] = [
     {value: 'productCode', viewValue: 'Code du produit'},
     {value: 'label', viewValue: 'Labels'},
@@ -29,17 +30,22 @@ export class UserSearchFilterComponent implements OnInit {
   ngOnInit() {
   }
 
+  ngAfterViewInit(): void {
+
+  }
+
   TriggerTypeSelected() {
-     this.server_sc.typeSelected_change_accepted.emit(this.typeSelected);
+    this.server_sc.typeSelected_change.emit(this.typeSelected);
   }
 
   TriggerDateOrder() {
-     this.server_sc.date_order_change_accepted.emit(!this.currentDateOrder);
-     this.currentDateOrder = !this.currentDateOrder;
+    this.server_sc.date_order_change.emit(!this.currentDateOrder);
+    this.currentDateOrder = !this.currentDateOrder;
   }
 
   TriggerAlphabeticalOrder() {
-    this.server_sc.alphabetical_order_change_accepted.emit(!this.currentAlphabeticalOrder);
+    this.server_sc.alphabetical_order_change.emit(!this.currentAlphabeticalOrder);
     this.currentAlphabeticalOrder = !this.currentAlphabeticalOrder;
   }
+
 }

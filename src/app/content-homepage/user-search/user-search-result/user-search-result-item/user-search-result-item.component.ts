@@ -10,18 +10,20 @@ import {ModalProductDetailsComponent} from '../modal-product-details/modal-produ
   styleUrls: ['./user-search-result-item.component.css']
 })
 export class UserSearchResultItemComponent implements OnInit {
-  @Input() product: Product[];
-  constructor(public dialog: MatDialog) {
-  }
+  @Input() product: [Product, Product[]];
+  actualProduct: Product;
+  olderVersions: Product[] = [];
 
+  constructor(public dialog: MatDialog) {}
 
   ngOnInit() {
+    this.actualProduct = this.product[0];
+    this.olderVersions = this.product[1];
   }
-
   openDialog(): void {
     const dialogRef = this.dialog.open(ModalProductDetailsComponent, {
       width: '50%',
-      data: {product: this.product}
+      data: {product: this.actualProduct, olderVersions: this.olderVersions}
     });
 
     dialogRef.afterClosed().subscribe(result => {

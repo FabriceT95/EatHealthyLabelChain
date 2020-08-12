@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Web3Service} from '../../util/web3.service';
+import {ServerSCService} from '../../server-sc.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -12,27 +13,38 @@ export class UserProfileComponent implements OnInit {
   remainingVotes: number;
   singleRequest = false;
 
-  constructor(public web3: Web3Service) {
+  constructor(public web3: Web3Service, private server_sc: ServerSCService) {
+  }
+
+
+  async subscribeUser(user_description) {
+    const that = this;
+    this.web3.contract.methods.subscribeUser().send({from: user_description.user_address}).then(() => {
+      that.server_sc.addUser(user_description).then(() => {
+        alert('Vous êtes bien inscrit à la plateforme ! ');
+        that.setUser(user_description.user_address);
+      });
+    });
   }
 
   setUser(address) {
-    this.web3.contract.methods.addressToUser(address).call().then((result) => {
-      if (result.isExist === false && !this.singleRequest && !this.web3.isBeingModified) {
+    const user_description = {user_address: address};
+    this.web3.contract.methods.addressToUser(address).call().then(async (existing) => {
+      if (existing.isExist === false && !this.singleRequest && !this.web3.isBeingModified) {
         this.singleRequest = true;
         this.web3.isBeingModified = true;
-        this.web3.contract.methods.subscribeUser().send({from: address}).then(() => {
-          alert('VOUS ETES INSCRIT YOLO');
-          this.web3.contract.methods.addressToUser(address).call().then((userDatas) => {
-            this.reputationPoints = userDatas.reputation;
-            this.remainingVotes = userDatas.tokenNumber;
+        await this.subscribeUser(user_description);
+      } else {
+        this.server_sc.getUser(user_description).then(async (result: []) => {
+          const uniqueSqlResult = result as any;
+          if (uniqueSqlResult.length === 1) {
+            this.reputationPoints = uniqueSqlResult[0].reputation;
+            this.remainingVotes = uniqueSqlResult[0].token_number;
             this.singleRequest = false;
             this.web3.isBeingModified = false;
-          });
-        });
-      } else {
-        this.web3.contract.methods.addressToUser(address).call().then((userDatas) => {
-          this.reputationPoints = userDatas.reputation;
-          this.remainingVotes = userDatas.tokenNumber;
+          } else {
+            console.log('ERROR');
+          }
         });
       }
     });
@@ -44,7 +56,6 @@ export class UserProfileComponent implements OnInit {
       this.setUser(this.walletAddress);
     }, 500);
     setTimeout(() => {
-
       this.web3.accountChanged.subscribe(
         (account: any) => {
           this.walletAddress = account[0];

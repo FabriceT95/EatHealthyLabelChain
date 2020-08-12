@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, EventEmitter, Output, ViewChild} from '@angular/core';
+import {Component, OnInit, EventEmitter, Output} from '@angular/core';
 import {AppComponent} from '../app.component';
 import dataTest from '../../../build/contracts/DataTest.json';
 import {WEB3, Web3Service} from '../util/web3.service';
@@ -11,7 +11,6 @@ import {ServerService} from '../server.service';
 })
 export class HeaderComponent implements OnInit {
   @Output() changeDataSource = new EventEmitter<boolean>();
-  @Output() pageSelected = new EventEmitter<string>();
 
   constructor(private web3: Web3Service, private server: ServerService) {
   }
@@ -24,9 +23,6 @@ export class HeaderComponent implements OnInit {
     */
   }
 
-  onSelect(page: string) {
-    this.pageSelected.emit(page);
-  }
 
   onChangeDataSource(SourceData) {
     //  this.changeDataSource.emit(SourceData._checked);

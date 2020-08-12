@@ -6,6 +6,9 @@ import {ServerService} from '../../../server.service';
 import {Web3Service} from '../../../util/web3.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Product} from '../../../shared/product.model';
+import {ServerSCService} from '../../../server-sc.service';
+import {ProductService} from '../../../product.service';
+
 
 @Component({
   selector: 'app-form-input-product',
@@ -18,6 +21,8 @@ export class FormInputProductComponent implements OnInit {
   constructor(
     private web3: Web3Service,
     private server: ServerService,
+    private server_sc: ServerSCService,
+    private product: ProductService,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<FormInputProductComponent>
   ) {
@@ -75,6 +80,7 @@ export class FormInputProductComponent implements OnInit {
     // const product = await this.web3.contract.methods.getProduct(barcodeValue).call();
     //   console.log(product);
   }
+
   async addProductInDatabase(productName, proteines, glucide, salt, sugars, energy, energy_kcal, fiber,
                              fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels, additifs) {
     const newProduct = new Product(
@@ -82,68 +88,167 @@ export class FormInputProductComponent implements OnInit {
       this.codebarreProduct,
       productName.value,
       {
-        energy: this.web3.web3.utils.fromAscii(energy.value),
-        energy_kcal: this.web3.web3.utils.fromAscii(energy_kcal.value),
-        proteines: this.web3.web3.utils.fromAscii(proteines.value),
-        carbohydrates: this.web3.web3.utils.fromAscii(glucide.value),
-        salt: this.web3.web3.utils.fromAscii(salt.value),
-        sugars: this.web3.web3.utils.fromAscii(sugars.value),
-        fat: this.web3.web3.utils.fromAscii(fat.value),
-        saturated_fat: this.web3.web3.utils.fromAscii(saturated_fat.value),
-        fiber: this.web3.web3.utils.fromAscii(fiber.value),
-        sodium: this.web3.web3.utils.fromAscii(sodium.value)
+        energy: energy.value,
+        energy_kcal: energy_kcal.value,
+        proteines: proteines.value,
+        carbohydrates: glucide.value,
+        salt: salt.value,
+        sugar: sugars.value,
+        fat: fat.value,
+        saturated_fat: saturated_fat.value,
+        fiber: fiber.value,
+        sodium: sodium.value
       },
       ingredients.value.split(','),
       quantity.value,
       typeOfProduct.value,
-      packaging.value.split(','),
+      packaging.value,
       labels.value.split(','),
       additifs.value.split(','),
-      [],
       0,
       0,
       {},
       null,
-       1
+      null,
+      1,
+      ''
     );
     // Si Mysql Server is ON
     if (this.server.isChecked && !this.web3.isChecked) {
-      newProduct.nutriments = JSON.stringify(newProduct.nutriments);
-      this.server.createProduct(newProduct).then((result) => {
-        console.log('Votre produit a été ajouté : ', result);
-      });
+      // newProduct.nutriments = JSON.stringify(newProduct.nutriments);
+      // this.server.createProduct(newProduct).then((result) => {
+      //   console.log('Votre produit a été ajouté : ', result);
+      // });
     } else if (!this.server.isChecked && this.web3.isChecked) {
       const that = this;
       this.web3.contract.methods.addProductToProposal(
         newProduct.code,
-        newProduct.product_name,
         newProduct.labels,
         newProduct.ingredients,
-        newProduct.quantity,
-        newProduct.generic_name,
-        newProduct.packaging,
-        newProduct.nutriments,
         newProduct.additifs,
-        newProduct.status)
+        newProduct.nutriments,
+        newProduct.product_name,
+        newProduct.generic_name,
+        newProduct.quantity,
+        newProduct.packaging
+      ).estimateGas({from: this.web3.accounts[0]}).then(function (gasAmount) {
+        console.log('LE PRIX  : ' + gasAmount);
+      });
+      this.web3.contract.methods.addProductToProposal(
+        newProduct.code,
+        newProduct.labels,
+        newProduct.ingredients,
+        newProduct.additifs,
+        newProduct.nutriments,
+        newProduct.product_name,
+        newProduct.generic_name,
+        newProduct.quantity,
+        newProduct.packaging
+      )
         .send({from: this.web3.accounts[0]})
         .on('receipt', function (receipt) {
-          console.log(receipt);
+          console.log('VOYOJIFJDLZ : ' + receipt.events.TriggerAddProduct.returnValues.hashes);
+          console.log('Proposer : ' + receipt.events.TriggerAddProduct.returnValues.proposerProduct);
+          console.log('1234 : ' + receipt.events.TriggerAddProduct.returnValues.voteDates[0]);
+          console.log('5678 : ' + receipt.events.TriggerAddProduct.returnValues.voteDates[1]);
+          console.log('Date now  ' + Date.now());
+          that.addLabel_SC(receipt.events.TriggerAddProduct.returnValues.hashes[0], newProduct.labels.join(','));
+          that.addIngredients(receipt.events.TriggerAddProduct.returnValues.hashes[1], newProduct.ingredients.join(','));
+          that.addAdditives(receipt.events.TriggerAddProduct.returnValues.hashes[2], newProduct.additifs.join(','));
+          that.addNutriments(receipt.events.TriggerAddProduct.returnValues.hashes[3], JSON.stringify(newProduct.nutriments));
+          that.addVariousDatas(
+            receipt.events.TriggerAddProduct.returnValues.hashes[4],
+            newProduct.code,
+            newProduct.product_name,
+            newProduct.generic_name,
+            newProduct.quantity,
+            newProduct.packaging
+          );
+          setTimeout(() => {
+            that.addHashes(
+              receipt.events.TriggerAddProduct.returnValues.hashes[0],
+              receipt.events.TriggerAddProduct.returnValues.hashes[1],
+              receipt.events.TriggerAddProduct.returnValues.hashes[2],
+              receipt.events.TriggerAddProduct.returnValues.hashes[3],
+              receipt.events.TriggerAddProduct.returnValues.hashes[4],
+              receipt.events.TriggerAddProduct.returnValues.hashes[5],
+              receipt.events.TriggerAddProduct.returnValues.proposerProduct,
+              receipt.events.TriggerAddProduct.returnValues.voteDates
+            );
+          }, 500);
           that.onNoClick();
-          alert('Le produit suivant a été placé dans la liste d\'attente : ' + newProduct.code + ' - ' + newProduct.product_name);
+          //  alert('Le produit suivant a été placé dans la liste d\'attente : ' + newProduct.code + ' - ' + newProduct.product_name);
         });
-      /* this.web3.contract.events.TriggerAddProduct({
-         fromBlock: await this.web3.web3.eth.getBlockNumber()
-       }, function(error, event) { console.log('Trigger Add Product : ' + event.returnValues.idProduct); })
-         .on('data', function(event) {
-           console.log("from data event " + event.returnValues.idProduct); // same results as the optional callback above
+      /*   this.web3.contract.events.TriggerAddProduct({
+           fromBlock: await this.web3.web3.eth.getBlockNumber()
+         },
+           function(error, event) {
+            console.log(event.returnValues);
+            console.log(event.returnValues.hashes[0]);
          });*/
+
     }
-
-
-    //  } else {
-    //    console.log('bonjour');
-    //  }
   }
+
+  addVariousDatas(variousData_hash, productCode, product_name, product_type, quantity, packaging) {
+    const insertVariousDatas = {
+      variousData_hash: variousData_hash,
+      productCode: productCode,
+      product_name: product_name,
+      product_type: product_type,
+      quantity: quantity,
+      packaging: packaging
+    };
+    this.server_sc.addVariousDatas(insertVariousDatas).then((result) => {
+      console.log('Les infos diverses et leur hash ont bien été ajouté à la BDD : ', result);
+    });
+  }
+
+  addLabel_SC(labels_hash, labels) {
+    const insertLabels = {labels_hash: labels_hash, labels: labels};
+    this.server_sc.addLabels(insertLabels).then((result) => {
+      console.log('Les labels et leur hash ont bien été ajouté à la BDD : ', result);
+    });
+  }
+
+  addAdditives(additives_hash, additives) {
+    const insertAdditives = {additives_hash: additives_hash, additives: additives};
+    this.server_sc.addAdditives(insertAdditives).then((result) => {
+      console.log('Les additifs et leur hash ont bien été ajouté à la BDD : ', result);
+    });
+  }
+
+  addIngredients(ingredients_hash, ingredients) {
+    const insertIngredients = {ingredients_hash: ingredients_hash, ingredients: ingredients};
+    this.server_sc.addIngredients(insertIngredients).then((result) => {
+      console.log('Les ingredients et leur hash ont bien été ajouté à la BDD : ', result);
+    });
+  }
+
+  addNutriments(nutriments_hash, nutriments) {
+    const insertNutriments = {nutriments_hash: nutriments_hash, nutriments: nutriments};
+    this.server_sc.addNutriments(insertNutriments).then((result) => {
+      console.log('Les nutriments et leur hash ont bien été ajouté à la BDD : ', result);
+    });
+  }
+
+  addHashes(labels_hash, ingredients_hash, additives_hash, nutriments_hash, variousDatas_hash, all_hash, addressProposer, voteDates) {
+    const insertHashes = {
+      labels_hash: labels_hash,
+      ingredients_hash: ingredients_hash,
+      additives_hash: additives_hash,
+      nutriments_hash: nutriments_hash,
+      variousData_hash: variousDatas_hash,
+      all_hash: all_hash,
+      addressProposer: addressProposer,
+      voteDates: voteDates,
+      status: 'NEW'
+    };
+    this.server_sc.addHashes(insertHashes).then((result) => {
+      console.log('Les hashes ont bien été ajouté à la BDD : ', result);
+    });
+  }
+
 
   addUserInDatabase(username, wallet) {
     const newUser = {username: username.value, wallet: wallet.value};
@@ -151,6 +256,7 @@ export class FormInputProductComponent implements OnInit {
       console.log('Cet utilisateur a été ajouté : ', result);
     });
   }
+
 
   getProductFromDatabase(code) {
     const product = {code: code.value};

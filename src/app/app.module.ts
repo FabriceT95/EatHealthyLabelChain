@@ -39,9 +39,15 @@ import {Web3Service} from './util/web3.service';
 import {ResultVoteItemComponent} from './content-votespage/user-result-vote/result-vote-item/result-vote-item.component';
 import {ContentMyProposalsComponent} from './content-my-proposals/content-my-proposals.component';
 import {UserProposalItemComponent} from './content-my-proposals/user-proposal-item/user-proposal-item.component';
-import { UserSearchResultItemComponent } from './content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component';
-import { ModalProductDetailsComponent } from './content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component';
+import {UserSearchResultItemComponent} from './content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component';
+import {ModalProductDetailsComponent} from './content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatFormFieldControl} from '@angular/material/form-field';
+import {UserSearchVoteFilterComponent} from './content-votespage/user-search-vote/user-search-vote-filter/user-search-vote-filter.component';
+import {UserSearchVoteInputComponent} from './content-votespage/user-search-vote/user-search-vote-input/user-search-vote-input.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {AppRoutingModule} from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -65,7 +71,9 @@ import {MatChipsModule} from '@angular/material/chips';
     ContentMyProposalsComponent,
     UserProposalItemComponent,
     UserSearchResultItemComponent,
-    ModalProductDetailsComponent
+    ModalProductDetailsComponent,
+    UserSearchVoteFilterComponent,
+    UserSearchVoteInputComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -84,7 +92,10 @@ import {MatChipsModule} from '@angular/material/chips';
     MatDialogModule,
     MatCheckboxModule,
     MatGridListModule,
-    MatChipsModule
+    MatChipsModule,
+    MatSelectModule,
+    MatExpansionModule,
+    AppRoutingModule
   ],
   providers: [Web3Service, ServerService, AppComponent],
   bootstrap: [AppComponent],

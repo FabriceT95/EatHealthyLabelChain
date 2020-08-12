@@ -3,6 +3,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {Product} from '../../shared/product.model';
 import {Web3Service} from '../../util/web3.service';
 import {ServerService} from '../../server.service';
+import {ServerSCService} from '../../server-sc.service';
+import {ProductService} from '../../product.service';
 
 @Component({
   selector: 'app-user-result-vote',
@@ -10,11 +12,14 @@ import {ServerService} from '../../server.service';
   styleUrls: ['./user-result-vote.component.css']
 })
 export class UserResultVoteComponent implements OnInit {
-  ProductsVoting: Product[][] = [];
+  ProductsVoting: Product[] = [];
 
   constructor(private web3: Web3Service,
-              private server: ServerService) {
+              private server: ServerService,
+              private server_sc: ServerSCService,
+              private product: ProductService) {
   }
+
 
   ngOnInit() {
     setTimeout(async () => {
@@ -26,64 +31,53 @@ export class UserResultVoteComponent implements OnInit {
         }
       );
     }, 100);
+    this.server_sc.content_vote_page_change.subscribe(
+      (ProductVoteSearch: Product[]) => {
+        this.ProductsVoting = ProductVoteSearch;
+      });
 
   }
 
-  async getAllVotingProducts() {
-    await this.web3.contract.methods.getProductsVoting().call()
-      .then( async (result) => {
-        for (let i = 0; i < result[0].length; i++) {
-          console.log( 'le type putain  : ' + typeof(result[0][i].productProposerAddress));
-          if (result[0][i].productProposerAddress !== '0x0000000000000000000000000000000000000000') {
-            const start_date = new Date(result[0][i].created_t * 1000).toString();
-            const end_date = new Date(result[0][i].endDate * 1000).toString();
-            console.log('Les produits en cours de vote : ' + result[0][i]);
-            const singleProduct = new Product(
-              result[0][i].productProposerAddress,
-              result[0][i].productCode,
-              result[0][i].productName,
-              result[1][i],
-              result[0][i].ingredients,
-              result[0][i].quantity,
-              result[0][i].typeOfProduct,
-              result[0][i].packaging,
-              result[0][i].labels,
-              result[0][i].additifs,
-              [start_date, end_date],
-              result[0][i].forVotes,
-              result[0][i].againstVotes,
-              result[0][i].alreadyVoted,
-              result[0][i].endDate,
-              result[0][i].status
-            );
-            if (result[0][i].status === 2) {
-              await this.web3.contract.methods.getProduct(result[0][i].productCode).call().then( async (result2) => {
-                const beforeModificationProduct = new Product(
-                  result2[0].productProposerAddress,
-                  result2[0].productCode,
-                  result2[0].productName,
-                  result2[1],
-                  result2[0].ingredients,
-                  result2[0].quantity,
-                  result2[0].typeOfProduct,
-                  result2[0].packaging,
-                  result2[0].labels,
-                  result2[0].additifs,
-                  [start_date, end_date],
-                  result2[0].forVotes,
-                  result2[0].againstVotes,
-                  result2[0].alreadyVoted,
-                  result2[0].endDate,
-                  result2[0].status
-                );
-                this.ProductsVoting.push([singleProduct, beforeModificationProduct]);
-              });
-            } else {
-              this.ProductsVoting.push([singleProduct, null]);
-            }
-
-          }
-        }
-      });
+  getAllVotingProducts() {
+    this.server_sc.getAllVotingProducts().then((result: []) => {
+      console.log('Vous avez récupéré tous les produits "NOUVEAUX" ou "EN MODIFICATION" : ', result);
+      for (let i = 0; i < result.length; i++) {
+        const uniqueSqlResult = result[i] as any;
+        console.log('Result ' + i + ':' + result[i]);
+        const singleProduct = this.product.createProduct(uniqueSqlResult);
+          /*new Product(
+          uniqueSqlResult.address_proposer,
+          uniqueSqlResult.productCode,
+          uniqueSqlResult.product_name,
+          {
+            carbohydrates: uniqueSqlResult.carbohydrates,
+            energy: uniqueSqlResult.energy,
+            energy_kcal: uniqueSqlResult.energy_kcal,
+            fat: uniqueSqlResult.fat,
+            fiber: uniqueSqlResult.fiber,
+            proteines: uniqueSqlResult.proteines,
+            salt: uniqueSqlResult.salt,
+            saturated_fat: uniqueSqlResult.saturated_fat,
+            sodium: uniqueSqlResult.sodium,
+            sugar: uniqueSqlResult.sugar
+          },
+          uniqueSqlResult.ingredients.split(','),
+          uniqueSqlResult.quantity,
+          uniqueSqlResult.product_type,
+          uniqueSqlResult.packaging,
+          uniqueSqlResult.label.split(','),
+          uniqueSqlResult.additive.split(','),
+          uniqueSqlResult.forVotes,
+          uniqueSqlResult.againstVotes,
+          uniqueSqlResult.alreadyVoted,
+          uniqueSqlResult.start_date,
+          uniqueSqlResult.end_date,
+          uniqueSqlResult.status,
+          uniqueSqlResult.all_hash
+        );*/
+        this.ProductsVoting.push(singleProduct);
+        console.log(singleProduct);
+      }
+    });
   }
 }

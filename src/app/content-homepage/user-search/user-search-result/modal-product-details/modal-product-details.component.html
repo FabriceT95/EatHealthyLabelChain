@@ -1,166 +1,307 @@
 <mat-dialog-content>
   <!-- ADD NEW PRODUCT -->
 
-  <h2>Détails du produit {{ product[0].product_name }} ({{ product[0].code }})</h2>
+  <h2>Détails du produit {{ product.product_name }} ({{ product.code }})
+      <button *ngIf="!verifiedProduct; else isValid" mat-mini-fab color="primary" style="vertical-align: middle; float:right;" (click)="verifyCompliance()">
+        <mat-icon>policy</mat-icon>
+      </button>
+    <ng-template #isValid>
+      <div style="vertical-align: middle; float:right;">
+        <mat-icon>verified_user</mat-icon>
+      </div>
+    </ng-template>
+  </h2>
+
   <mat-divider></mat-divider>
   <form (ngSubmit)="modifyProduct()">
-  <div class="col-sm-4" style="word-break: break-all;">
-    <div class="row" style="margin:5%">
-      <ul style="list-style-type:none;">
-        <li>
+    <div class="col-sm-4" style="word-break: break-all;">
+      <div class="row" style="margin:5%">
+        <ul style="list-style-type:none;">
+          <li>
+            <mat-form-field>
+              <mat-label>Nom du produit :</mat-label>
+              <div *ngIf="olderVersions.length > 0">
+                <mat-accordion>
+                  <mat-expansion-panel (closed)="panelOpenState_product_name = false"
+                                       (opened)="panelOpenState_product_name = true">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Nom de ce produit précédemment
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        Il y a eu {{ olderVersions.length }} modification(s) de ce code-barre
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let olderVersion of olderVersions">
+                      <span> -> {{ olderVersion.product_name}}</span>
+                    </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+
+              <input [readonly]="readOnly" matInput value="{{ product.product_name }}">
+            </mat-form-field>
+          </li>
+          <li>
+            <span>Proposeur : </span> <strong>{{ product.addressProposer}}</strong>
+          </li>
+          <li><span>Début du vote : </span><strong>{{ product.startDate }}</strong></li>
+          <li><span>Fin du vote : </span><strong>{{ product.endDate }}</strong></li>
+          <!--        <li><span>Nombre de votes actuel : </span><strong>{{ product[0].totalVotes}}</strong></li>-->
+          <li><span>Nombre de votes "Pour" actuel : </span><strong>{{ product.forVotes}}</strong></li>
+          <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ product.againstVotes}}</strong></li>
+        </ul>
+      </div>
+      <mat-checkbox (change)="activateFields()" class="example-margin" name="none">JE CERTIFIE D'AVOIR LE MILLIARD DE
+        PAGES DE CGU AINSI QUE DE NE PAS ETRE UN GROS CONNARD
+      </mat-checkbox>
+      <div class="row" style="margin:5%">
+        <div class="col-sm-6">
+          <button [disabled]="sameObject" color="primary" mat-raised-button type="submit">PROPOSER MA MODIFICATION
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-8">
+      <div class="row" style="margin:5%; text-align: center">
+        <div class="col-sm-5">
+          <h4 style="text-align: center">Section Labels</h4>
+          <div *ngIf="olderVersions.length > 0">
+            <mat-accordion>
+              <mat-expansion-panel (closed)="panelOpenState_labels = false"
+                                   (opened)="panelOpenState_labels = true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Labels indiqués pour ce produit précédemment
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div *ngFor="let olderVersion of olderVersions">
+                  <span> -> {{ olderVersion.labels}}</span>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+
           <mat-form-field>
-            <mat-label>Nom du produit :</mat-label>
-            <input [readonly]="readOnly" matInput value="{{ product[0].product_name }}">
+            <mat-chip-list #chipList aria-label="Fruit selection">
+              <mat-chip (removed)="remove(label,1)" *ngFor="let label of modifiedProduct.labels"
+                        [removable]="!readOnly" [selectable]="selectable">
+                {{label}}
+                <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input (matChipInputTokenEnd)="add($event,1)" *ngIf="!readOnly"
+                     [matChipInputAddOnBlur]="addOnBlur"
+                     [matChipInputFor]="chipList"
+                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                     placeholder="Nouveaux labels...">
+            </mat-chip-list>
           </mat-form-field>
-        </li>
-        <!--          <li><span>Nom du produit : <strong>{{ product.product_name }}</strong></span></li>-->
-        <li>
-          <span>Proposeur : </span> <strong>{{ product[0].addressProposer}}</strong>
-        </li>
-        <li><span>Début du vote : </span><strong>{{ product[0].voteDates[0] }}</strong></li>
-        <li><span>Fin du vote : </span><strong>{{ product[0].voteDates[1] }}</strong></li>
-<!--        <li><span>Nombre de votes actuel : </span><strong>{{ product[0].totalVotes}}</strong></li>-->
-        <li><span>Nombre de votes "Pour" actuel : </span><strong>{{ product[0].forVotes}}</strong></li>
-        <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ product[0].againstVotes}}</strong></li>
-      </ul>
-    </div>
-    <mat-checkbox (change)="activateFields()" class="example-margin" name="none">JE CERTIFIE D'AVOIR LE MILLIARD DE
-      PAGES DE CGU AINSI QUE DE NE PAS ETRE UN GROS CONNARD
-    </mat-checkbox>
-    <div class="row" style="margin:5%">
-      <div class="col-sm-6">
-        <button [disabled]="sameObject" type="submit" color="primary" mat-raised-button>PROPOSER MA MODIFICATION</button>
+          <div *ngIf="olderVersions.length > 0">
+            <mat-accordion>
+              <mat-expansion-panel (closed)="panelOpenState_additifs = false"
+                                   (opened)="panelOpenState_additifs = true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Additifs indiqués pour ce produit précédemment
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div *ngFor="let olderVersion of olderVersions">
+                  <span> -> {{ olderVersion.additifs}}</span>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+          <mat-form-field>
+            <mat-chip-list #chipList aria-label="Fruit selection">
+              <mat-chip (removed)="remove(additif,2)" *ngFor="let additif of modifiedProduct.additifs"
+                        [removable]="!readOnly" [selectable]="selectable">
+                {{additif}}
+                <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input (matChipInputTokenEnd)="add($event,2)" *ngIf="!readOnly"
+                     [matChipInputAddOnBlur]="addOnBlur"
+                     [matChipInputFor]="chipList"
+                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                     placeholder="Nouveaux additifs...">
+            </mat-chip-list>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-5">
+          <h4 style="text-align: center">Section Ingredients</h4>
+          <div *ngIf="olderVersions.length > 0">
+            <mat-accordion>
+              <mat-expansion-panel (closed)="panelOpenState_ingredients = false"
+                                   (opened)="panelOpenState_ingredients = true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Ingrédients indiqués pour ce produit précédemment
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div *ngFor="let olderVersion of olderVersions">
+                  <span> -> {{ olderVersion.ingredients}}</span>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+          <mat-form-field>
+            <mat-chip-list #chipList aria-label="Fruit selection">
+              <mat-chip (removed)="remove(ingredient,3)" *ngFor="let ingredient of modifiedProduct.ingredients"
+                        [removable]="!readOnly" [selectable]="selectable">
+                {{ingredient}}
+                <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input (matChipInputTokenEnd)="add($event,3)" *ngIf="!readOnly"
+                     [matChipInputAddOnBlur]="addOnBlur"
+                     [matChipInputFor]="chipList"
+                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                     placeholder="Nouveau Ingrédients...">
+            </mat-chip-list>
+          </mat-form-field>
+        </div>
       </div>
-    </div>
-  </div>
+      <div class="row" style="margin:5%; text-align: center">
+        <div class="col-sm-5">
+          <h4 style="text-align: center">Section Nutrition</h4>
+          <div *ngIf="olderVersions.length > 0">
+            <mat-accordion>
+              <mat-expansion-panel (closed)="panelOpenState_nutriments = false"
+                                   (opened)="panelOpenState_nutriments = true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Nutriments indiqués pour ce produit précédemment
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div *ngFor="let olderVersion of olderVersions">
+                  <span> -> {{ olderVersion.nutriments}}</span>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+          <mat-form-field>
+            <mat-label>Energie :</mat-label>
+            <input [(ngModel)]="product.nutriments.energy" [readonly]="readOnly" matInput
+                   name="energy" value="{{ product.nutriments.energy }}">
+            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="product.nutriments[0]"  name="energy">-->
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Energie (en kcal) :</mat-label>
+            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[1]" value="{{ product.nutriments[1] }}" name="energy_kcal">-->
+            <input [(ngModel)]="modifiedProduct.nutriments.energy_kcal" [readonly]="readOnly" matInput
+                   name="energy_kcal">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Protéines :</mat-label>
+            <!--        <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[2]" value="{{ product.nutriments[2] }}" name="proteines">-->
+            <input [(ngModel)]="modifiedProduct.nutriments.proteines" [readonly]="readOnly" matInput name="proteines">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Glucides :</mat-label>
+            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[3]" value="{{ product.nutriments[3] }}" name="glucides">-->
+            <input [(ngModel)]="modifiedProduct.nutriments.carbohydrates" [readonly]="readOnly" matInput
+                   name="glucides">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Sel :</mat-label>
+            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[4]" value="{{ product.nutriments[4] }}" name="sel">-->
+            <input [(ngModel)]="modifiedProduct.nutriments.salt" [readonly]="readOnly" matInput name="sel">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Sucre :</mat-label>
+            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[5]" value="{{ product.nutriments[5] }}" name="sucre">-->
+            <input [(ngModel)]="modifiedProduct.nutriments.sugar" [readonly]="readOnly" matInput name="sucre">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Graisses :</mat-label>
+            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[6]" value="{{ product.nutriments[6] }}" name="graisses">-->
+            <input [(ngModel)]="modifiedProduct.nutriments.fat" [readonly]="readOnly" matInput name="graisses">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Dont matières grasses :</mat-label>
+            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[7]" value="{{ product.nutriments[7] }}" name="mat_grasse">-->
+            <input [(ngModel)]="modifiedProduct.nutriments.saturated_fat" [readonly]="readOnly" matInput
+                   name="mat_grasse">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Fibre :</mat-label>
+            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[8]" value="{{ product.nutriments[8] }}" name="fibre">-->
+            <input [(ngModel)]="modifiedProduct.nutriments.fiber" [readonly]="readOnly" matInput name="fibre">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Sodium :</mat-label>
+            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[9]" value="{{ product.nutriments[9] }}" name="sodium" >-->
+            <input [(ngModel)]="modifiedProduct.nutriments.sodium" [readonly]="readOnly" matInput name="sodium">
+          </mat-form-field>
+        </div>
+        <div class="col-sm-5">
+          <h4 style="text-align: center">Section Divers</h4>
+          <div *ngIf="olderVersions.length > 0">
+            <mat-accordion>
+              <mat-expansion-panel (closed)="panelOpenState_generic_name = false"
+                                   (opened)="panelOpenState_generic_name = true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Type de produit indiqués pour ce produit précédemment
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div *ngFor="let olderVersion of olderVersions">
+                  <span> -> {{ olderVersion.generic_name}}</span>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+          <mat-form-field>
+            <mat-label>Type de produit :</mat-label>
+            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.generic_name" value="{{ product.generic_name }}">-->
+            <input [(ngModel)]="modifiedProduct.generic_name" [readonly]="readOnly" matInput name="generic_name">
+          </mat-form-field>
 
-  <div class="col-sm-8">
-    <div class="row" style="margin:5%; text-align: center">
-      <div class="col-sm-5">
-        <h4 style="text-align: center">Section Labels</h4>
-        <mat-form-field>
-          <mat-chip-list #chipList aria-label="Fruit selection">
-            <mat-chip (removed)="remove(label,1)" *ngFor="let label of modifiedProduct.labels"
-                      [removable]="!readOnly" [selectable]="selectable">
-              {{label}}
-              <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
-            </mat-chip>
-            <input *ngIf="!readOnly" (matChipInputTokenEnd)="add($event,1)"
-                   [matChipInputAddOnBlur]="addOnBlur"
-                   [matChipInputFor]="chipList"
-                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                   placeholder="Nouveaux labels...">
-          </mat-chip-list>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-chip-list #chipList aria-label="Fruit selection">
-            <mat-chip (removed)="remove(additif,2)" *ngFor="let additif of modifiedProduct.additifs"
-                      [removable]="!readOnly" [selectable]="selectable">
-              {{additif}}
-              <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
-            </mat-chip>
-            <input *ngIf="!readOnly" (matChipInputTokenEnd)="add($event,2)"
-                   [matChipInputAddOnBlur]="addOnBlur"
-                   [matChipInputFor]="chipList"
-                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                   placeholder="Nouveaux additifs...">
-          </mat-chip-list>
-        </mat-form-field>
+          <div *ngIf="olderVersions.length > 0">
+            <mat-accordion>
+              <mat-expansion-panel (closed)="panelOpenState_packaging = false"
+                                   (opened)="panelOpenState_packaging = true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Packaging indiqués pour ce produit précédemment
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div *ngFor="let olderVersion of olderVersions">
+                  <span> -> {{ olderVersion.packaging}}</span>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+          <mat-form-field>
+            <mat-label>Emballage :</mat-label>
+            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.packaging" value="{{ product.packaging }}">-->
+            <input [(ngModel)]="modifiedProduct.packaging" [readonly]="readOnly" matInput name="packaging">
+          </mat-form-field>
+
+          <div *ngIf="olderVersions.length > 0">
+            <mat-accordion>
+              <mat-expansion-panel (closed)="panelOpenState_quantity = false"
+                                   (opened)="panelOpenState_quantity = true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Quantité indiquées pour ce produit précédemment
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div *ngFor="let olderVersion of olderVersions">
+                  <span> -> {{ olderVersion.quantity}}</span>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+
+          <mat-form-field>
+            <mat-label>Quantité :</mat-label>
+            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.quantity" value="{{ product.quantity }}">-->
+            <input [(ngModel)]="modifiedProduct.quantity" [readonly]="readOnly" matInput name="quantity">
+          </mat-form-field>
+
+        </div>
       </div>
-      <div class="col-sm-5">
-        <h4 style="text-align: center">Section Ingredients</h4>
-        <mat-form-field>
-          <mat-chip-list #chipList aria-label="Fruit selection">
-            <mat-chip (removed)="remove(ingredient,3)" *ngFor="let ingredient of modifiedProduct.ingredients"
-                      [removable]="!readOnly" [selectable]="selectable">
-              {{ingredient}}
-              <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
-            </mat-chip>
-            <input *ngIf="!readOnly" (matChipInputTokenEnd)="add($event,3)"
-                   [matChipInputAddOnBlur]="addOnBlur"
-                   [matChipInputFor]="chipList"
-                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                   placeholder="Nouveau Ingrédients...">
-          </mat-chip-list>
-        </mat-form-field>
-      </div>
+
     </div>
-    <div class="row" style="margin:5%; text-align: center">
-      <div class="col-sm-5">
-        <h4 style="text-align: center">Section Nutrition</h4>
-        <mat-form-field>
-          <mat-label>Energie :</mat-label>
-          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[0]" value="{{ product[0].nutriments[0] }}">
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Energie (en kcal) :</mat-label>
-          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[1]" value="{{ product[0].nutriments[1] }}">
-        </mat-form-field>
-        <mat-form-field>
-        <mat-label>Protéines :</mat-label>
-        <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[2]" value="{{ product[0].nutriments[2] }}">
-      </mat-form-field>
-        <mat-form-field>
-          <mat-label>Glucides :</mat-label>
-          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[3]" value="{{ product[0].nutriments[3] }}">
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Sel :</mat-label>
-          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[4]" value="{{ product[0].nutriments[4] }}">
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Sucre :</mat-label>
-          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[5]" value="{{ product[0].nutriments[5] }}">
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Graisses :</mat-label>
-          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[6]" value="{{ product[0].nutriments[6] }}">
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Dont matières grasses :</mat-label>
-          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[7]" value="{{ product[0].nutriments[7] }}">
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Fibre :</mat-label>
-          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[8]" value="{{ product[0].nutriments[8] }}">
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Sodium :</mat-label>
-          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[9]" value="{{ product[0].nutriments[9] }}">
-        </mat-form-field>
-
-
-<!--        <p><span>Energie : </span><strong>{{ product.nutriments[0] }}</strong></p>-->
-<!--        <p><span>Energie (en kcal) : </span><strong>{{ product.nutriments[1] }}</strong></p>-->
-<!--        <p><span>Protéines : </span><strong>{{ product.nutriments[2] }}</strong></p>-->
-<!--        <p><span>Glucides : </span><strong>{{ product.nutriments[3] }}</strong></p>-->
-<!--        <p><span>Sel : </span><strong>{{ product.nutriments[4] }}</strong></p>-->
-<!--        <p><span>Sucre : </span><strong>{{ product.nutriments[5] }}</strong></p>-->
-<!--        <p><span>Graisses : </span><strong>{{ product.nutriments[6] }}</strong></p>-->
-<!--        <p><span>Dont Matières grasses : </span><strong>{{ product.nutriments[7] }}</strong></p>-->
-<!--        <p><span>Fibre : </span><strong>{{ product.nutriments[8] }}</strong></p>-->
-<!--        <p><span>Sodium : </span><strong>{{ product.nutriments[9] }}</strong></p>-->
-      </div>
-      <div class="col-sm-5">
-        <h4 style="text-align: center">Section Divers</h4>
-        <mat-form-field>
-          <mat-label>Type de produit : </mat-label>
-          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.generic_name" value="{{ product[0].generic_name }}">
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Emballage : </mat-label>
-          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.packaging" value="{{ product[0].packaging }}">
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Quantité :</mat-label>
-          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.quantity" value="{{ product[0].quantity }}">
-        </mat-form-field>
-<!--        <p><span>Type de produit : </span><strong>{{ product.generic_name }}</strong></p>-->
-<!--        <p><span>Emballage : </span><strong>{{ product.packaging }}</strong></p>-->
-<!--        <p><span>Quantité : </span><strong>{{ product.quantity }}</strong></p>-->
-      </div>
-    </div>
-
-  </div>
   </form>
 </mat-dialog-content>

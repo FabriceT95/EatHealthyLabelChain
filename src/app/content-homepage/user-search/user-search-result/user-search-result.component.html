@@ -1,3 +1,4 @@
-<mat-card style="height:100%">
-  <app-user-search-result-item *ngFor="let product of AcceptedProduct" [product]="product" ></app-user-search-result-item>
+<mat-card style="height:100%; overflow: auto">
+  <app-user-search-result-item *ngFor="let product of AcceptedProductArray;"
+                               [product]="product"></app-user-search-result-item>
 </mat-card>

@@ -3,6 +3,7 @@ import {Web3Service} from '../../../util/web3.service';
 import {ServerService} from '../../../server.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Product} from '../../../shared/product.model';
+import {ServerSCService} from '../../../server-sc.service';
 
 @Component({
   selector: 'app-user-form-vote',
@@ -11,32 +12,36 @@ import {Product} from '../../../shared/product.model';
 })
 export class UserFormVoteComponent implements OnInit {
   public checked = false;
-  public productVote: Product[];
+  public productVote: Product;
   public isProductProposer: boolean;
   public alreadyVoted: boolean;
   public isDateVotable: boolean;
+  private voter: any;
 
   constructor(private web3: Web3Service,
               private server: ServerService,
+              private server_sc: ServerSCService,
               @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
               public dialogRef: MatDialogRef<UserFormVoteComponent>) {
     this.productVote = data.productvote;
   }
 
   ngOnInit() {
-    this.web3.contract.methods.isAlreadyVotedByCurrentUser(this.productVote[0].code).call({from: this.web3.accounts[0]})
+    this.voter = this.web3.accounts[0];
+    console.log(this.productVote.nutriments);
+    this.web3.contract.methods.isAlreadyVotedByCurrentUser(this.productVote.code).call({from: this.web3.accounts[0]})
       .then((result) => {
         this.alreadyVoted = result;
         if (this.alreadyVoted === false) {
-          this.web3.contract.methods.isProposer(this.productVote[0].code).call({from: this.web3.accounts[0]})
+          this.web3.contract.methods.isProductProposer(this.productVote.code).call({from: this.web3.accounts[0]})
             .then((result_) => {
               this.isProductProposer = result_;
             });
         }
       });
-    this.web3.contract.methods.isDateOK(this.productVote[0].code).call()
-      .then((result) => {
-        this.isDateVotable = result;
+    this.web3.contract.methods.getDates(this.productVote.code).call()
+      .then((dates) => {
+        this.isDateVotable = dates[1] > dates[0];
       });
   }
 
@@ -47,21 +52,38 @@ export class UserFormVoteComponent implements OnInit {
   voting(opinion) {
     const that = this;
     console.log('Mon vote : ' + opinion);
-    console.log('Le produit pour lequel je vote : ' + this.productVote[0].code);
-    this.web3.contract.methods.vote(opinion, this.productVote[0].code).send({from: this.web3.accounts[0]})
+    console.log('Le produit pour lequel je vote : ' + this.productVote.code);
+    this.web3.contract.methods.vote(opinion, this.productVote.code).send({from: this.web3.accounts[0]})
       .on('receipt', (receipt) => {
         that.web3.newVote.emit();
+        that.addVote(opinion);
         if (opinion === true) {
-          this.productVote[0].forVotes++;
+          this.productVote.forVotes++;
         } else {
-          this.productVote[0].againstVotes++;
+          this.productVote.againstVotes++;
         }
-       // this.productVote.totalVotes++;
+        // this.productVote.totalVotes++;
         alert('Votre vote a bien été pris en compte ! Merci, bisous distancés !');
-
+        that.onNoClick();
       })
       .on('error', (error, receipt) => {
         console.log('Erreur : ' + error[0]);
       });
+  }
+
+  addVote(opinion) {
+    const newVote = {
+      all_hash: this.productVote.all_hash,
+      productCode: this.productVote.code,
+      user_address: this.voter,
+      opinion: opinion
+    };
+    this.server_sc.addVote(newVote).then(() => {
+      console.log('Votre vote a bien été pris en compte');
+    });
+    // Ajouter le vote à la table "productInfos_SC"
+    this.server_sc.UpdateVote(newVote).then(() => {
+      console.log('Votre vote a bien été pris en compte');
+    });
   }
 }

@@ -1,10 +1,5 @@
-<mat-card style="height:100%">
-  <mat-card-content>
-    <div class="row" style="text-align: center">
-      <mat-form-field appearance="fill" style="margin:0 auto">
-        <mat-label>Input</mat-label>
-        <input matInput>
-      </mat-form-field>
-    </div>
-  </mat-card-content>
-</mat-card>
+<mat-form-field appearance="fill" style="margin:0 auto">
+  <mat-label>Input</mat-label>
+  <input #input_search_accepted (keyup)="searchAccepted(input_search_accepted.value)" matInput>
+</mat-form-field>
+

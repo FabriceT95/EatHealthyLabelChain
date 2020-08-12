@@ -5,6 +5,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Product} from '../../../../shared/product.model';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatChipInputEvent} from '@angular/material/chips';
+import {ServerSCService} from '../../../../server-sc.service';
 
 @Component({
   selector: 'app-modal-product-details',
@@ -12,14 +13,25 @@ import {MatChipInputEvent} from '@angular/material/chips';
   styleUrls: ['./modal-product-details.component.css']
 })
 export class ModalProductDetailsComponent implements OnInit {
-  public product: Product[];
+  public product: Product;
   public modifiedProduct: Product;
+  public olderVersions: Product[];
   visible = true;
   selectable = false;
   removable = false;
   addOnBlur = true;
   readOnly = true;
   sameObject = true;
+  panelOpenState_product_name = false;
+  panelOpenState_labels = false;
+  panelOpenState_additifs = false;
+  panelOpenState_ingredients = false;
+  panelOpenState_nutriments = false;
+  panelOpenState_generic_name = false;
+  panelOpenState_packaging = false;
+  panelOpenState_quantity = false;
+  verifiedProduct: boolean;
+
 
 //  newValues: string[] = [];
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -27,16 +39,83 @@ export class ModalProductDetailsComponent implements OnInit {
   constructor(@Optional() @Inject(MAT_DIALOG_DATA) public data: any,
               public dialogRef: MatDialogRef<ModalProductDetailsComponent>,
               private web3: Web3Service,
-              ) {
+              private server_sc: ServerSCService
+  ) {
     console.log(data.product);
     this.product = data.product;
-    this.modifiedProduct = JSON.parse(JSON.stringify(this.product[0]));
+    this.modifiedProduct = JSON.parse(JSON.stringify(this.product));
+    this.olderVersions = data.olderVersions;
+    console.log('OLDERS : ' + this.olderVersions);
   }
-    ngOnInit() {
+
+  ngOnInit() {
+    const lastVerifDate = new Date(this.product.lastVerification);
+    lastVerifDate.setDate(lastVerifDate.getDate() + 7);
+    this.verifiedProduct = new Date(this.product.lastVerification).getTime() > Date.now();
+    console.log('Date de validité jusqu"au : ' + new Date(this.product.lastVerification).getTime());
+    console.log('Date du jour : ' + Date.now());
+    console.log('vérification établie : ' + this.verifiedProduct);
   }
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  async verifyCompliance() {
+    console.log(JSON.stringify(this.product));
+    const nutriments = {
+      energy: this.product.nutriments.energy.toString(),
+      energy_kcal: this.product.nutriments.energy_kcal.toString(),
+      proteines: this.product.nutriments.proteines.toString(),
+      carbohydrates: this.product.nutriments.carbohydrates.toString(),
+      salt: this.product.nutriments.salt.toString(),
+      sugar: this.product.nutriments.sugar.toString(),
+      fat: this.product.nutriments.fat.toString(),
+      saturated_fat: this.product.nutriments.saturated_fat.toString(),
+      fiber: this.product.nutriments.fiber.toString(),
+      sodium: this.product.nutriments.sodium.toString(),
+    };
+    const product_hashes_contrat =  await this.web3.contract.methods.getProductHashes(this.product.code)
+      .call({from: this.web3.accounts[0]});
+    const product_hashes_DB = await this.web3.contract.methods.verifyCompliance(
+      this.product.code,
+      this.product.labels,
+      this.product.ingredients,
+      this.product.additifs,
+      nutriments,
+      this.product.product_name,
+      this.product.generic_name,
+      this.product.quantity,
+      this.product.packaging
+    ).call({from: this.web3.accounts[0]});
+    this.compareHashes(product_hashes_contrat, product_hashes_DB);
+  }
+
+  compareHashes(product_hashes_contrat, product_hashes_DB) {
+    try {
+      if (product_hashes_contrat[1] !== product_hashes_DB[1]) {
+        console.log('Les labels ne sont pas conforme');
+      } else if (product_hashes_contrat[2] !== product_hashes_DB[2]) {
+        console.log('Les ingredients ne sont pas conforme');
+      } else if (product_hashes_contrat[3] !== product_hashes_DB[3]) {
+        console.log('Les additifs ne sont pas conforme');
+      } else if (product_hashes_contrat[4] !== product_hashes_DB[4]) {
+        console.log('Les nutriments ne sont pas conforme');
+      } else if (product_hashes_contrat[5] !== product_hashes_DB[5]) {
+        console.log('Les divers ne sont pas conforme');
+      } else {
+        console.log('L\'article est conforme !');
+        const verification_object = {
+          productCode: this.product.code,
+          lastVerificationDate: Math.floor(Date.now() / 1000 + 604800)
+        };
+        this.server_sc.setVerification(verification_object).then(() => {
+          console.log('La date de vérification a bien été modifée. Elle est active pendant une semaine');
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   add(event: MatChipInputEvent, elType): void {
@@ -90,26 +169,59 @@ export class ModalProductDetailsComponent implements OnInit {
     this.readOnly = !this.readOnly;
   }
 
-  compareObjects () {
-    this.sameObject = JSON.stringify(this.product[0]) === JSON.stringify(this.modifiedProduct);
+  compareObjects() {
+    this.sameObject = JSON.stringify(this.product) === JSON.stringify(this.modifiedProduct);
   }
 
   modifyProduct() {
     const that = this;
+    const json = JSON.stringify(this.modifiedProduct.nutriments);
+    this.modifiedProduct.nutriments = JSON.parse(json, (key, val) => (
+      typeof val !== 'object' && val !== null ? String(val) : val
+    ));
     this.web3.contract.methods.addProductToProposal(
       this.modifiedProduct.code,
-      this.modifiedProduct.product_name,
       this.modifiedProduct.labels,
       this.modifiedProduct.ingredients,
-      this.modifiedProduct.quantity,
-      this.modifiedProduct.generic_name,
-      this.modifiedProduct.packaging,
-      this.modifiedProduct.nutriments,
       this.modifiedProduct.additifs,
-      3)
+      this.modifiedProduct.nutriments,
+      this.modifiedProduct.product_name,
+      this.modifiedProduct.generic_name,
+      this.modifiedProduct.quantity,
+      this.modifiedProduct.packaging
+    )
       .send({from: this.web3.accounts[0]})
       .on('receipt', function (receipt) {
-        console.log(receipt);
+        console.log('VOYOJIFJDLZ : ' + receipt.events.TriggerAddProduct.returnValues.hashes);
+        console.log('Proposer : ' + receipt.events.TriggerAddProduct.returnValues.proposerProduct);
+        console.log('1234 : ' + receipt.events.TriggerAddProduct.returnValues.voteDates[0]);
+        console.log('5678 : ' + receipt.events.TriggerAddProduct.returnValues.voteDates[1]);
+        that.addLabel_SC(receipt.events.TriggerAddProduct.returnValues.hashes[0], that.modifiedProduct.labels.join(','));
+        that.addIngredients(receipt.events.TriggerAddProduct.returnValues.hashes[1], that.modifiedProduct.ingredients.join(','));
+        that.addAdditives(receipt.events.TriggerAddProduct.returnValues.hashes[2], that.modifiedProduct.additifs.join(','));
+        that.addNutriments(receipt.events.TriggerAddProduct.returnValues.hashes[3], JSON.stringify(that.modifiedProduct.nutriments));
+        that.addVariousDatas(
+          receipt.events.TriggerAddProduct.returnValues.hashes[4],
+          that.modifiedProduct.code,
+          that.modifiedProduct.product_name,
+          that.modifiedProduct.generic_name,
+          that.modifiedProduct.quantity,
+          that.modifiedProduct.packaging
+        );
+        setTimeout(() => {
+          that.addHashes(
+            receipt.events.TriggerAddProduct.returnValues.hashes[0],
+            receipt.events.TriggerAddProduct.returnValues.hashes[1],
+            receipt.events.TriggerAddProduct.returnValues.hashes[2],
+            receipt.events.TriggerAddProduct.returnValues.hashes[3],
+            receipt.events.TriggerAddProduct.returnValues.hashes[4],
+            receipt.events.TriggerAddProduct.returnValues.hashes[5],
+            receipt.events.TriggerAddProduct.returnValues.proposerProduct,
+            receipt.events.TriggerAddProduct.returnValues.voteDates
+          );
+        }, 500);
+        that.onNoClick();
+        //  alert('Le produit suivant a été placé dans la liste d\'attente : ' + newProduct.code + ' - ' + newProduct.product_name);
         that.onNoClick();
         alert('Le produit suivant a été placé dans la liste d\'attente : '
           + that.modifiedProduct.code +
@@ -118,4 +230,62 @@ export class ModalProductDetailsComponent implements OnInit {
       });
   }
 
+  addVariousDatas(variousData_hash, productCode, product_name, product_type, quantity, packaging) {
+    const insertVariousDatas = {
+      variousData_hash: variousData_hash,
+      productCode: productCode,
+      product_name: product_name,
+      product_type: product_type,
+      quantity: quantity,
+      packaging: packaging
+    };
+    this.server_sc.addVariousDatas(insertVariousDatas).then((result) => {
+      console.log('Les infos diverses et leur hash ont bien été ajouté à la BDD : ', result);
+    });
+  }
+
+  addLabel_SC(labels_hash, labels) {
+    const insertLabels = {labels_hash: labels_hash, labels: labels};
+    this.server_sc.addLabels(insertLabels).then((result) => {
+      console.log('Les labels et leur hash ont bien été ajouté à la BDD : ', result);
+    });
+  }
+
+  addAdditives(additives_hash, additives) {
+    const insertAdditives = {additives_hash: additives_hash, additives: additives};
+    this.server_sc.addAdditives(insertAdditives).then((result) => {
+      console.log('Les additifs et leur hash ont bien été ajouté à la BDD : ', result);
+    });
+  }
+
+  addIngredients(ingredients_hash, ingredients) {
+    const insertIngredients = {ingredients_hash: ingredients_hash, ingredients: ingredients};
+    this.server_sc.addIngredients(insertIngredients).then((result) => {
+      console.log('Les ingredients et leur hash ont bien été ajouté à la BDD : ', result);
+    });
+  }
+
+  addNutriments(nutriments_hash, nutriments) {
+    const insertNutriments = {nutriments_hash: nutriments_hash, nutriments: nutriments};
+    this.server_sc.addNutriments(insertNutriments).then((result) => {
+      console.log('Les nutriments et leur hash ont bien été ajouté à la BDD : ', result);
+    });
+  }
+
+  addHashes(labels_hash, ingredients_hash, additives_hash, nutriments_hash, variousDatas_hash, all_hash, addressProposer, voteDates) {
+    const insertHashes = {
+      labels_hash: labels_hash,
+      ingredients_hash: ingredients_hash,
+      additives_hash: additives_hash,
+      nutriments_hash: nutriments_hash,
+      variousData_hash: variousDatas_hash,
+      all_hash: all_hash,
+      addressProposer: addressProposer,
+      voteDates: voteDates,
+      status: 'IN_MODIFICATION'
+    };
+    this.server_sc.addHashes(insertHashes).then((result) => {
+      console.log('Les hashes ont bien été ajouté à la BDD : ', result);
+    });
+  }
 }

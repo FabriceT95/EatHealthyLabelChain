@@ -22,23 +22,10 @@ export class UserProposalItemComponent implements OnInit {
       this.getTimeLeft();
     }, 60000);
   }
-
-  /* async endVote() {
-     const that = this;
-     console.log('Le produit pour lequel je vote : ' + this.product.code);
-     await this.web3.contract.methods.endVoteByProposer(this.product.code).send({from: this.web3.accounts[0]})
-       .on('receipt', (receipt) => {
-         that.web3.endVote.emit();
-         alert('Le vote de votre produit a bien pris fin !');
-       })
-       .on('error', (error, receipt) => {
-         console.log('Erreur : ' + error[0]);
-       });
-   }*/
   async getTimeLeft() {
-    this.timeLeft = this.dhm(this.product.endDate * 1000 - Date.now());
+    this.timeLeft = this.dhm(new Date(this.product.endDate).getTime() - Date.now());
     if (this.product.endDate * 1000 - Date.now() < 0) {
-      //
+      this.timeLeft = 'Fin du vote en cours...';
     }
   }
 

@@ -6,11 +6,9 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./user-search-vote.component.css']
 })
 export class UserSearchVoteComponent implements OnInit {
-
   constructor() {
   }
 
   ngOnInit() {
   }
-
 }

@@ -1,54 +1,52 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {ServerSCService} from '../../../server-sc.service';
-import {Subscription} from 'rxjs';
+import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {Product} from '../../../shared/product.model';
 import {ProductService} from '../../../product.service';
 
 @Component({
-  selector: 'app-user-search-input',
-  templateUrl: './user-search-input.component.html',
-  styleUrls: ['./user-search-input.component.css']
+  selector: 'app-user-search-vote-input',
+  templateUrl: './user-search-vote-input.component.html',
+  styleUrls: ['./user-search-vote-input.component.css']
 })
-export class UserSearchInputComponent implements OnInit {
+export class UserSearchVoteInputComponent implements OnInit {
+
   alphabet_vote = false;
   date_vote = false;
   typeSelected = 'productCode';
   input = '';
-  ProductsAccepted: { [productCode: number]: [Product?, Product[]?] } = {};
-  AcceptedProductArray: [Product, Product[]][] = [];
-  private indexAcceptedProductArray = 0;
+  ProductsVoting: Product[] = [];
   subscriptionDate: Subscription;
   subscriptionAlphabet: Subscription;
   subscriptionTypeSelected: Subscription;
 
-  constructor(private server_sc: ServerSCService, private product: ProductService) {
-    this.subscriptionDate = this.server_sc.date_order_change_accepted
+  constructor(private server_sc: ServerSCService,
+              private product: ProductService) {
+    this.subscriptionDate = this.server_sc.date_order_change
       .subscribe(date => {
         this.date_vote = date;
-        this.searchAccepted(this.input);
+        this.searchVotable(this.input);
         console.log('Date order : ' + this.date_vote);
       });
-    this.subscriptionAlphabet = this.server_sc.alphabetical_order_change_accepted
+    this.subscriptionAlphabet = this.server_sc.alphabetical_order_change
       .subscribe(alphabet => {
         this.alphabet_vote = alphabet;
-        this.searchAccepted(this.input);
+        this.searchVotable(this.input);
         console.log('alphabet order : ' + this.alphabet_vote);
       });
-    this.subscriptionTypeSelected = this.server_sc.typeSelected_change_accepted
+    this.subscriptionTypeSelected = this.server_sc.typeSelected_change
       .subscribe(typeSelected => {
         this.typeSelected = typeSelected;
         console.log('type selected : ' + this.typeSelected);
-        this.searchAccepted(this.input);
+        this.searchVotable(this.input);
       });
   }
 
   ngOnInit() {
   }
 
-  searchAccepted(input = '') {
-    const that = this;
-    this.ProductsAccepted = {};
-    this.AcceptedProductArray = [];
+  searchVotable(input = '') {
+    this.ProductsVoting = [];
     if (input === '') {
       this.input = '*';
     } else {
@@ -60,7 +58,7 @@ export class UserSearchInputComponent implements OnInit {
       dateOrder: this.date_vote,
       alphabetOrder: this.alphabet_vote
     };
-    this.server_sc.getAcceptedProducts(getValues).then((result: []) => {
+    this.server_sc.getVotingProducts(getValues).then((result: []) => {
       for (let i = 0; i < result.length; i++) {
         const uniqueSqlResult = result[i] as any;
         const singleProduct = this.product.createProduct(uniqueSqlResult);
@@ -94,33 +92,11 @@ export class UserSearchInputComponent implements OnInit {
           uniqueSqlResult.status,
           uniqueSqlResult.all_hash
         );*/
-        if (that.ProductsAccepted[singleProduct.code] === undefined) {
-          that.ProductsAccepted[singleProduct.code] = [singleProduct, []];
-        }
-        if (uniqueSqlResult.status === 'ACCEPTED') {
-            that.ProductsAccepted[singleProduct.code][0] = singleProduct;
-        } else {
-          that.ProductsAccepted[singleProduct.code][1].push(singleProduct);
-        }
+        this.ProductsVoting.push(singleProduct);
       }
-     for (const key in that.ProductsAccepted) {
-        if (that.ProductsAccepted[key][0] !== null) {
-          that.AcceptedProductArray[that.indexAcceptedProductArray] = [that.ProductsAccepted[key][0], []];
-          if (that.ProductsAccepted[key][1][0] !== null) {
-            for (let i = 0; i < that.ProductsAccepted[key][1].length; i++) {
-              that.AcceptedProductArray[that.indexAcceptedProductArray][1].push(that.ProductsAccepted[key][1][i]);
-            }
-          }
-          that.indexAcceptedProductArray++;
-        }
-      }
-
-      that.AcceptedProductArray = that.AcceptedProductArray.filter(function (el) {
-        return el != null;
-      });
-      that.server_sc.content_vote_page_change_accepted.emit(this.AcceptedProductArray);
+      console.log('Résultat à display :' + this.ProductsVoting);
+      this.server_sc.content_vote_page_change.emit(this.ProductsVoting);
     });
   }
-
 
 }

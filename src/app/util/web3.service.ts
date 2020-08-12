@@ -1,6 +1,6 @@
 import {EventEmitter, Inject, InjectionToken, OnInit} from '@angular/core';
 import Web3 from 'web3';
-import dataTest from './../../../build/contracts/DataTest.json';
+import EatHealthyChain from './../../../build/contracts/EatHealthyChain.json';
 
 export const WEB3 = new InjectionToken<Web3>('web3', {
   providedIn: 'root',
@@ -42,7 +42,7 @@ export class Web3Service {
     }, 100);
     this.getNetworkId().then(function (result) {
       that.networkId = result;
-      that.deployedNetwork = dataTest.networks[that.networkId];
+      that.deployedNetwork = EatHealthyChain.networks[that.networkId];
       console.log('GetNetworkId in Web3Service : ' + that.networkId);
       console.log('DeployedNetwork ABI : ' + that.deployedNetwork.address);
     });
@@ -50,7 +50,7 @@ export class Web3Service {
       that.getContract().then(function (result) {
         that.contract = result;
         // Define functions which are needed to be launched on load just after getContract is setup
-       // that.getMyRole();
+        // that.getMyRole();
         console.log('GetContract in Web3Service : ' + that.contract);
       });
     }, 500);
@@ -80,10 +80,10 @@ export class Web3Service {
   public getContract() {
     const web3Provider = this.web3;
     const that = this;
-    console.log('Datatest ABI in getContrat() : ' + dataTest.abi);
+    console.log('Datatest ABI in getContrat() : ' + EatHealthyChain.abi);
     console.log('DeployedNetwork address in getContrat() : ' + that.deployedNetwork);
     return new Promise(function (resolve, reject) {
-      resolve(new web3Provider.eth.Contract(dataTest.abi, that.deployedNetwork.address));
+      resolve(new web3Provider.eth.Contract(EatHealthyChain.abi, that.deployedNetwork.address));
     });
   }
 

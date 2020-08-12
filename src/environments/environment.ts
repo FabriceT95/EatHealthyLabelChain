@@ -6,6 +6,7 @@
 export const environment = {
   production: false,
   // Centos_MySQL Virtual Machine IP
-  serverUrl: 'http://192.168.42.194:8080'
+  serverUrl: 'http://192.168.42.194:8080',
+  serverUrl_SC: 'http://192.168.42.194:8090'
 
 };
