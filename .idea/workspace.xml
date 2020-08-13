@@ -2,63 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b979d4c8-985c-477d-b226-bf0a39cdf726" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/EatHealthyLabelChain/v16/.suo" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/EatHealthyLabelChain/v16/.suo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/VSWorkspaceState.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/VSWorkspaceState.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/slnx.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/slnx.sqlite" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/DataLabelChain.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/DataTest.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/LabelChainHelper.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/LabelChainUsers.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/Migrations.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/Migrations.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/SafeMath.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/SafeMath.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/SafeMath16.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/SafeMath16.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/SafeMath32.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/SafeMath32.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/SignedSafeMath.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/contracts/SignedSafeMath.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/EatHealthyChain.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/EatHealthyChain.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/LabelChainHelper.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/LabelChainHelper.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/dataLabelChain.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/dataTest.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/dataTest.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/2_deploy_contracts.js" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/2_deploy_contracts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/app.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/form-input-product/form-input-product.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/form-input-product/form-input-product.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/form-input-product/form-input-product.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/form-input-product/form-input-product.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/user-product-manager.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/user-product-manager.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/user-product-manager.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-product-manager/user-product-manager.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-profile/user-profile.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-profile/user-profile.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-filter/user-search-filter.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-filter/user-search-filter.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-filter/user-search-filter.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-filter/user-search-filter.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-input/user-search-input.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-input/user-search-input.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-input/user-search-input.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-input/user-search-input.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search-result/user-search-result.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-homepage/user-search/user-search.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-my-proposals/content-my-proposals.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-my-proposals/content-my-proposals.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-my-proposals/user-proposal-item/user-proposal-item.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-my-proposals/user-proposal-item/user-proposal-item.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-my-proposals/user-proposal-item/user-proposal-item.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-my-proposals/user-proposal-item/user-proposal-item.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/result-vote-item/result-vote-item.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/result-vote-item/result-vote-item.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/result-vote-item/result-vote-item.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/result-vote-item/result-vote-item.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-form-vote/user-form-vote.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-result-vote.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-result-vote/user-result-vote.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-search-vote/user-search-vote.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-search-vote/user-search-vote.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/content-votespage/user-search-vote/user-search-vote.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content-votespage/user-search-vote/user-search-vote.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/header/header.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/header/header.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/header/header.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/header/header.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/shared/product.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/shared/product.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/util/web3.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/util/web3.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/environments/environment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/environments/environment.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/truffle-config.js" beforeDir="false" afterPath="$PROJECT_DIR$/truffle-config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/watcherServer.js" beforeDir="false" afterPath="$PROJECT_DIR$/watcherServer.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,6 +165,9 @@
       <workItem from="1596812560828" duration="633000" />
       <workItem from="1597039123410" duration="6126000" />
       <workItem from="1597153048100" duration="2574000" />
+      <workItem from="1597253255654" duration="599000" />
+      <workItem from="1597257855224" duration="59000" />
+      <workItem from="1597337223450" duration="166000" />
     </task>
     <servers />
   </component>
