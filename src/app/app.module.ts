@@ -48,6 +48,7 @@ import {UserSearchVoteInputComponent} from './content-votespage/user-search-vote
 import {MatSelectModule} from '@angular/material/select';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {AppRoutingModule} from './app-routing.module';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import {AppRoutingModule} from './app-routing.module';
     MatChipsModule,
     MatSelectModule,
     MatExpansionModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MatProgressSpinnerModule
   ],
   providers: [Web3Service, ServerService, AppComponent],
   bootstrap: [AppComponent],

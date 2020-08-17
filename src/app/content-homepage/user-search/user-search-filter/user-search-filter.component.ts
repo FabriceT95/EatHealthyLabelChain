@@ -13,7 +13,7 @@ interface InputType {
 })
 export class UserSearchFilterComponent implements OnInit {
   categories: InputType[] = [
-    {value: 'productCode', viewValue: 'Code du produit'},
+    {value: 'product_code', viewValue: 'Code du produit'},
     {value: 'label', viewValue: 'Labels'},
     {value: 'ingredients', viewValue: 'Ingredients'},
     {value: 'product_type', viewValue: 'Type de produit'},

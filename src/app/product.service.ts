@@ -11,7 +11,7 @@ export class ProductService {
   createProduct(element) {
     return new Product(
       element.address_proposer,
-      element.productCode,
+      element.product_code,
       element.product_name,
       {
         carbohydrates: element.carbohydrates,
@@ -29,8 +29,8 @@ export class ProductService {
       element.quantity,
       element.product_type,
       element.packaging,
-      element.label.split(','),
-      element.additive.split(','),
+      element.labels.split(','),
+      element.additives.split(','),
       element.forVotes,
       element.againstVotes,
       element.alreadyVoted,

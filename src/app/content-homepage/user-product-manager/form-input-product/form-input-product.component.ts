@@ -147,11 +147,6 @@ export class FormInputProductComponent implements OnInit {
       )
         .send({from: this.web3.accounts[0]})
         .on('receipt', function (receipt) {
-          console.log('VOYOJIFJDLZ : ' + receipt.events.TriggerAddProduct.returnValues.hashes);
-          console.log('Proposer : ' + receipt.events.TriggerAddProduct.returnValues.proposerProduct);
-          console.log('1234 : ' + receipt.events.TriggerAddProduct.returnValues.voteDates[0]);
-          console.log('5678 : ' + receipt.events.TriggerAddProduct.returnValues.voteDates[1]);
-          console.log('Date now  ' + Date.now());
           that.addLabel_SC(receipt.events.TriggerAddProduct.returnValues.hashes[0], newProduct.labels.join(','));
           that.addIngredients(receipt.events.TriggerAddProduct.returnValues.hashes[1], newProduct.ingredients.join(','));
           that.addAdditives(receipt.events.TriggerAddProduct.returnValues.hashes[2], newProduct.additifs.join(','));
@@ -166,11 +161,6 @@ export class FormInputProductComponent implements OnInit {
           );
           setTimeout(() => {
             that.addHashes(
-              receipt.events.TriggerAddProduct.returnValues.hashes[0],
-              receipt.events.TriggerAddProduct.returnValues.hashes[1],
-              receipt.events.TriggerAddProduct.returnValues.hashes[2],
-              receipt.events.TriggerAddProduct.returnValues.hashes[3],
-              receipt.events.TriggerAddProduct.returnValues.hashes[4],
               receipt.events.TriggerAddProduct.returnValues.hashes[5],
               receipt.events.TriggerAddProduct.returnValues.proposerProduct,
               receipt.events.TriggerAddProduct.returnValues.voteDates
@@ -232,13 +222,8 @@ export class FormInputProductComponent implements OnInit {
     });
   }
 
-  addHashes(labels_hash, ingredients_hash, additives_hash, nutriments_hash, variousDatas_hash, all_hash, addressProposer, voteDates) {
+  addHashes(all_hash, addressProposer, voteDates) {
     const insertHashes = {
-      labels_hash: labels_hash,
-      ingredients_hash: ingredients_hash,
-      additives_hash: additives_hash,
-      nutriments_hash: nutriments_hash,
-      variousData_hash: variousDatas_hash,
       all_hash: all_hash,
       addressProposer: addressProposer,
       voteDates: voteDates,

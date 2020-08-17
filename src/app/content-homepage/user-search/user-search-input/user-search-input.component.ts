@@ -12,7 +12,7 @@ import {ProductService} from '../../../product.service';
 export class UserSearchInputComponent implements OnInit {
   alphabet_vote = false;
   date_vote = false;
-  typeSelected = 'productCode';
+  typeSelected = 'product_code';
   input = '';
   ProductsAccepted: { [productCode: number]: [Product?, Product[]?] } = {};
   AcceptedProductArray: [Product, Product[]][] = [];

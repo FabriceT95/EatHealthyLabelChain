@@ -89,7 +89,7 @@ class Web3Worker {
         gasPrice: '0x1111',
         gasLimit: '0x6691B7',
         to: worker.deployedNetwork.address,
-        data: worker.contract.methods.endVote(productVoteIsEnded.productCode, productVoteIsEnded.address_proposer).encodeABI(),
+        data: worker.contract.methods.endVote(productVoteIsEnded.product_code, productVoteIsEnded.address_proposer).encodeABI(),
         from: worker.accounts[7],
         nonce: '0x' + worker.nonce
       };
@@ -101,12 +101,12 @@ class Web3Worker {
     }).then(async (serializedTx) => {
       await web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex')).on('receipt', async (result) => {
         if (productVoteIsEnded.status === 'IN_MODIFICATION' && productVoteIsEnded.for_votes >= productVoteIsEnded.against_votes) {
-          await fetch('http://192.168.42.194:8090/accepted_to_modified/' + productVoteIsEnded.productCode, {method: 'PUT'}).then(() => {
+          await fetch('http://192.168.42.219:8090/accepted_to_modified/' + productVoteIsEnded.product_code, {method: 'PUT'}).then(() => {
             console.log("il s'agissait d'un produit déjà existant :  cet 'ancien' produit a été placé en status 'MODIFIED', il est remplacé par ce nouveau produit");
           });
         }
         setTimeout(async () => {
-          await fetch('http://192.168.42.194:8090/end_vote/' + productVoteIsEnded.productCode + '/' + productVoteIsEnded.for_votes + '/' + productVoteIsEnded.against_votes + '/' +productVoteIsEnded.end_date_timestamp+ '', {method: 'PUT'}).then(() => {
+          await fetch('http://192.168.42.219:8090/end_vote/' + productVoteIsEnded.product_code + '/' + productVoteIsEnded.for_votes + '/' + productVoteIsEnded.against_votes + '/' +productVoteIsEnded.end_date_timestamp+ '', {method: 'PUT'}).then(() => {
             console.log('SUCCESS');
           });
         }, 1000);
@@ -123,13 +123,13 @@ worker.launcher();
 worker.init().then(() => {
   setInterval(() => {
     console.log('--------------------- RECHERCHE DE PRODUIT EN FIN DE PERIODE DE VOTE ---------------------');
-    fetch('http://192.168.42.194:8090/votable_products/', {method: 'GET'})
+    fetch('http://192.168.42.219:8090/votable_products/', {method: 'GET'})
       .then(res => res.json())
       .then(async json => {
         let productVoteIsEndedArray = [];
         for (const product of json) {
           if (Date.now() > product.end_date_timestamp * 1000) {
-            await worker.contract.methods.getDates(product.productCode).call().then(async (dates) => {
+            await worker.contract.methods.getDates(product.product_code).call().then(async (dates) => {
               if (parseInt(dates[0]) === product.start_date_timestamp && parseInt(dates[1]) === product.end_date_timestamp) {
                 productVoteIsEndedArray.push(product);
               }
@@ -139,9 +139,9 @@ worker.init().then(() => {
         if (productVoteIsEndedArray.length > 0) {
           console.log(productVoteIsEndedArray.length);
           for (let i = 0; i < productVoteIsEndedArray.length; i++) {
-            console.log('Fin du vote du produit ' + productVoteIsEndedArray[i].productCode + ' en cours');
+            console.log('Fin du vote du produit ' + productVoteIsEndedArray[i].product_code + ' en cours');
             await worker.sendTransaction(productVoteIsEndedArray[i]);
-            console.log('Le vote du produit ' + productVoteIsEndedArray[i].productCode + ' a bien été cloturé');
+            console.log('Le vote du produit ' + productVoteIsEndedArray[i].product_code + ' a bien été cloturé');
           }
         } else {
           console.log('--------------------- AUCUN : PROCHAIN ESSAI DANS 5 SECONDES ---------------------');

@@ -16,6 +16,7 @@ export class ModalProductDetailsComponent implements OnInit {
   public product: Product;
   public modifiedProduct: Product;
   public olderVersions: Product[];
+  inProgress = false;
   visible = true;
   selectable = false;
   removable = false;
@@ -32,8 +33,6 @@ export class ModalProductDetailsComponent implements OnInit {
   panelOpenState_quantity = false;
   verifiedProduct: boolean;
 
-
-//  newValues: string[] = [];
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor(@Optional() @Inject(MAT_DIALOG_DATA) public data: any,
@@ -50,11 +49,12 @@ export class ModalProductDetailsComponent implements OnInit {
 
   ngOnInit() {
     const lastVerifDate = new Date(this.product.lastVerification);
-    lastVerifDate.setDate(lastVerifDate.getDate() + 7);
+    this.product.lastVerification = lastVerifDate.setDate(lastVerifDate.getDate() + 7);
     this.verifiedProduct = new Date(this.product.lastVerification).getTime() > Date.now();
     console.log('Date de validité jusqu"au : ' + new Date(this.product.lastVerification).getTime());
     console.log('Date du jour : ' + Date.now());
     console.log('vérification établie : ' + this.verifiedProduct);
+
   }
 
   onNoClick(): void {
@@ -62,6 +62,7 @@ export class ModalProductDetailsComponent implements OnInit {
   }
 
   async verifyCompliance() {
+    this.inProgress = true;
     console.log(JSON.stringify(this.product));
     const nutriments = {
       energy: this.product.nutriments.energy.toString(),
@@ -113,6 +114,7 @@ export class ModalProductDetailsComponent implements OnInit {
           console.log('La date de vérification a bien été modifée. Elle est active pendant une semaine');
         });
       }
+      this.inProgress = false;
     } catch (err) {
       console.log(err);
     }
@@ -210,11 +212,6 @@ export class ModalProductDetailsComponent implements OnInit {
         );
         setTimeout(() => {
           that.addHashes(
-            receipt.events.TriggerAddProduct.returnValues.hashes[0],
-            receipt.events.TriggerAddProduct.returnValues.hashes[1],
-            receipt.events.TriggerAddProduct.returnValues.hashes[2],
-            receipt.events.TriggerAddProduct.returnValues.hashes[3],
-            receipt.events.TriggerAddProduct.returnValues.hashes[4],
             receipt.events.TriggerAddProduct.returnValues.hashes[5],
             receipt.events.TriggerAddProduct.returnValues.proposerProduct,
             receipt.events.TriggerAddProduct.returnValues.voteDates
@@ -272,13 +269,8 @@ export class ModalProductDetailsComponent implements OnInit {
     });
   }
 
-  addHashes(labels_hash, ingredients_hash, additives_hash, nutriments_hash, variousDatas_hash, all_hash, addressProposer, voteDates) {
+  addHashes(all_hash, addressProposer, voteDates) {
     const insertHashes = {
-      labels_hash: labels_hash,
-      ingredients_hash: ingredients_hash,
-      additives_hash: additives_hash,
-      nutriments_hash: nutriments_hash,
-      variousData_hash: variousDatas_hash,
       all_hash: all_hash,
       addressProposer: addressProposer,
       voteDates: voteDates,

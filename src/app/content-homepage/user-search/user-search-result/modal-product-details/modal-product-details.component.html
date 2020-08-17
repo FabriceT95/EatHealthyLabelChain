@@ -6,8 +6,13 @@
         <mat-icon>policy</mat-icon>
       </button>
     <ng-template #isValid>
-      <div style="vertical-align: middle; float:right;">
+      <div *ngIf="!inProgress" style="vertical-align: middle; float:right;">
         <mat-icon>verified_user</mat-icon>
+      </div>
+    </ng-template>
+    <ng-template>
+      <div style="vertical-align: middle; float:right;">
+        <mat-spinner></mat-spinner>
       </div>
     </ng-template>
   </h2>

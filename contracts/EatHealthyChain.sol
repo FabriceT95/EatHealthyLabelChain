@@ -116,8 +116,8 @@ contract EatHealthyChain {
     uint16 _quantity,
     string memory _packaging
   ) checkLengthGS1(_productCode) public {
-    require(addressToUser[msg.sender].isExist == true);
-    require(productCodeToProposalProduct[_productCode].productProposerAddress == address(0));
+    require(addressToUser[msg.sender].isExist == true, "Cet utilisateur n'existe pas");
+    require(productCodeToProposalProduct[_productCode].productProposerAddress == address(0), "Ce produit est déjà proposé !");
     Product memory _product;
     Hashes memory _hashes;
     _product.productId = uniqueProductId;
@@ -150,6 +150,7 @@ contract EatHealthyChain {
          _productCode product targeted for the vote
   */
   function vote(bool _opinion, uint _productCode) public {
+    require(productCodeToProposalProduct[_productCode].productProposerAddress != msg.sender, "Vous ne pouvez pas voter pour votre propre proposition");
     require(addressToUser[msg.sender].tokenNumber > 0, "Vous n'avez pas assez de token");
     require(productCodeToProposalProduct[_productCode].isVotable, "Ce produit n'est pas en vote");
     require(productCodeToProposalProduct[_productCode].startDate < productCodeToProposalProduct[_productCode].endDate, "Le vote de ce produit est clos");

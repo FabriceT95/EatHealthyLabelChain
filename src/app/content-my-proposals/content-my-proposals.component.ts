@@ -19,7 +19,9 @@ export class ContentMyProposalsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getMyProposals();
+    setTimeout(() => {
+      this.getMyProposals();
+    }, 500);
     setInterval(() => {
       this.getMyProposals();
     }, 5000);
@@ -29,13 +31,15 @@ export class ContentMyProposalsComponent implements OnInit {
     const user_description = {
       user_address: this.web3.accounts[0]
     };
+
     this.server_sc.getMyProposals(user_description).then((result: Product[]) => {
       this.UserProductsProposal = [];
+      console.log(result.length);
       for (let i = 0; i < result.length; i++) {
         const uniqueSqlResult = result[i] as any;
         // const start_date = new Date(uniqueSqlResult.start_date * 1000);
         // const end_date = new Date(uniqueSqlResult.end_date * 1000).toString();
-        console.log('Result ' + i + ':' + result[i]);
+        console.log('Result ' + i + ':' + JSON.stringify(uniqueSqlResult));
         const singleProduct = this.product.createProduct(uniqueSqlResult);
           /*new Product(
           uniqueSqlResult.address_proposer,

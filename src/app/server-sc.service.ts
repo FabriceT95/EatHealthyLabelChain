@@ -84,7 +84,7 @@ export class ServerSCService {
   }
 
   addHashes(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_product_hashes/${event.all_hash}/${event.variousData_hash}/${event.nutriments_hash}/${event.labels_hash}/${event.additives_hash}/${event.ingredients_hash}/${event.addressProposer}/${event.voteDates[0]}/${event.voteDates[1]}/${event.status}`, event);
+    return this.request('POST', `${environment.serverUrl_SC}/add_product_infos/${event.all_hash}/${event.addressProposer}/${event.voteDates[0]}/${event.voteDates[1]}/${event.status}`, event);
   }
 
   addVariousDatas(event) {
