@@ -70,6 +70,21 @@ function createRouter(db){
 
     });
 
+    router.post('/add_alternative/:product_code_target/:product_code_alternative', async (req, res, next) =>{
+        db.query('INSERT INTO alternative_SC (product_code_target, product_code_alternative) VALUES(?,?)',
+        [req.params.product_code_target, req.params.product_code_alternative],
+        (error) => {
+            if(error) {
+                console.log(error);
+                res.status(500).json({status:'error', error:error});
+            } else {
+                res.status(200).json({status:'ok'});
+                console.log('DONE PRODUCT_INFOS');
+            }
+        })
+
+    });
+
     router.put('/new_vote/:product_code/:opinion', async (req, res, next) =>{
        let query;
        if(Boolean(req.params.opinion) === true) {
@@ -98,6 +113,19 @@ function createRouter(db){
 
      router.get('/votable_products/', async (req, res, next) =>{
         db.query("SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id INNER JOIN labels_SC ON productInfos_SC.id = labels_SC.id INNER JOIN nutriments_SC ON productInfos_SC.id = nutriments_SC.id INNER JOIN additives_SC ON productInfos_SC.id = additives_SC.id INNER JOIN ingredients_SC ON productInfos_SC.id = ingredients_SC.id WHERE status = 'NEW' OR status = 'IN_MODIFICATION';",
+        (error,results) => {
+            if(error) {
+                console.log(error);
+                res.status(500).json({status:'error', error:error});
+            } else {
+                res.status(200).json(results);
+            }
+        })
+
+    });
+
+    router.get('/get_product/:product_code', async (req, res, next) =>{
+        db.query("SELECT * FROM variousDatas_SC WHERE status = 'ACCEPTED' AND product_code = "+req.params.product_code+"; ",
         (error,results) => {
             if(error) {
                 console.log(error);
