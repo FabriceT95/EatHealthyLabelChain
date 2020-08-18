@@ -7,6 +7,13 @@ import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {ServerSCService} from '../../../../server-sc.service';
 
+interface Alternative {
+  product_name: string;
+  product_code: number;
+  for_votes: number;
+  against_votes: number;
+}
+
 @Component({
   selector: 'app-modal-product-details',
   templateUrl: './modal-product-details.component.html',
@@ -16,6 +23,7 @@ export class ModalProductDetailsComponent implements OnInit {
   public product: Product;
   public modifiedProduct: Product;
   public olderVersions: Product[];
+  public alternatives: { [productCode: number]: Alternative };
   inProgress = false;
   visible = true;
   selectable = false;
@@ -32,6 +40,9 @@ export class ModalProductDetailsComponent implements OnInit {
   panelOpenState_packaging = false;
   panelOpenState_quantity = false;
   verifiedProduct: boolean;
+  displayAddAlternativeField = false;
+  displayAlternativeInputResult = '';
+  displayDefaultResponseInputResult = false;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -54,11 +65,61 @@ export class ModalProductDetailsComponent implements OnInit {
     console.log('Date de validité jusqu"au : ' + new Date(this.product.lastVerification).getTime());
     console.log('Date du jour : ' + Date.now());
     console.log('vérification établie : ' + this.verifiedProduct);
+    const alternative_object = {
+      productCode: this.product.code
+    };
+    this.server_sc.getAlternatives(alternative_object).then((result: any) => {
+      for (let i = 0; i < result.length; i++) {
+        const uniqueSqlResult = result[i] as any;
+        console.log('Result ' + i + ':' + JSON.stringify(uniqueSqlResult));
+        this.alternatives[uniqueSqlResult.product_code] = {
+          product_name: uniqueSqlResult.product_name,
+          product_code: uniqueSqlResult.product_code,
+          for_votes: uniqueSqlResult.for_votes,
+          against_votes: uniqueSqlResult.against_votes
+        };
+      }
+    });
 
   }
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  async checkProductExists(input_product_code) {
+    const that = this;
+    const barcodeValue = input_product_code.value.trim();
+    if (Number(barcodeValue) && barcodeValue.length === 13) {
+      const product_exists = {
+        productCode: barcodeValue,
+      };
+      this.server_sc.getProduct(product_exists).then((result: Product[]) => {
+        if (result.length === 1) {
+          that.displayAlternativeInputResult = result[0].product_name;
+        } else if (that.alternatives[result[0].code]) {
+          that.displayAlternativeInputResult = 'Ce produit est déjà une alternative';
+        } else {
+          that.displayDefaultResponseInputResult = true;
+        }
+      });
+    }
+  }
+
+  async addAlternative(product_code) {
+    const that = this;
+    const product_object = {
+      productCode : product_code
+    };
+    this.server_sc.addAlternative(product_object).then((result: Product[]) => {
+      if (result.length === 1) {
+        that.displayAlternativeInputResult = result[0].product_name;
+      } else if (that.alternatives[result[0].code]) {
+        that.displayAlternativeInputResult = 'Ce produit est déjà une alternative';
+      } else {
+        that.displayDefaultResponseInputResult = true;
+      }
+    });
   }
 
   async verifyCompliance() {
@@ -76,7 +137,7 @@ export class ModalProductDetailsComponent implements OnInit {
       fiber: this.product.nutriments.fiber.toString(),
       sodium: this.product.nutriments.sodium.toString(),
     };
-    const product_hashes_contrat =  await this.web3.contract.methods.getProductHashes(this.product.code)
+    const product_hashes_contrat = await this.web3.contract.methods.getProductHashes(this.product.code)
       .call({from: this.web3.accounts[0]});
     const product_hashes_DB = await this.web3.contract.methods.verifyCompliance(
       this.product.code,

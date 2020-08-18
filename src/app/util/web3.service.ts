@@ -29,7 +29,6 @@ export class Web3Service {
 
   constructor(@Inject(WEB3) public web3: Web3) {
     const that = this;
-    console.log('CEST MON WEB3 : ' + that.web3.utils.fromAscii());
     this.getWeb3Provider();
     setInterval(() => {
       that.getAccount().then(function (result) {

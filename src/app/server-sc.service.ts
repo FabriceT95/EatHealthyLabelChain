@@ -46,27 +46,6 @@ export class ServerSCService {
     return this.date_order.asObservable();
   }
 
-  // changeAlphabeticalOrderVote(alphabeticalOrder_status) {
-  //   this.alphabetical_order_vote.next(alphabeticalOrder_status);
-  // }
-  // changeDateOrderVote(dateOrder_status) {
-  //   this.date_order_vote.next(dateOrder_status);
-  // }
-  // onChangeAlphabeticalOrderVote(): Observable<any> {
-  //   return this.alphabetical_order_vote.asObservable();
-  // }
-  // onChangeDateOrderVote(): Observable<any> {
-  //   return this.date_order_vote.asObservable();
-  // }
-  //
-  // changeUpdateContent(votable_products) {
-  //   console.log('loooooooool');
-  //   this.updateContent.next(votable_products);
-  // }
-  //
-  // onChangeUpdateContent(): Observable<any> {
-  //   return this.updateContent.asObservable();
-  // }
   addLabels(event) {
     return this.request('POST', `${environment.serverUrl_SC}/add_labels/${event.labels_hash}/${event.labels}`, event);
   }
@@ -99,6 +78,10 @@ export class ServerSCService {
     return this.request('POST', `${environment.serverUrl_SC}/add_vote/${event.all_hash}/${event.productCode}/${event.user_address}`, event);
   }
 
+  addAlternative(event) {
+    return this.request('POST', `${environment.serverUrl_SC}/add_alternative/${event.productCode}`, event);
+  }
+
   getMyProposals(event) {
     return this.request('GET', `${environment.serverUrl_SC}/get_my_proposals/${event.user_address}`, event);
   }
@@ -125,7 +108,14 @@ export class ServerSCService {
 
   getProductAndOlderVersions(event) {
     return this.request('GET', `${environment.serverUrl_SC}/get_product_and_older_version/${event.productCode}}`, event);
+  }
 
+  getProduct(event) {
+    return this.request('GET', `${environment.serverUrl_SC}/get_product/${event.productCode}}`, event);
+  }
+
+  getAlternatives(event) {
+    return this.request('GET', `${environment.serverUrl_SC}/get_alternatives/${event.productCode}}`, event);
   }
 
   getUser(event) {

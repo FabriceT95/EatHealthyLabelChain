@@ -37,40 +37,8 @@ export class ContentMyProposalsComponent implements OnInit {
       console.log(result.length);
       for (let i = 0; i < result.length; i++) {
         const uniqueSqlResult = result[i] as any;
-        // const start_date = new Date(uniqueSqlResult.start_date * 1000);
-        // const end_date = new Date(uniqueSqlResult.end_date * 1000).toString();
         console.log('Result ' + i + ':' + JSON.stringify(uniqueSqlResult));
         const singleProduct = this.product.createProduct(uniqueSqlResult);
-          /*new Product(
-          uniqueSqlResult.address_proposer,
-          uniqueSqlResult.productCode,
-          uniqueSqlResult.product_name,
-          {
-            carbohydrates: uniqueSqlResult.carbohydrates,
-            energy: uniqueSqlResult.energy,
-            energy_kcal: uniqueSqlResult.energy_kcal,
-            fat: uniqueSqlResult.fat,
-            fiber: uniqueSqlResult.fiber,
-            proteines: uniqueSqlResult.proteines,
-            salt: uniqueSqlResult.salt,
-            saturated_fat: uniqueSqlResult.saturated_fat,
-            sodium: uniqueSqlResult.sodium,
-            sugar: uniqueSqlResult.sugar
-          },
-          uniqueSqlResult.ingredients.split(','),
-          uniqueSqlResult.quantity,
-          uniqueSqlResult.product_type,
-          uniqueSqlResult.packaging,
-          uniqueSqlResult.label.split(','),
-          uniqueSqlResult.additive.split(','),
-          uniqueSqlResult.forVotes,
-          uniqueSqlResult.againstVotes,
-          uniqueSqlResult.alreadyVoted,
-          uniqueSqlResult.start_date,
-          uniqueSqlResult.end_date,
-          uniqueSqlResult.status,
-          uniqueSqlResult.all_hash
-        );*/
         this.UserProductsProposal.push(singleProduct);
       }
     });

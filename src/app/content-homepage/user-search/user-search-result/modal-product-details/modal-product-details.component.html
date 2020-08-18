@@ -1,6 +1,12 @@
 <mat-dialog-content>
   <!-- ADD NEW PRODUCT -->
-
+  <div style="display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+	align-content: stretch;">
+  <div>
   <h2>Détails du produit {{ product.product_name }} ({{ product.code }})
       <button *ngIf="!verifiedProduct; else isValid" mat-mini-fab color="primary" style="vertical-align: middle; float:right;" (click)="verifyCompliance()">
         <mat-icon>policy</mat-icon>
@@ -16,7 +22,6 @@
       </div>
     </ng-template>
   </h2>
-
   <mat-divider></mat-divider>
   <form (ngSubmit)="modifyProduct()">
     <div class="col-sm-4" style="word-break: break-all;">
@@ -309,4 +314,28 @@
 
     </div>
   </form>
+  </div>
+  <div>
+    <mat-divider></mat-divider>
+    <div style="display:flex; margin-top:10px; align-items: center">
+      <h4>Alternatives à ce produit : </h4>
+
+      <button (click)="displayAddAlternativeField = !displayAddAlternativeField" *ngIf="!displayAddAlternativeField else addAlternativeField" mat-flat-button color="primary" style="margin-left:10px; border-radius: 30px; min-width:70px ">Mon alternative <mat-icon>add</mat-icon></button>
+      <ng-template #addAlternativeField>
+        <mat-form-field class="example-full-width" style="margin-left:10px; min-width:70px">
+          <mat-label>Saisissez un code-barre (13 chiffres)</mat-label>
+          <input matInput #input_alternative (input)="checkProductExists(input_alternative)" />
+        </mat-form-field>
+        <div *ngIf="displayAlternativeInputResult">
+          <mat-icon>arrow_right_alt</mat-icon>
+          <span>{{ displayAlternativeInputResult }}</span>
+          <button (click)="addAlternative(product.code)" mat-flat-button color="primary" >OK</button>
+        </div>
+        <div *ngIf="displayDefaultResponseInputResult">
+          <span>Ce produit n'existe pas</span>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  </div>
 </mat-dialog-content>
