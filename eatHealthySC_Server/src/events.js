@@ -125,7 +125,7 @@ function createRouter(db){
     });
 
     router.get('/get_product/:product_code', async (req, res, next) =>{
-        db.query("SELECT * FROM variousDatas_SC WHERE status = 'ACCEPTED' AND product_code = "+req.params.product_code+"; ",
+        db.query("SELECT * FROM variousDatas_SC INNER JOIN productInfos_SC ON productInfos_SC.id = variousDatas_SC.id WHERE status = 'ACCEPTED' AND product_code = "+req.params.product_code+"; ",
         (error,results) => {
             if(error) {
                 console.log(error);
