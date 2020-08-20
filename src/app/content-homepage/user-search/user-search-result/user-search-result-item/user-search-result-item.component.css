@@ -1,0 +1,10 @@
+
+.user-search-result {
+  display: flex;
+  align-items: center;
+}
+.user-search-result-item__matcard {
+  background-color: #7ee8fa;
+  background-image: linear-gradient(315deg, #7ee8fa 0%, #80ff72 74%);
+
+}

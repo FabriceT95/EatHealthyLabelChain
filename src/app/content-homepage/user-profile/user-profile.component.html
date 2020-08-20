@@ -1,21 +1,21 @@
-<mat-card style="height:100%">
-  <mat-card-header>
-    <mat-card-title>Profil Utilisateur</mat-card-title>
+<mat-card class="user-profile">
+  <mat-card-header class="user-profile__header">
+    <mat-card-title class="user-profile__title">Profil Utilisateur</mat-card-title>
   </mat-card-header>
-  <mat-divider></mat-divider>
-  <mat-card-content>
-    <div class="row" style="padding-top:10px">
-      <div class="col-sm-12">
+<!--  <mat-divider></mat-divider>-->
+  <mat-card-content class="user-profile__content">
+    <div class="row">
+      <div class="col-sm-12" style="margin:auto">
         <p>
-          <strong>Adresse</strong> : <span style="font-size:11px">{{ walletAddress }}</span>
+          <strong>Adresse</strong><br/><span style="font-size:1.2vh">{{ walletAddress }}</span>
         </p>
 
         <p>
-          <strong>Réputation</strong> : {{ reputationPoints }}
+          <strong>Réputation</strong><br/> <span>{{ reputationPoints }}</span>
         </p>
 
         <p>
-          <strong>Nombre de votes restant</strong> : {{ remainingVotes }}
+          <strong>Nombre de votes restant</strong><br><span>{{ remainingVotes }}</span>
         </p>
       </div>
 

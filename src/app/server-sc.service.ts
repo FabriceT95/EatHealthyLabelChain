@@ -79,7 +79,7 @@ export class ServerSCService {
   }
 
   addAlternative(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_alternative/${event.productCode}`, event);
+    return this.request('POST', `${environment.serverUrl_SC}/add_alternative/${event.productCode}/${event.productCode_alternative}`, event);
   }
 
   getMyProposals(event) {

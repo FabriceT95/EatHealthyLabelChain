@@ -1,0 +1,10 @@
+hr {
+  display: block;
+  height: 0;
+  padding: 0;
+  border: 0;
+  font-family: arial;
+  text-align: center;
+  color: black;
+  line-height: 1;
+}

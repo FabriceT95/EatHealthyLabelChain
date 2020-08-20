@@ -1,9 +1,9 @@
-<mat-card style="height:100%">
-  <mat-card-header>
-    <mat-card-title>Gestionnaire de produit par l'utilisateur</mat-card-title>
+<mat-card  class="user-profile-manager">
+  <mat-card-header class="user-profile-manager__header">
+    <mat-card-title class="user-profile-manager__title">Gestionnaire de produit</mat-card-title>
   </mat-card-header>
   <mat-divider></mat-divider>
-  <mat-card-content>
+  <mat-card-content class="user-profile-manager__content">
     <div class="row" style="padding-top:2%; text-align: center">
       <p>Entrez un nouveau code-barre ou un code-barre existant à modifier</p>
       <mat-form-field appearance="fill" style="margin:0 auto">
@@ -13,10 +13,10 @@
     </div>
     <div class="row" style="padding-top:2%; text-align: center; margin:auto">
       <div #div_inputAddProduct style="display:none">
-        <button (click)="openDialog()" color="primary" mat-raised-button>Ajouter un nouveau produit</button>
+        <button (click)="openDialog()"  class="user-profile-manager__buttonAdd" mat-raised-button>Ajouter un nouveau produit</button>
       </div>
       <div #div_inputUpdateProduct style="display:none">
-        <button (click)="openDialogModify(input_product_code)" color="accent" mat-raised-button>Mise à jour d'un
+        <button (click)="openDialogModify(input_product_code)" color="accent" class="user-profile-manager__buttonModify" mat-raised-button>Mise à jour d'un
           produit
         </button>
       </div>

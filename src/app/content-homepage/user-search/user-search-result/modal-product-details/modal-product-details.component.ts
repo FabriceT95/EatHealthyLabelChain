@@ -65,7 +65,7 @@ export class ModalProductDetailsComponent implements OnInit {
     console.log('Date de validité jusqu"au : ' + new Date(this.product.lastVerification).getTime());
     console.log('Date du jour : ' + Date.now());
     console.log('vérification établie : ' + this.verifiedProduct);
-    const alternative_object = {
+   /* const alternative_object = {
       productCode: this.product.code
     };
     this.server_sc.getAlternatives(alternative_object).then((result: any) => {
@@ -79,7 +79,7 @@ export class ModalProductDetailsComponent implements OnInit {
           against_votes: uniqueSqlResult.against_votes
         };
       }
-    });
+    });*/
 
   }
 
@@ -106,10 +106,11 @@ export class ModalProductDetailsComponent implements OnInit {
     }
   }
 
-  async addAlternative(product_code) {
+  async addAlternative(product_code_alternative) {
     const that = this;
     const product_object = {
-      productCode : product_code
+      productCode : this.product.code,
+      productCode_alternative : product_code_alternative
     };
     this.server_sc.addAlternative(product_object).then((result: Product[]) => {
       if (result.length === 1) {

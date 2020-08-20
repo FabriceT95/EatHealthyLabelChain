@@ -1,0 +1,18 @@
+.header {
+  background-color: #20bf55;
+  background-image :linear-gradient(315deg, #20bf55 20%, #01baef 74%);
+}
+
+.header__router > a{
+  font-weight: bold;
+}
+
+.header__title {
+  font-family: 'Brand';
+}
+
+
+@font-face {
+  font-family: 'Brand'; /*a name to be used later*/
+  src: url('C:\Users\Fabrice\Desktop\Project_EatHealthyLabelChain\EatHealthyLabelChain\VarelaRound-Regular.ttf'); /*URL to font*/
+}
