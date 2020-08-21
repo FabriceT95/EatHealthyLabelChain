@@ -138,7 +138,7 @@ function createRouter(db){
     });
 
   router.get('/get_alternatives/:product_code', async (req, res, next) =>{
-    db.query("SELECT * FROM (SELECT prod2.product_code, prod2.product_name, alt.for_votes, alt.against_votes, productInfos_SC.status FROM alternatives_SC as alt INNER JOIN variousDatas_SC as prod1 ON prod1.product_code = alt.product_code_target INNER JOIN variousDatas_SC as prod2 ON prod2.product_code = alt.product_code_alternative INNER JOIN productInfos_SC ON productInfos_SC.id = prod2.id WHERE prod1.product_code = "+req.params.product_code+" AND (productInfos_SC.status = 'ACCEPTED' OR productInfos_SC.status = 'IN_MODIFICATION') ORDER BY FIELD(productInfos_SC.status, 'ACCEPTED', 'IN_MODIFICATION') as d GROUP BY d.product_name, d.product_code, d.for_votes; ",
+    db.query("SELECT * FROM (SELECT prod2.product_code, prod2.product_name, alt.for_votes, alt.against_votes, productInfos_SC.status FROM alternatives_SC as alt INNER JOIN variousDatas_SC as prod1 ON prod1.product_code = alt.product_code_target INNER JOIN variousDatas_SC as prod2 ON prod2.product_code = alt.product_code_alternative INNER JOIN productInfos_SC ON productInfos_SC.id = prod2.id WHERE prod1.product_code = "+req.params.product_code+" AND (productInfos_SC.status = 'ACCEPTED' OR productInfos_SC.status = 'IN_MODIFICATION') ORDER BY FIELD(productInfos_SC.status, 'ACCEPTED', 'IN_MODIFICATION')) as d GROUP BY d.product_name, d.product_code, d.for_votes; ",
       (error,results) => {
         if(error) {
           console.log(error);

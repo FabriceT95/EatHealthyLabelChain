@@ -115,7 +115,7 @@ export class ServerSCService {
   }
 
   getAlternatives(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/get_alternatives/${event.productCode}}`, event);
+    return this.request('GET', `${environment.serverUrl_SC}/get_alternatives/${event.productCode}`, event);
   }
 
   getUser(event) {
