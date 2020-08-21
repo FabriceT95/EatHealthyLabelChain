@@ -65,6 +65,7 @@ export class ModalProductDetailsComponent implements OnInit {
     console.log('Date de validité jusqu"au : ' + new Date(this.product.lastVerification).getTime());
     console.log('Date du jour : ' + Date.now());
     console.log('vérification établie : ' + this.verifiedProduct);
+    this.getAlternatives();
 
 
   }
