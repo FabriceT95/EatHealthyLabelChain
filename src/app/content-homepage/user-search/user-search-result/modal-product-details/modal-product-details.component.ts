@@ -23,7 +23,7 @@ export class ModalProductDetailsComponent implements OnInit {
   public product: Product;
   public modifiedProduct: Product;
   public olderVersions: Product[];
-  public alternatives: { [productCode: number]: Alternative };
+  public alternatives: { [productCode: number]: Alternative } = {};
   inProgress = false;
   visible = true;
   selectable = false;
@@ -42,7 +42,7 @@ export class ModalProductDetailsComponent implements OnInit {
   verifiedProduct: boolean;
   displayAddAlternativeField = false;
   displayAlternativeInputResult = '';
-  displayDefaultResponseInputResult = false;
+  displayDefaultResponseInputResult = '';
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -65,7 +65,39 @@ export class ModalProductDetailsComponent implements OnInit {
     console.log('Date de validité jusqu"au : ' + new Date(this.product.lastVerification).getTime());
     console.log('Date du jour : ' + Date.now());
     console.log('vérification établie : ' + this.verifiedProduct);
-   /* const alternative_object = {
+
+
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  async checkProductExists(input_product_code) {
+    const that = this;
+    const barcodeValue = input_product_code.value.trim();
+    if (Number(barcodeValue) === this.product.code) {
+      that.displayDefaultResponseInputResult = 'Vous ne pouvez pas faire ça !';
+    } else if (Number(barcodeValue) && barcodeValue.length === 13) {
+      const product_exists = {
+        productCode: barcodeValue,
+      };
+      this.server_sc.getProduct(product_exists).then((result: any) => {
+        console.log('Get product :' + JSON.stringify(result[0]));
+        console.log(that.alternatives);
+        if (result.length === 1 && !(result[0].product_code in that.alternatives)) {
+          that.displayAlternativeInputResult = result[0].product_name;
+        } else if (result.length === 0) {
+          that.displayDefaultResponseInputResult = barcodeValue + ' : Ce code-barre n\'existe pas';
+        } else {
+          that.displayDefaultResponseInputResult = barcodeValue + ' : Ce produit est déjà une alternative';
+        }
+      });
+    }
+  }
+
+  async getAlternatives() {
+   const alternative_object = {
       productCode: this.product.code
     };
     this.server_sc.getAlternatives(alternative_object).then((result: any) => {
@@ -79,47 +111,17 @@ export class ModalProductDetailsComponent implements OnInit {
           against_votes: uniqueSqlResult.against_votes
         };
       }
-    });*/
-
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-
-  async checkProductExists(input_product_code) {
-    const that = this;
-    const barcodeValue = input_product_code.value.trim();
-    if (Number(barcodeValue) && barcodeValue.length === 13) {
-      const product_exists = {
-        productCode: barcodeValue,
-      };
-      this.server_sc.getProduct(product_exists).then((result: Product[]) => {
-        if (result.length === 1) {
-          that.displayAlternativeInputResult = result[0].product_name;
-        } else if (that.alternatives[result[0].code]) {
-          that.displayAlternativeInputResult = 'Ce produit est déjà une alternative';
-        } else {
-          that.displayDefaultResponseInputResult = true;
-        }
-      });
-    }
+    });
   }
 
   async addAlternative(product_code_alternative) {
     const that = this;
     const product_object = {
       productCode : this.product.code,
-      productCode_alternative : product_code_alternative
+      productCode_alternative : product_code_alternative.value.trim()
     };
-    this.server_sc.addAlternative(product_object).then((result: Product[]) => {
-      if (result.length === 1) {
-        that.displayAlternativeInputResult = result[0].product_name;
-      } else if (that.alternatives[result[0].code]) {
-        that.displayAlternativeInputResult = 'Ce produit est déjà une alternative';
-      } else {
-        that.displayDefaultResponseInputResult = true;
-      }
+    this.server_sc.addAlternative(product_object).then(() => {
+      that.getAlternatives();
     });
   }
 

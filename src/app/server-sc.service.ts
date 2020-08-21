@@ -111,7 +111,7 @@ export class ServerSCService {
   }
 
   getProduct(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/get_product/${event.productCode}}`, event);
+    return this.request('GET', `${environment.serverUrl_SC}/get_product/${event.productCode}`, event);
   }
 
   getAlternatives(event) {

@@ -1,11 +1,6 @@
-<mat-dialog-content>
+<mat-dialog-content class="modal-product-details">
   <!-- ADD NEW PRODUCT -->
-  <div style="display: flex;
-	flex-direction: column;
-	flex-wrap: nowrap;
-	justify-content: flex-start;
-	align-items: stretch;
-	align-content: stretch;">
+  <div>
   <div>
   <h2>Détails du produit {{ product.product_name }} ({{ product.code }})
       <button *ngIf="!verifiedProduct; else isValid" mat-mini-fab color="primary" style="vertical-align: middle; float:right;" (click)="verifyCompliance()">
@@ -317,24 +312,64 @@
   </div>
   <div>
     <mat-divider></mat-divider>
-    <div style="display:flex; margin-top:10px; align-items: center">
-      <h4>Alternatives à ce produit : </h4>
+    <div class="modal-product_details__alternatives" style="margin-top:20px; font-style:italic">
+      <h3>Alternatives à ce produit</h3>
+      <br/>
+      <div class="modal-product-details__alternativesAdd" style="display:flex; margin-top:10px; align-items: center">
+      <h4>Proposez une alternative : </h4>
 
       <button (click)="displayAddAlternativeField = !displayAddAlternativeField" *ngIf="!displayAddAlternativeField else addAlternativeField" mat-flat-button color="primary" style="margin-left:10px; border-radius: 30px; min-width:70px ">Mon alternative <mat-icon>add</mat-icon></button>
       <ng-template #addAlternativeField>
-        <mat-form-field class="example-full-width" style="margin-left:10px; min-width:70px">
+        <mat-form-field style="margin-left:10px; min-width:70px">
           <mat-label>Saisissez un code-barre (13 chiffres)</mat-label>
           <input matInput #input_alternative (input)="checkProductExists(input_alternative)" />
         </mat-form-field>
-        <div *ngIf="displayAlternativeInputResult">
+        <div *ngIf="displayAlternativeInputResult" style="display:flex; align-items:center; justify-content: space-between; width:50%; margin-left:5%">
           <mat-icon>arrow_right_alt</mat-icon>
           <span>{{ displayAlternativeInputResult }}</span>
-          <button (click)="addAlternative(product.code)" mat-flat-button color="primary" >OK</button>
+          <button (click)="addAlternative(input_alternative)" mat-flat-button color="primary" >OK</button>
         </div>
-        <div *ngIf="displayDefaultResponseInputResult">
-          <span>Ce produit n'existe pas</span>
+        <div *ngIf="displayDefaultResponseInputResult" style="margin:auto">
+          <span>{{ displayDefaultResponseInputResult }}</span>
         </div>
       </ng-template>
+      </div>
+
+      <div class="modal-product-details__alternativesList" style="display:flex; padding : 20px; justify-content: space-between">
+        <div style="display:flex; margin-top:10px; align-items: center; flex-direction: column">
+        <h4>Top Alternatives : </h4>
+          <div class="modal-product-details__alternativesListTop">
+            <mat-expansion-panel style="max-width: 400px;">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  This is the expansion title
+                </mat-panel-title>
+                <mat-panel-description>
+                  This is a summary of the content
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <p>This is the primary content of the panel.</p>
+            </mat-expansion-panel>
+          </div>
+        </div>
+        <div style="display:flex; margin-top:10px; align-items: center; flex-direction: column">
+        <h4>New/Fresh Alternatives : </h4>
+        <div class="modal-product-details__alternativesListNew">
+          <mat-expansion-panel style="max-width: 400px;">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                This is the expansion title
+              </mat-panel-title>
+              <mat-panel-description>
+                This is a summary of the content
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <p>This is the primary content of the panel.</p>
+          </mat-expansion-panel>
+        </div>
+        </div>
+      </div>
+
     </div>
   </div>
   </div>

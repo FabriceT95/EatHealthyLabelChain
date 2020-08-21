@@ -34,10 +34,8 @@ export class ContentMyProposalsComponent implements OnInit {
 
     this.server_sc.getMyProposals(user_description).then((result: Product[]) => {
       this.UserProductsProposal = [];
-      console.log(result.length);
       for (let i = 0; i < result.length; i++) {
         const uniqueSqlResult = result[i] as any;
-        console.log('Result ' + i + ':' + JSON.stringify(uniqueSqlResult));
         const singleProduct = this.product.createProduct(uniqueSqlResult);
         this.UserProductsProposal.push(singleProduct);
       }

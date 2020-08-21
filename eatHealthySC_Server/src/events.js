@@ -71,7 +71,7 @@ function createRouter(db){
     });
 
     router.post('/add_alternative/:product_code_target/:product_code_alternative', async (req, res, next) =>{
-        db.query('INSERT INTO alternative_SC (product_code_target, product_code_alternative) VALUES(?,?)',
+        db.query('INSERT INTO alternatives_SC (product_code_target, product_code_alternative) VALUES(?,?)',
         [req.params.product_code_target, req.params.product_code_alternative],
         (error) => {
             if(error) {
@@ -79,7 +79,7 @@ function createRouter(db){
                 res.status(500).json({status:'error', error:error});
             } else {
                 res.status(200).json({status:'ok'});
-                console.log('DONE PRODUCT_INFOS');
+                console.log('ALTERNATIVE AJOUTEE');
             }
         })
 
@@ -88,7 +88,7 @@ function createRouter(db){
     router.put('/new_vote/:product_code/:opinion', async (req, res, next) =>{
        let query;
        if(Boolean(req.params.opinion) === true) {
-           query = 'UPDATE productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id SET productInfos_SC.for_votes = productInfos_SC.for_votes + 1 WHERE variousDatas_SC.product_code = '+req.params.product_code+';';     
+           query = 'UPDATE productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id SET productInfos_SC.for_votes = productInfos_SC.for_votes + 1 WHERE variousDatas_SC.product_code = '+req.params.product_code+';';
        } else {
         query = 'UPDATE productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id SET productInfos_SC.against_votes = productInfos_SC.against_votes + 1 WHERE variousDatas_SC.product_code = '+req.params.product_code+';';
        }
@@ -97,17 +97,17 @@ function createRouter(db){
     });
 
     router.put('/end_vote/:product_code/:for_votes/:against_votes/:lastVerificationDate', async (req, res, next) =>{
-        const query = 'UPDATE productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id SET productInfos_SC.status = IF('+req.params.for_votes+' >= '+req.params.against_votes+', "ACCEPTED", "REFUSED"), lastVerificationDate = FROM_UNIXTIME('+req.params.lastVerificationDate+') WHERE variousDatas_SC.product_code = '+req.params.product_code+' AND (productInfos_SC.status = "NEW" OR productInfos_SC.status = "IN_MODIFICATION");';        
+        const query = 'UPDATE productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id SET productInfos_SC.status = IF('+req.params.for_votes+' >= '+req.params.against_votes+', "ACCEPTED", "REFUSED"), lastVerificationDate = FROM_UNIXTIME('+req.params.lastVerificationDate+') WHERE variousDatas_SC.product_code = '+req.params.product_code+' AND (productInfos_SC.status = "NEW" OR productInfos_SC.status = "IN_MODIFICATION");';
         insertFunction(query,res);
      });
 
     router.put('/verification/:product_code/:lastVerificationDate', async (req, res, next) =>{
-        const query = 'UPDATE productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id SET lastVerificationDate = FROM_UNIXTIME('+req.params.lastVerificationDate+') WHERE variousDatas_SC.product_code = '+req.params.product_code+' AND productInfos_SC.status = "ACCEPTED";';        
+        const query = 'UPDATE productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id SET lastVerificationDate = FROM_UNIXTIME('+req.params.lastVerificationDate+') WHERE variousDatas_SC.product_code = '+req.params.product_code+' AND productInfos_SC.status = "ACCEPTED";';
         insertFunction(query,res);
      });
 
      router.put('/accepted_to_modified/:product_code', async (req, res, next) =>{
-        const query = 'UPDATE productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id SET lastVerificationDate = NULL, productInfos_SC.status = "MODIFIED" WHERE variousDatas_SC.product_code = '+req.params.product_code+' AND productInfos_SC.status = "ACCEPTED";';        
+        const query = 'UPDATE productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id SET lastVerificationDate = NULL, productInfos_SC.status = "MODIFIED" WHERE variousDatas_SC.product_code = '+req.params.product_code+' AND productInfos_SC.status = "ACCEPTED";';
         insertFunction(query,res);
      });
 
@@ -137,9 +137,22 @@ function createRouter(db){
 
     });
 
+  router.get('/get_alternatives/:product_code', async (req, res, next) =>{
+    db.query("SELECT * FROM (SELECT prod2.product_code, prod2.product_name FROM alternatives_SC as alt INNER JOIN variousDatas_SC as prod1 ON prod1.product_code = alt.product_code_target INNER JOIN variousDatas_SC as prod2 ON prod2 ON prod2.product_code = alt.product_code_alternative INNER JOIN productInfos_SC ON productInfos_SC.id = prod2.id WHERE prod1.product_code = "+req.params.product_code+" AND (productInfos_SC.status = 'ACCEPTED' OR productInfos_SC.status = 'IN_MODIFICATION') ORDER BY FIELD(productInfos_SC.status, 'ACCEPTED', 'IN_MODIFICATION') as d GROUP BY d.product_name, d.product_code, d.for_votes; ",
+      (error,results) => {
+        if(error) {
+          console.log(error);
+          res.status(500).json({status:'error', error:error});
+        } else {
+          res.status(200).json(results);
+        }
+      })
+
+  });
+
     router.get('/votable_products/:inputType/:inputValue/:alphabetical_name/:date_order', async (req, res, next) => {
         let query = "SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id INNER JOIN labels_SC ON productInfos_SC.id = labels_SC.id INNER JOIN nutriments_SC ON productInfos_SC.id = nutriments_SC.id INNER JOIN additives_SC ON productInfos_SC.id = additives_SC.id INNER JOIN ingredients_SC ON productInfos_SC.id = ingredients_SC.id WHERE status = 'NEW' OR status = 'IN_MODIFICATION' ";
-     
+
         switch(req.params.inputType) {
             case 'productCode':
                 query += "AND "+req.params.inputType+" LIKE ";
@@ -203,7 +216,7 @@ function createRouter(db){
 
     router.get('/accepted_products/:inputType/:inputValue/:alphabetical_name/:date_order', async (req, res, next) => {
         let query = "SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id INNER JOIN labels_SC ON productInfos_SC.id = labels_SC.id INNER JOIN nutriments_SC ON productInfos_SC.id = nutriments_SC.id INNER JOIN additives_SC ON productInfos_SC.id = additives_SC.id INNER JOIN ingredients_SC ON productInfos_SC.id = ingredients_SC.id WHERE (status = 'ACCEPTED' OR status = 'MODIFIED') ";
-     
+
         switch(req.params.inputType) {
             case 'product_code':
                 query += "AND "+req.params.inputType+" LIKE ";
