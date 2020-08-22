@@ -9,7 +9,7 @@ import {ServerSCService} from '../../../../server-sc.service';
 
 interface Alternative {
   product_name: string;
-  product_code: number;
+  product_code_alternative: number;
   for_votes: number;
   against_votes: number;
   opinion?: any;
@@ -109,7 +109,7 @@ export class ModalProductDetailsComponent implements OnInit {
        // console.log('Result ' + i + ':' + JSON.stringify(uniqueSqlResult));
         this.alternatives[uniqueSqlResult.product_code] = {
           product_name: uniqueSqlResult.product_name,
-          product_code: uniqueSqlResult.product_code,
+          product_code_alternative: uniqueSqlResult.product_code,
           for_votes: uniqueSqlResult.for_votes,
           against_votes: uniqueSqlResult.against_votes
         };
@@ -138,6 +138,8 @@ export class ModalProductDetailsComponent implements OnInit {
   }
 
   async voteAlternative(product_code_alternative, opinion) {
+    console.log(product_code_alternative);
+    console.log('cette alternative : ' + this.alternatives[product_code_alternative]);
     const product_vote_object = {
       productCode : this.product.code,
       user_address : this.web3.accounts[0],

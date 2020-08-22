@@ -9,11 +9,11 @@ function createRouter(db) {
   });
 
   router.post('/add_vote/:all_hash/:product_code/:user_address', async (req, res, next) => {
-    insertFunction('INSERT INTO Voters_SC (product_code, address, all_hash, type) VALUES ("' + req.params.product_code + '","' + req.params.user_address + '","' + req.params.all_hash + '", "Product")', res);
+    insertFunction('INSERT INTO Voters_SC (product_code, address, all_hash, type) VALUES (' + req.params.product_code + ',"' + req.params.user_address + '","' + req.params.all_hash + '", "Product")', res);
   });
 
   router.post('/add_vote_alternative/:all_hash/:product_code/:product_code_alternative/:user_address/:opinion', async (req, res, next) => {
-    insertFunction('INSERT INTO Voters_SC (product_code, address, all_hash, product_code_alternative, type, opinion) VALUES ("' + req.params.product_code + '","' + req.params.user_address + '","' + req.params.all_hash + '","' + req.params.product_code_alternative + '","' + req.params.opinion + '" , "Alternative")', res);
+    insertFunction('INSERT INTO Voters_SC (product_code, address, all_hash, product_code_alternative, type, opinion) VALUES (' + req.params.product_code + ',"' + req.params.user_address + '","' + req.params.all_hash + '",' + req.params.product_code_alternative + ',' + req.params.opinion + ', "Alternative")', res);
   });
 
   router.post('/add_labels/:labels_hash/:labels', async (req, res, next) => {
