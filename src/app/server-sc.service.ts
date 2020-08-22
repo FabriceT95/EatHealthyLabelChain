@@ -122,8 +122,20 @@ export class ServerSCService {
     return this.request('GET', `${environment.serverUrl_SC}/user/${event.user_address}`, event);
   }
 
+  getAlternatives_voter_for_product(event) {
+    return this.request('GET', `${environment.serverUrl_SC}/get_alternative_voter_for_product/${event.user_address}/${event.productCode}`, event);
+  }
+
+  addVoteAlternative(event) {
+    return this.request('POST', `${environment.serverUrl_SC}/add_vote_alternative/${event.user_address}/${event.all_hash}/${event.productCode}/${event.productCode_alternative}/${event.opinion}`, event);
+  }
+
   UpdateVote(event) {
-    return this.request('PUT', `${environment.serverUrl_SC}/new_vote/${event.productCode}/${event.opinion}/`, event);
+    return this.request('PUT', `${environment.serverUrl_SC}/new_vote/${event.productCode}`, event);
+  }
+
+  UpdateVoteAlternative(event) {
+    return this.request('PUT', `${environment.serverUrl_SC}/new_vote_alternative/${event.productCode}/${event.product_code_alternative}/${event.opinion}/${event.prev_opinion}`, event);
   }
 
 

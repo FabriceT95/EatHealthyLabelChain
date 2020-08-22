@@ -335,22 +335,43 @@
       </ng-template>
       </div>
 
-      <div class="modal-product-details__alternativesList" style="display:flex; padding : 20px; justify-content: space-between">
+      <div class="modal-product-details__alternativesList" style="display:flex; padding : 20px; justify-content: space-between;">
         <div style="display:flex; margin-top:10px; align-items: center; flex-direction: column">
         <h4>Top Alternatives : </h4>
-          <div class="modal-product-details__alternativesListTop">
-            <mat-expansion-panel style="max-width: 400px;">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  This is the expansion title
-                </mat-panel-title>
-                <mat-panel-description>
-                  This is a summary of the content
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <p>This is the primary content of the panel.</p>
-            </mat-expansion-panel>
+          <div *ngIf="alternatives">
+          <div *ngFor="let alternative of alternatives | keyvalue" class="modal-product-details__alternativesListTop">
+            <mat-card style="width: 400px; max-width: 400px; margin-bottom : 5px; display:flex; justify-content: space-between; align-items: center">
+              <div style="flex:0.7">{{ alternative.value.product_name }}</div>
+              <div style="    background-color: #fff;
+  box-shadow: 10px 0 10px -3px #fff;
+ position: relative;
+ z-index: 10; border: 1px solid;border-radius: 5px; padding:5px; flex:0.3; display:flex; justify-content: space-around; align-items: center">
+                <mat-icon class="modal-product-details_alternativeAgainstBtn" (click)="voteAlternative(alternative.value.product_code_alternative,false)">remove</mat-icon>
+              <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>
+              <mat-icon class="modal-product-details_alternativeForBtn" (click)="voteAlternative(alternative.value.product_code_alternative,true)">add</mat-icon>
+            </div>
+            </mat-card>
+
+<!--            <mat-expansion-panel style="width: 400px; max-width: 400px; margin-bottom : 5px">-->
+<!--              <mat-expansion-panel-header>-->
+<!--                <mat-panel-title style="width: 200px; max-width: 200px; overflow:auto; align-items: center">-->
+<!--                  -->
+<!--                </mat-panel-title>-->
+<!--                <mat-panel-description style="justify-content: center;">-->
+<!--                  <div style="    background-color: #fff;-->
+<!--    box-shadow: 10px 0 10px -3px #fff;-->
+<!--    position: relative;-->
+<!--    z-index: 10; border: 1px solid;border-radius: 5px; padding:5px">-->
+<!--                    <mat-icon class="modal-product-details_alternativeAgainstBtn">remove</mat-icon>-->
+<!--                    <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>-->
+<!--                    <mat-icon class="modal-product-details_alternativeForBtn">add</mat-icon>-->
+<!--                  </div>-->
+<!--                </mat-panel-description>-->
+<!--              </mat-expansion-panel-header>-->
+<!--              <p>This is the primary content of the panel.</p>-->
+<!--            </mat-expansion-panel>-->
           </div>
+        </div>
         </div>
         <div style="display:flex; margin-top:10px; align-items: center; flex-direction: column">
         <h4>New/Fresh Alternatives : </h4>

@@ -12,6 +12,7 @@ interface Alternative {
   product_code: number;
   for_votes: number;
   against_votes: number;
+  opinion?: any;
 }
 
 @Component({
@@ -99,12 +100,13 @@ export class ModalProductDetailsComponent implements OnInit {
 
   async getAlternatives() {
    const alternative_object = {
-      productCode: this.product.code
+      productCode: this.product.code,
+     user_address: this.web3.accounts[0]
     };
     this.server_sc.getAlternatives(alternative_object).then((result: any) => {
       for (let i = 0; i < result.length; i++) {
         const uniqueSqlResult = result[i] as any;
-        console.log('Result ' + i + ':' + JSON.stringify(uniqueSqlResult));
+       // console.log('Result ' + i + ':' + JSON.stringify(uniqueSqlResult));
         this.alternatives[uniqueSqlResult.product_code] = {
           product_name: uniqueSqlResult.product_name,
           product_code: uniqueSqlResult.product_code,
@@ -112,6 +114,15 @@ export class ModalProductDetailsComponent implements OnInit {
           against_votes: uniqueSqlResult.against_votes
         };
       }
+    });
+
+    this.server_sc.getAlternatives_voter_for_product(alternative_object).then((result: any) => {
+      for (let i = 0; i < result.length; i++) {
+        const uniqueSqlResult = result[i] as any;
+        // console.log('Result ' + i + ':' + JSON.stringify(uniqueSqlResult));
+        this.alternatives[uniqueSqlResult.product_code].opinion = uniqueSqlResult.opinion;
+      }
+      console.log(this.alternatives);
     });
   }
 
@@ -124,6 +135,27 @@ export class ModalProductDetailsComponent implements OnInit {
     this.server_sc.addAlternative(product_object).then(() => {
       that.getAlternatives();
     });
+  }
+
+  async voteAlternative(product_code_alternative, opinion) {
+    const product_vote_object = {
+      productCode : this.product.code,
+      user_address : this.web3.accounts[0],
+      all_hash : this.product.all_hash,
+      productCode_alternative : product_code_alternative,
+      opinion : opinion,
+      prev_opinion : this.alternatives[product_code_alternative].opinion
+    };
+
+    this.server_sc.addVoteAlternative(product_vote_object).then(() => {
+      console.log('Nouveau vote pour ce produit : ' + product_vote_object.productCode);
+      this.server_sc.UpdateVoteAlternative(product_vote_object).then(() => {
+        this.getAlternatives();
+
+      });
+    });
+
+
   }
 
   async verifyCompliance() {
