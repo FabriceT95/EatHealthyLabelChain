@@ -140,13 +140,14 @@ export class ModalProductDetailsComponent implements OnInit {
   async voteAlternative(product_code_alternative, opinion) {
     console.log(product_code_alternative);
     console.log('cette alternative : ' + this.alternatives[product_code_alternative]);
+    const previous_opinion = this.alternatives[product_code_alternative].opinion;
     const product_vote_object = {
       productCode : this.product.code,
       user_address : this.web3.accounts[0],
       all_hash : this.product.all_hash,
       productCode_alternative : product_code_alternative,
-      opinion : opinion,
-      prev_opinion : this.alternatives[product_code_alternative].opinion
+      opinion : opinion ? 1 : -1,
+      prev_opinion : previous_opinion === undefined ? 0 : (previous_opinion ? 1 : -1),
     };
 
     this.server_sc.addVoteAlternative(product_vote_object).then(() => {
