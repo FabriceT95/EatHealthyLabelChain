@@ -127,7 +127,7 @@ export class ServerSCService {
   }
 
   addVoteAlternative(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_vote_alternative/${event.user_address}/${event.all_hash}/${event.productCode}/${event.productCode_alternative}/${event.opinion}`, event);
+    return this.request('POST', `${environment.serverUrl_SC}/add_vote_alternative/${event.all_hash}/${event.productCode}/${event.productCode_alternative}/${event.user_address}/${event.opinion}`, event);
   }
 
   UpdateVote(event) {
