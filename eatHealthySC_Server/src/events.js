@@ -101,7 +101,7 @@ function createRouter(db) {
   });
 
   router.put('/new_vote_alternative/:product_code/:product_code_alternative/:opinion/:prev_opinion', async (req, res, next) => {
-    const  query = 'UPDATE alternatives_SC SET for_votes = IF(' + req.params.opinion + ' = 1, for_votes + 1, IF(' + req.params.prev_opinion + ' = 1, for_votes - 1, for_votes)), SET against_votes =  IF(' + req.params.opinion + ' = -1, against_votes + 1,  IF(' + req.params.prev_opinion + ' = -1, against_votes - 1, against_votes)) WHERE product_code = ' + req.params.product_code + ' AND product_code_alternative = ' + req.params.product_code_alternative + ';';
+    const  query = 'UPDATE alternatives_SC SET for_votes = IF(' + req.params.opinion + ' = 1, for_votes + 1, IF(' + req.params.prev_opinion + ' = 1, for_votes - 1, for_votes)), against_votes =  IF(' + req.params.opinion + ' = -1, against_votes + 1,  IF(' + req.params.prev_opinion + ' = -1, against_votes - 1, against_votes)) WHERE product_code_target = ' + req.params.product_code + ' AND product_code_alternative = ' + req.params.product_code_alternative + ';';
     insertFunction(query, res);
 
   });
