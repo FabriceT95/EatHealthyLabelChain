@@ -114,16 +114,17 @@ export class ModalProductDetailsComponent implements OnInit {
           against_votes: uniqueSqlResult.against_votes
         };
       }
+      this.server_sc.getAlternatives_voter_for_product(alternative_object).then((result_2: any) => {
+        for (let i = 0; i < result_2.length; i++) {
+          const uniqueSqlResult = result_2[i] as any;
+          this.alternatives[uniqueSqlResult.product_code].opinion = uniqueSqlResult.opinion;
+          console.log(uniqueSqlResult.opinion);
+        }
+        console.log(this.alternatives);
+      });
     });
 
-    this.server_sc.getAlternatives_voter_for_product(alternative_object).then((result: any) => {
-      for (let i = 0; i < result.length; i++) {
-        const uniqueSqlResult = result[i] as any;
-        // console.log('Result ' + i + ':' + JSON.stringify(uniqueSqlResult));
-        this.alternatives[uniqueSqlResult.product_code].opinion = uniqueSqlResult.opinion;
-      }
-      console.log(this.alternatives);
-    });
+
   }
 
   async addAlternative(product_code_alternative) {
@@ -154,6 +155,7 @@ export class ModalProductDetailsComponent implements OnInit {
       console.log('Nouveau vote pour ce produit : ' + product_vote_object.productCode);
       this.server_sc.UpdateVoteAlternative(product_vote_object).then(() => {
         this.getAlternatives();
+
 
       });
     });

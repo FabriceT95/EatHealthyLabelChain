@@ -135,7 +135,7 @@ function createRouter(db) {
   });
 
   router.get('/get_alternative_voter_for_product/:user_address/:product_code', async (req, res, next) => {
-    db.query('SELECT * FROM Voters_SC WHERE product_code = ' + req.params.product_code + ' AND address =  ' + req.params.user_address + ' AND type = "Alternative";',
+    db.query('SELECT * FROM Voters_SC WHERE product_code = ' + req.params.product_code + ' AND address =  "' + req.params.user_address + '" AND type = "Alternative";',
       (error, results) => {
         if (error) {
           console.log(error);

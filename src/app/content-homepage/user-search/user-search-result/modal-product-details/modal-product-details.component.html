@@ -1,397 +1,412 @@
 <mat-dialog-content class="modal-product-details">
   <!-- ADD NEW PRODUCT -->
   <div>
-  <div>
-  <h2>Détails du produit {{ product.product_name }} ({{ product.code }})
-      <button *ngIf="!verifiedProduct; else isValid" mat-mini-fab color="primary" style="vertical-align: middle; float:right;" (click)="verifyCompliance()">
-        <mat-icon>policy</mat-icon>
-      </button>
-    <ng-template #isValid>
-      <div *ngIf="!inProgress" style="vertical-align: middle; float:right;">
-        <mat-icon>verified_user</mat-icon>
-      </div>
-    </ng-template>
-    <ng-template>
-      <div style="vertical-align: middle; float:right;">
-        <mat-spinner></mat-spinner>
-      </div>
-    </ng-template>
-  </h2>
-  <mat-divider></mat-divider>
-  <form (ngSubmit)="modifyProduct()">
-    <div class="col-sm-4" style="word-break: break-all;">
-      <div class="row" style="margin:5%">
-        <ul style="list-style-type:none;">
-          <li>
-            <mat-form-field>
-              <mat-label>Nom du produit :</mat-label>
+    <div>
+      <h2>Détails du produit {{ product.product_name }} ({{ product.code }})
+        <button (click)="verifyCompliance()" *ngIf="!verifiedProduct; else isValid" color="primary"
+                mat-mini-fab style="vertical-align: middle; float:right;">
+          <mat-icon>policy</mat-icon>
+        </button>
+        <ng-template #isValid>
+          <div *ngIf="!inProgress" style="vertical-align: middle; float:right;">
+            <mat-icon>verified_user</mat-icon>
+          </div>
+        </ng-template>
+        <ng-template>
+          <div style="vertical-align: middle; float:right;">
+            <mat-spinner></mat-spinner>
+          </div>
+        </ng-template>
+      </h2>
+      <mat-divider></mat-divider>
+      <form (ngSubmit)="modifyProduct()">
+        <div class="col-sm-4" style="word-break: break-all;">
+          <div class="row" style="margin:5%">
+            <ul style="list-style-type:none;">
+              <li>
+                <mat-form-field>
+                  <mat-label>Nom du produit :</mat-label>
+                  <div *ngIf="olderVersions.length > 0">
+                    <mat-accordion>
+                      <mat-expansion-panel (closed)="panelOpenState_product_name = false"
+                                           (opened)="panelOpenState_product_name = true">
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>
+                            Nom de ce produit précédemment
+                          </mat-panel-title>
+                          <mat-panel-description>
+                            Il y a eu {{ olderVersions.length }} modification(s) de ce code-barre
+                          </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div *ngFor="let olderVersion of olderVersions">
+                          <span> -> {{ olderVersion.product_name}}</span>
+                        </div>
+                      </mat-expansion-panel>
+                    </mat-accordion>
+                  </div>
+
+                  <input [readonly]="readOnly" matInput value="{{ product.product_name }}">
+                </mat-form-field>
+              </li>
+              <li>
+                <span>Proposeur : </span> <strong>{{ product.addressProposer}}</strong>
+              </li>
+              <li><span>Début du vote : </span><strong>{{ product.startDate }}</strong></li>
+              <li><span>Fin du vote : </span><strong>{{ product.endDate }}</strong></li>
+              <!--        <li><span>Nombre de votes actuel : </span><strong>{{ product[0].totalVotes}}</strong></li>-->
+              <li><span>Nombre de votes "Pour" actuel : </span><strong>{{ product.forVotes}}</strong></li>
+              <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ product.againstVotes}}</strong></li>
+            </ul>
+          </div>
+          <mat-checkbox (change)="activateFields()" class="example-margin" name="none">JE CERTIFIE D'AVOIR LE MILLIARD
+            DE
+            PAGES DE CGU AINSI QUE DE NE PAS ETRE UN GROS CONNARD
+          </mat-checkbox>
+          <div class="row" style="margin:5%">
+            <div class="col-sm-6">
+              <button [disabled]="sameObject" color="primary" mat-raised-button type="submit">PROPOSER MA MODIFICATION
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-8">
+          <div class="row" style="margin:5%; text-align: center">
+            <div class="col-sm-5">
+              <h4 style="text-align: center">Section Labels</h4>
               <div *ngIf="olderVersions.length > 0">
                 <mat-accordion>
-                  <mat-expansion-panel (closed)="panelOpenState_product_name = false"
-                                       (opened)="panelOpenState_product_name = true">
+                  <mat-expansion-panel (closed)="panelOpenState_labels = false"
+                                       (opened)="panelOpenState_labels = true">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
-                        Nom de ce produit précédemment
+                        Labels indiqués pour ce produit précédemment
                       </mat-panel-title>
-                      <mat-panel-description>
-                        Il y a eu {{ olderVersions.length }} modification(s) de ce code-barre
-                      </mat-panel-description>
                     </mat-expansion-panel-header>
                     <div *ngFor="let olderVersion of olderVersions">
-                      <span> -> {{ olderVersion.product_name}}</span>
+                      <span> -> {{ olderVersion.labels}}</span>
                     </div>
                   </mat-expansion-panel>
                 </mat-accordion>
               </div>
 
-              <input [readonly]="readOnly" matInput value="{{ product.product_name }}">
-            </mat-form-field>
-          </li>
-          <li>
-            <span>Proposeur : </span> <strong>{{ product.addressProposer}}</strong>
-          </li>
-          <li><span>Début du vote : </span><strong>{{ product.startDate }}</strong></li>
-          <li><span>Fin du vote : </span><strong>{{ product.endDate }}</strong></li>
-          <!--        <li><span>Nombre de votes actuel : </span><strong>{{ product[0].totalVotes}}</strong></li>-->
-          <li><span>Nombre de votes "Pour" actuel : </span><strong>{{ product.forVotes}}</strong></li>
-          <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ product.againstVotes}}</strong></li>
-        </ul>
-      </div>
-      <mat-checkbox (change)="activateFields()" class="example-margin" name="none">JE CERTIFIE D'AVOIR LE MILLIARD DE
-        PAGES DE CGU AINSI QUE DE NE PAS ETRE UN GROS CONNARD
-      </mat-checkbox>
-      <div class="row" style="margin:5%">
-        <div class="col-sm-6">
-          <button [disabled]="sameObject" color="primary" mat-raised-button type="submit">PROPOSER MA MODIFICATION
+              <mat-form-field>
+                <mat-chip-list #chipList aria-label="Fruit selection">
+                  <mat-chip (removed)="remove(label,1)" *ngFor="let label of modifiedProduct.labels"
+                            [removable]="!readOnly" [selectable]="selectable">
+                    {{label}}
+                    <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                  <input (matChipInputTokenEnd)="add($event,1)" *ngIf="!readOnly"
+                         [matChipInputAddOnBlur]="addOnBlur"
+                         [matChipInputFor]="chipList"
+                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                         placeholder="Nouveaux labels...">
+                </mat-chip-list>
+              </mat-form-field>
+              <div *ngIf="olderVersions.length > 0">
+                <mat-accordion>
+                  <mat-expansion-panel (closed)="panelOpenState_additifs = false"
+                                       (opened)="panelOpenState_additifs = true">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Additifs indiqués pour ce produit précédemment
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let olderVersion of olderVersions">
+                      <span> -> {{ olderVersion.additifs}}</span>
+                    </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+              <mat-form-field>
+                <mat-chip-list #chipList aria-label="Fruit selection">
+                  <mat-chip (removed)="remove(additif,2)" *ngFor="let additif of modifiedProduct.additifs"
+                            [removable]="!readOnly" [selectable]="selectable">
+                    {{additif}}
+                    <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                  <input (matChipInputTokenEnd)="add($event,2)" *ngIf="!readOnly"
+                         [matChipInputAddOnBlur]="addOnBlur"
+                         [matChipInputFor]="chipList"
+                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                         placeholder="Nouveaux additifs...">
+                </mat-chip-list>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-5">
+              <h4 style="text-align: center">Section Ingredients</h4>
+              <div *ngIf="olderVersions.length > 0">
+                <mat-accordion>
+                  <mat-expansion-panel (closed)="panelOpenState_ingredients = false"
+                                       (opened)="panelOpenState_ingredients = true">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Ingrédients indiqués pour ce produit précédemment
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let olderVersion of olderVersions">
+                      <span> -> {{ olderVersion.ingredients}}</span>
+                    </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+              <mat-form-field>
+                <mat-chip-list #chipList aria-label="Fruit selection">
+                  <mat-chip (removed)="remove(ingredient,3)" *ngFor="let ingredient of modifiedProduct.ingredients"
+                            [removable]="!readOnly" [selectable]="selectable">
+                    {{ingredient}}
+                    <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                  <input (matChipInputTokenEnd)="add($event,3)" *ngIf="!readOnly"
+                         [matChipInputAddOnBlur]="addOnBlur"
+                         [matChipInputFor]="chipList"
+                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                         placeholder="Nouveau Ingrédients...">
+                </mat-chip-list>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row" style="margin:5%; text-align: center">
+            <div class="col-sm-5">
+              <h4 style="text-align: center">Section Nutrition</h4>
+              <div *ngIf="olderVersions.length > 0">
+                <mat-accordion>
+                  <mat-expansion-panel (closed)="panelOpenState_nutriments = false"
+                                       (opened)="panelOpenState_nutriments = true">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Nutriments indiqués pour ce produit précédemment
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let olderVersion of olderVersions">
+                      <span> -> {{ olderVersion.nutriments}}</span>
+                    </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+              <mat-form-field>
+                <mat-label>Energie :</mat-label>
+                <input [(ngModel)]="product.nutriments.energy" [readonly]="readOnly" matInput
+                       name="energy" value="{{ product.nutriments.energy }}">
+                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="product.nutriments[0]"  name="energy">-->
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Energie (en kcal) :</mat-label>
+                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[1]" value="{{ product.nutriments[1] }}" name="energy_kcal">-->
+                <input [(ngModel)]="modifiedProduct.nutriments.energy_kcal" [readonly]="readOnly" matInput
+                       name="energy_kcal">
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Protéines :</mat-label>
+                <!--        <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[2]" value="{{ product.nutriments[2] }}" name="proteines">-->
+                <input [(ngModel)]="modifiedProduct.nutriments.proteines" [readonly]="readOnly" matInput
+                       name="proteines">
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Glucides :</mat-label>
+                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[3]" value="{{ product.nutriments[3] }}" name="glucides">-->
+                <input [(ngModel)]="modifiedProduct.nutriments.carbohydrates" [readonly]="readOnly" matInput
+                       name="glucides">
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Sel :</mat-label>
+                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[4]" value="{{ product.nutriments[4] }}" name="sel">-->
+                <input [(ngModel)]="modifiedProduct.nutriments.salt" [readonly]="readOnly" matInput name="sel">
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Sucre :</mat-label>
+                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[5]" value="{{ product.nutriments[5] }}" name="sucre">-->
+                <input [(ngModel)]="modifiedProduct.nutriments.sugar" [readonly]="readOnly" matInput name="sucre">
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Graisses :</mat-label>
+                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[6]" value="{{ product.nutriments[6] }}" name="graisses">-->
+                <input [(ngModel)]="modifiedProduct.nutriments.fat" [readonly]="readOnly" matInput name="graisses">
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Dont matières grasses :</mat-label>
+                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[7]" value="{{ product.nutriments[7] }}" name="mat_grasse">-->
+                <input [(ngModel)]="modifiedProduct.nutriments.saturated_fat" [readonly]="readOnly" matInput
+                       name="mat_grasse">
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Fibre :</mat-label>
+                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[8]" value="{{ product.nutriments[8] }}" name="fibre">-->
+                <input [(ngModel)]="modifiedProduct.nutriments.fiber" [readonly]="readOnly" matInput name="fibre">
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Sodium :</mat-label>
+                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[9]" value="{{ product.nutriments[9] }}" name="sodium" >-->
+                <input [(ngModel)]="modifiedProduct.nutriments.sodium" [readonly]="readOnly" matInput name="sodium">
+              </mat-form-field>
+            </div>
+            <div class="col-sm-5">
+              <h4 style="text-align: center">Section Divers</h4>
+              <div *ngIf="olderVersions.length > 0">
+                <mat-accordion>
+                  <mat-expansion-panel (closed)="panelOpenState_generic_name = false"
+                                       (opened)="panelOpenState_generic_name = true">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Type de produit indiqués pour ce produit précédemment
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let olderVersion of olderVersions">
+                      <span> -> {{ olderVersion.generic_name}}</span>
+                    </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+              <mat-form-field>
+                <mat-label>Type de produit :</mat-label>
+                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.generic_name" value="{{ product.generic_name }}">-->
+                <input [(ngModel)]="modifiedProduct.generic_name" [readonly]="readOnly" matInput name="generic_name">
+              </mat-form-field>
+
+              <div *ngIf="olderVersions.length > 0">
+                <mat-accordion>
+                  <mat-expansion-panel (closed)="panelOpenState_packaging = false"
+                                       (opened)="panelOpenState_packaging = true">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Packaging indiqués pour ce produit précédemment
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let olderVersion of olderVersions">
+                      <span> -> {{ olderVersion.packaging}}</span>
+                    </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+              <mat-form-field>
+                <mat-label>Emballage :</mat-label>
+                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.packaging" value="{{ product.packaging }}">-->
+                <input [(ngModel)]="modifiedProduct.packaging" [readonly]="readOnly" matInput name="packaging">
+              </mat-form-field>
+
+              <div *ngIf="olderVersions.length > 0">
+                <mat-accordion>
+                  <mat-expansion-panel (closed)="panelOpenState_quantity = false"
+                                       (opened)="panelOpenState_quantity = true">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Quantité indiquées pour ce produit précédemment
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let olderVersion of olderVersions">
+                      <span> -> {{ olderVersion.quantity}}</span>
+                    </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+
+              <mat-form-field>
+                <mat-label>Quantité :</mat-label>
+                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.quantity" value="{{ product.quantity }}">-->
+                <input [(ngModel)]="modifiedProduct.quantity" [readonly]="readOnly" matInput name="quantity">
+              </mat-form-field>
+
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div>
+    <div>
+      <mat-divider></mat-divider>
+      <div class="modal-product_details__alternatives" style="margin-top:20px; font-style:italic">
+        <h3>Alternatives à ce produit</h3>
+        <br/>
+        <div class="modal-product-details__alternativesAdd" style="display:flex; margin-top:10px; align-items: center">
+          <h4>Proposez une alternative : </h4>
+
+          <button (click)="displayAddAlternativeField = !displayAddAlternativeField"
+                  *ngIf="!displayAddAlternativeField else addAlternativeField" color="primary" mat-flat-button
+                  style="margin-left:10px; border-radius: 30px; min-width:70px ">Mon alternative
+            <mat-icon>add</mat-icon>
           </button>
+          <ng-template #addAlternativeField>
+            <mat-form-field style="margin-left:10px; min-width:70px">
+              <mat-label>Saisissez un code-barre (13 chiffres)</mat-label>
+              <input #input_alternative (input)="checkProductExists(input_alternative)" matInput/>
+            </mat-form-field>
+            <div *ngIf="displayAlternativeInputResult"
+                 style="display:flex; align-items:center; justify-content: space-between; width:50%; margin-left:5%">
+              <mat-icon>arrow_right_alt</mat-icon>
+              <span>{{ displayAlternativeInputResult }}</span>
+              <button (click)="addAlternative(input_alternative)" color="primary" mat-flat-button>OK</button>
+            </div>
+            <div *ngIf="displayDefaultResponseInputResult" style="margin:auto">
+              <span>{{ displayDefaultResponseInputResult }}</span>
+            </div>
+          </ng-template>
         </div>
-      </div>
-    </div>
 
-    <div class="col-sm-8">
-      <div class="row" style="margin:5%; text-align: center">
-        <div class="col-sm-5">
-          <h4 style="text-align: center">Section Labels</h4>
-          <div *ngIf="olderVersions.length > 0">
-            <mat-accordion>
-              <mat-expansion-panel (closed)="panelOpenState_labels = false"
-                                   (opened)="panelOpenState_labels = true">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Labels indiqués pour ce produit précédemment
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div *ngFor="let olderVersion of olderVersions">
-                  <span> -> {{ olderVersion.labels}}</span>
-                </div>
-              </mat-expansion-panel>
-            </mat-accordion>
-          </div>
-
-          <mat-form-field>
-            <mat-chip-list #chipList aria-label="Fruit selection">
-              <mat-chip (removed)="remove(label,1)" *ngFor="let label of modifiedProduct.labels"
-                        [removable]="!readOnly" [selectable]="selectable">
-                {{label}}
-                <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
-              </mat-chip>
-              <input (matChipInputTokenEnd)="add($event,1)" *ngIf="!readOnly"
-                     [matChipInputAddOnBlur]="addOnBlur"
-                     [matChipInputFor]="chipList"
-                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                     placeholder="Nouveaux labels...">
-            </mat-chip-list>
-          </mat-form-field>
-          <div *ngIf="olderVersions.length > 0">
-            <mat-accordion>
-              <mat-expansion-panel (closed)="panelOpenState_additifs = false"
-                                   (opened)="panelOpenState_additifs = true">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Additifs indiqués pour ce produit précédemment
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div *ngFor="let olderVersion of olderVersions">
-                  <span> -> {{ olderVersion.additifs}}</span>
-                </div>
-              </mat-expansion-panel>
-            </mat-accordion>
-          </div>
-          <mat-form-field>
-            <mat-chip-list #chipList aria-label="Fruit selection">
-              <mat-chip (removed)="remove(additif,2)" *ngFor="let additif of modifiedProduct.additifs"
-                        [removable]="!readOnly" [selectable]="selectable">
-                {{additif}}
-                <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
-              </mat-chip>
-              <input (matChipInputTokenEnd)="add($event,2)" *ngIf="!readOnly"
-                     [matChipInputAddOnBlur]="addOnBlur"
-                     [matChipInputFor]="chipList"
-                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                     placeholder="Nouveaux additifs...">
-            </mat-chip-list>
-          </mat-form-field>
-        </div>
-        <div class="col-sm-5">
-          <h4 style="text-align: center">Section Ingredients</h4>
-          <div *ngIf="olderVersions.length > 0">
-            <mat-accordion>
-              <mat-expansion-panel (closed)="panelOpenState_ingredients = false"
-                                   (opened)="panelOpenState_ingredients = true">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Ingrédients indiqués pour ce produit précédemment
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div *ngFor="let olderVersion of olderVersions">
-                  <span> -> {{ olderVersion.ingredients}}</span>
-                </div>
-              </mat-expansion-panel>
-            </mat-accordion>
-          </div>
-          <mat-form-field>
-            <mat-chip-list #chipList aria-label="Fruit selection">
-              <mat-chip (removed)="remove(ingredient,3)" *ngFor="let ingredient of modifiedProduct.ingredients"
-                        [removable]="!readOnly" [selectable]="selectable">
-                {{ingredient}}
-                <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
-              </mat-chip>
-              <input (matChipInputTokenEnd)="add($event,3)" *ngIf="!readOnly"
-                     [matChipInputAddOnBlur]="addOnBlur"
-                     [matChipInputFor]="chipList"
-                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                     placeholder="Nouveau Ingrédients...">
-            </mat-chip-list>
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="row" style="margin:5%; text-align: center">
-        <div class="col-sm-5">
-          <h4 style="text-align: center">Section Nutrition</h4>
-          <div *ngIf="olderVersions.length > 0">
-            <mat-accordion>
-              <mat-expansion-panel (closed)="panelOpenState_nutriments = false"
-                                   (opened)="panelOpenState_nutriments = true">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Nutriments indiqués pour ce produit précédemment
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div *ngFor="let olderVersion of olderVersions">
-                  <span> -> {{ olderVersion.nutriments}}</span>
-                </div>
-              </mat-expansion-panel>
-            </mat-accordion>
-          </div>
-          <mat-form-field>
-            <mat-label>Energie :</mat-label>
-            <input [(ngModel)]="product.nutriments.energy" [readonly]="readOnly" matInput
-                   name="energy" value="{{ product.nutriments.energy }}">
-            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="product.nutriments[0]"  name="energy">-->
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Energie (en kcal) :</mat-label>
-            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[1]" value="{{ product.nutriments[1] }}" name="energy_kcal">-->
-            <input [(ngModel)]="modifiedProduct.nutriments.energy_kcal" [readonly]="readOnly" matInput
-                   name="energy_kcal">
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Protéines :</mat-label>
-            <!--        <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[2]" value="{{ product.nutriments[2] }}" name="proteines">-->
-            <input [(ngModel)]="modifiedProduct.nutriments.proteines" [readonly]="readOnly" matInput name="proteines">
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Glucides :</mat-label>
-            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[3]" value="{{ product.nutriments[3] }}" name="glucides">-->
-            <input [(ngModel)]="modifiedProduct.nutriments.carbohydrates" [readonly]="readOnly" matInput
-                   name="glucides">
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Sel :</mat-label>
-            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[4]" value="{{ product.nutriments[4] }}" name="sel">-->
-            <input [(ngModel)]="modifiedProduct.nutriments.salt" [readonly]="readOnly" matInput name="sel">
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Sucre :</mat-label>
-            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[5]" value="{{ product.nutriments[5] }}" name="sucre">-->
-            <input [(ngModel)]="modifiedProduct.nutriments.sugar" [readonly]="readOnly" matInput name="sucre">
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Graisses :</mat-label>
-            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[6]" value="{{ product.nutriments[6] }}" name="graisses">-->
-            <input [(ngModel)]="modifiedProduct.nutriments.fat" [readonly]="readOnly" matInput name="graisses">
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Dont matières grasses :</mat-label>
-            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[7]" value="{{ product.nutriments[7] }}" name="mat_grasse">-->
-            <input [(ngModel)]="modifiedProduct.nutriments.saturated_fat" [readonly]="readOnly" matInput
-                   name="mat_grasse">
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Fibre :</mat-label>
-            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[8]" value="{{ product.nutriments[8] }}" name="fibre">-->
-            <input [(ngModel)]="modifiedProduct.nutriments.fiber" [readonly]="readOnly" matInput name="fibre">
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Sodium :</mat-label>
-            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[9]" value="{{ product.nutriments[9] }}" name="sodium" >-->
-            <input [(ngModel)]="modifiedProduct.nutriments.sodium" [readonly]="readOnly" matInput name="sodium">
-          </mat-form-field>
-        </div>
-        <div class="col-sm-5">
-          <h4 style="text-align: center">Section Divers</h4>
-          <div *ngIf="olderVersions.length > 0">
-            <mat-accordion>
-              <mat-expansion-panel (closed)="panelOpenState_generic_name = false"
-                                   (opened)="panelOpenState_generic_name = true">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Type de produit indiqués pour ce produit précédemment
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div *ngFor="let olderVersion of olderVersions">
-                  <span> -> {{ olderVersion.generic_name}}</span>
-                </div>
-              </mat-expansion-panel>
-            </mat-accordion>
-          </div>
-          <mat-form-field>
-            <mat-label>Type de produit :</mat-label>
-            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.generic_name" value="{{ product.generic_name }}">-->
-            <input [(ngModel)]="modifiedProduct.generic_name" [readonly]="readOnly" matInput name="generic_name">
-          </mat-form-field>
-
-          <div *ngIf="olderVersions.length > 0">
-            <mat-accordion>
-              <mat-expansion-panel (closed)="panelOpenState_packaging = false"
-                                   (opened)="panelOpenState_packaging = true">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Packaging indiqués pour ce produit précédemment
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div *ngFor="let olderVersion of olderVersions">
-                  <span> -> {{ olderVersion.packaging}}</span>
-                </div>
-              </mat-expansion-panel>
-            </mat-accordion>
-          </div>
-          <mat-form-field>
-            <mat-label>Emballage :</mat-label>
-            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.packaging" value="{{ product.packaging }}">-->
-            <input [(ngModel)]="modifiedProduct.packaging" [readonly]="readOnly" matInput name="packaging">
-          </mat-form-field>
-
-          <div *ngIf="olderVersions.length > 0">
-            <mat-accordion>
-              <mat-expansion-panel (closed)="panelOpenState_quantity = false"
-                                   (opened)="panelOpenState_quantity = true">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Quantité indiquées pour ce produit précédemment
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div *ngFor="let olderVersion of olderVersions">
-                  <span> -> {{ olderVersion.quantity}}</span>
-                </div>
-              </mat-expansion-panel>
-            </mat-accordion>
-          </div>
-
-          <mat-form-field>
-            <mat-label>Quantité :</mat-label>
-            <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.quantity" value="{{ product.quantity }}">-->
-            <input [(ngModel)]="modifiedProduct.quantity" [readonly]="readOnly" matInput name="quantity">
-          </mat-form-field>
-
-        </div>
-      </div>
-
-    </div>
-  </form>
-  </div>
-  <div>
-    <mat-divider></mat-divider>
-    <div class="modal-product_details__alternatives" style="margin-top:20px; font-style:italic">
-      <h3>Alternatives à ce produit</h3>
-      <br/>
-      <div class="modal-product-details__alternativesAdd" style="display:flex; margin-top:10px; align-items: center">
-      <h4>Proposez une alternative : </h4>
-
-      <button (click)="displayAddAlternativeField = !displayAddAlternativeField" *ngIf="!displayAddAlternativeField else addAlternativeField" mat-flat-button color="primary" style="margin-left:10px; border-radius: 30px; min-width:70px ">Mon alternative <mat-icon>add</mat-icon></button>
-      <ng-template #addAlternativeField>
-        <mat-form-field style="margin-left:10px; min-width:70px">
-          <mat-label>Saisissez un code-barre (13 chiffres)</mat-label>
-          <input matInput #input_alternative (input)="checkProductExists(input_alternative)" />
-        </mat-form-field>
-        <div *ngIf="displayAlternativeInputResult" style="display:flex; align-items:center; justify-content: space-between; width:50%; margin-left:5%">
-          <mat-icon>arrow_right_alt</mat-icon>
-          <span>{{ displayAlternativeInputResult }}</span>
-          <button (click)="addAlternative(input_alternative)" mat-flat-button color="primary" >OK</button>
-        </div>
-        <div *ngIf="displayDefaultResponseInputResult" style="margin:auto">
-          <span>{{ displayDefaultResponseInputResult }}</span>
-        </div>
-      </ng-template>
-      </div>
-
-      <div class="modal-product-details__alternativesList" style="display:flex; padding : 20px; justify-content: space-between;">
-        <div style="display:flex; margin-top:10px; align-items: center; flex-direction: column">
-        <h4>Top Alternatives : </h4>
-          <div *ngIf="alternatives">
-          <div *ngFor="let alternative of alternatives | keyvalue" class="modal-product-details__alternativesListTop">
-            <mat-card style="width: 400px; max-width: 400px; margin-bottom : 5px; display:flex; justify-content: space-between; align-items: center">
-              <div style="flex:0.7">{{ alternative.value.product_name }}</div>
-              <div style="    background-color: #fff;
+        <div class="modal-product-details__alternativesList"
+             style="display:flex; padding : 20px; justify-content: space-between;">
+          <div style="display:flex; margin-top:10px; align-items: center; flex-direction: column">
+            <h4>Top Alternatives : </h4>
+            <div *ngIf="alternatives">
+              <div *ngFor="let alternative of alternatives | keyvalue"
+                   class="modal-product-details__alternativesListTop">
+                <mat-card
+                  style="width: 400px; max-width: 400px; margin-bottom : 5px; display:flex; justify-content: space-between; align-items: center">
+                  <div style="flex:0.7">{{ alternative.value.product_name }}</div>
+                  <div style="    background-color: #fff;
   box-shadow: 10px 0 10px -3px #fff;
  position: relative;
  z-index: 10; border: 1px solid;border-radius: 5px; padding:5px; flex:0.3; display:flex; justify-content: space-around; align-items: center">
-                <mat-icon class="modal-product-details_alternativeAgainstBtn" (click)="voteAlternative(alternative.value.product_code_alternative,false)">remove</mat-icon>
-              <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>
-              <mat-icon class="modal-product-details_alternativeForBtn" (click)="voteAlternative(alternative.value.product_code_alternative,true)">add</mat-icon>
-            </div>
-            </mat-card>
+                    <button class="modal-product-details_alternativeAgainstBtn" [disabled]="" (click)="voteAlternative(alternative.value.product_code_alternative,false)" type="button">
+                      <mat-icon style="vertical-align: middle" >remove</mat-icon>
+                    </button>
+                    <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>
+                    <button class="modal-product-details_alternativeForBtn" (click)="voteAlternative(alternative.value.product_code_alternative,true)" type="button">
+                      <mat-icon style="vertical-align: middle">add</mat-icon>
+                    </button>
+                  </div>
+                </mat-card>
 
-<!--            <mat-expansion-panel style="width: 400px; max-width: 400px; margin-bottom : 5px">-->
-<!--              <mat-expansion-panel-header>-->
-<!--                <mat-panel-title style="width: 200px; max-width: 200px; overflow:auto; align-items: center">-->
-<!--                  -->
-<!--                </mat-panel-title>-->
-<!--                <mat-panel-description style="justify-content: center;">-->
-<!--                  <div style="    background-color: #fff;-->
-<!--    box-shadow: 10px 0 10px -3px #fff;-->
-<!--    position: relative;-->
-<!--    z-index: 10; border: 1px solid;border-radius: 5px; padding:5px">-->
-<!--                    <mat-icon class="modal-product-details_alternativeAgainstBtn">remove</mat-icon>-->
-<!--                    <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>-->
-<!--                    <mat-icon class="modal-product-details_alternativeForBtn">add</mat-icon>-->
-<!--                  </div>-->
-<!--                </mat-panel-description>-->
-<!--              </mat-expansion-panel-header>-->
-<!--              <p>This is the primary content of the panel.</p>-->
-<!--            </mat-expansion-panel>-->
+                <!--            <mat-expansion-panel style="width: 400px; max-width: 400px; margin-bottom : 5px">-->
+                <!--              <mat-expansion-panel-header>-->
+                <!--                <mat-panel-title style="width: 200px; max-width: 200px; overflow:auto; align-items: center">-->
+                <!--                  -->
+                <!--                </mat-panel-title>-->
+                <!--                <mat-panel-description style="justify-content: center;">-->
+                <!--                  <div style="    background-color: #fff;-->
+                <!--    box-shadow: 10px 0 10px -3px #fff;-->
+                <!--    position: relative;-->
+                <!--    z-index: 10; border: 1px solid;border-radius: 5px; padding:5px">-->
+                <!--                    <mat-icon class="modal-product-details_alternativeAgainstBtn">remove</mat-icon>-->
+                <!--                    <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>-->
+                <!--                    <mat-icon class="modal-product-details_alternativeForBtn">add</mat-icon>-->
+                <!--                  </div>-->
+                <!--                </mat-panel-description>-->
+                <!--              </mat-expansion-panel-header>-->
+                <!--              <p>This is the primary content of the panel.</p>-->
+                <!--            </mat-expansion-panel>-->
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; margin-top:10px; align-items: center; flex-direction: column">
+            <h4>New/Fresh Alternatives : </h4>
+            <div class="modal-product-details__alternativesListNew">
+              <mat-expansion-panel style="max-width: 400px;">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    This is the expansion title
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    This is a summary of the content
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <p>This is the primary content of the panel.</p>
+              </mat-expansion-panel>
+            </div>
           </div>
         </div>
-        </div>
-        <div style="display:flex; margin-top:10px; align-items: center; flex-direction: column">
-        <h4>New/Fresh Alternatives : </h4>
-        <div class="modal-product-details__alternativesListNew">
-          <mat-expansion-panel style="max-width: 400px;">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                This is the expansion title
-              </mat-panel-title>
-              <mat-panel-description>
-                This is a summary of the content
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <p>This is the primary content of the panel.</p>
-          </mat-expansion-panel>
-        </div>
-        </div>
-      </div>
 
+      </div>
     </div>
-  </div>
   </div>
 </mat-dialog-content>
