@@ -15,6 +15,14 @@ contract EatHealthyChain {
     uint endDate;
     //  bool isExist;
     bool isVotable;
+    mapping(uint => Alternative) alternatives;
+  }
+
+  struct Alternative {
+    uint64 productCode;
+    uint64 productCodeAlternative;
+    uint16 forVotes;
+    uint16 againstVotes;
   }
 
   struct Hashes {
@@ -172,6 +180,7 @@ contract EatHealthyChain {
          Then adding vote to for and against
   @param proposerAddress proposer
          _productCode product targeted for the vote
+         _productCode product targeted for the vote
 */
   function endVote(uint _productCode, address proposerAddress) public {
     require(msg.sender == endVoteResponsible, 'Vous ne pouvez pas mettre fin au vote !');
@@ -216,7 +225,6 @@ contract EatHealthyChain {
       productCodeToProposalProduct[_productCode].isVotable = false;
       //  addressToProducts[proposerAddress][_productCode].isVotable = false;
     }
-
   }
 
   function acceptedProduct(uint _productCode, address proposerAddress) internal {
@@ -228,14 +236,16 @@ contract EatHealthyChain {
 
   }
 
-  /*function getProductHashes(uint _productCode) public view returns (bytes32[5] memory) {
-    return [productCodeToProposalHashes[_productCode].labels_hash,
-    productCodeToProposalHashes[_productCode].ingredients_hash,
-    productCodeToProposalHashes[_productCode].additives_hash,
-    productCodeToProposalHashes[_productCode].nutriments_hash,
-    productCodeToProposalHashes[_productCode].variousData_hash
-    ];
-  }*/
+  function manageAlternative(Alternative[] memory _alternativeVotes) public {
+    require(msg.sender == endVoteResponsible, 'Vous ne pouvez pas mettre à jour les alternatives !');
+   // require(productCodeToProduct[_productCodeTarget].productProposerAddress != address(0), "Ce produit n'existe pas !");
+    for(uint i = 0; i < _alternativeVotes.length; i++) {
+      productCodeToProduct[_alternativeVotes[i].productCode].alternatives[_alternativeVotes[i].productCodeAlternative] = _alternativeVotes[i];
+    }
+
+
+  }
+
 
   function verifyCompliance(
     uint64 _productCode,

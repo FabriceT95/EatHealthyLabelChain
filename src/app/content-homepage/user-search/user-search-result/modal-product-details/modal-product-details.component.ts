@@ -106,8 +106,7 @@ export class ModalProductDetailsComponent implements OnInit {
     this.server_sc.getAlternatives(alternative_object).then((result: any) => {
       for (let i = 0; i < result.length; i++) {
         const uniqueSqlResult = result[i] as any;
-       // console.log('Result ' + i + ':' + JSON.stringify(uniqueSqlResult));
-        this.alternatives[uniqueSqlResult.product_code] = {
+       this.alternatives[uniqueSqlResult.product_code] = {
           product_name: uniqueSqlResult.product_name,
           product_code_alternative: uniqueSqlResult.product_code,
           for_votes: uniqueSqlResult.for_votes,
@@ -117,8 +116,7 @@ export class ModalProductDetailsComponent implements OnInit {
       this.server_sc.getAlternatives_voter_for_product(alternative_object).then((result_2: any) => {
         for (let i = 0; i < result_2.length; i++) {
           const uniqueSqlResult = result_2[i] as any;
-          this.alternatives[uniqueSqlResult.product_code].opinion = uniqueSqlResult.opinion;
-          console.log(uniqueSqlResult.opinion);
+          this.alternatives[uniqueSqlResult.product_code_alternative].opinion = uniqueSqlResult.opinion;
         }
         console.log(this.alternatives);
       });
@@ -148,7 +146,7 @@ export class ModalProductDetailsComponent implements OnInit {
       all_hash : this.product.all_hash,
       productCode_alternative : product_code_alternative,
       opinion : opinion ? 1 : -1,
-      prev_opinion : previous_opinion === undefined ? 0 : (previous_opinion ? 1 : -1),
+      prev_opinion : previous_opinion !== undefined ? previous_opinion : 0,
     };
 
     this.server_sc.addVoteAlternative(product_vote_object).then(() => {

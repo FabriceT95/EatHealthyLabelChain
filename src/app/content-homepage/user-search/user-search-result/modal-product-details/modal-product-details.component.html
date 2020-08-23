@@ -357,11 +357,12 @@
   box-shadow: 10px 0 10px -3px #fff;
  position: relative;
  z-index: 10; border: 1px solid;border-radius: 5px; padding:5px; flex:0.3; display:flex; justify-content: space-around; align-items: center">
-                    <button class="modal-product-details_alternativeAgainstBtn" [disabled]="" (click)="voteAlternative(alternative.value.product_code_alternative,false)" type="button">
+                    <button class="modal-product-details_alternativeAgainstBtn" [disabled]="alternative.value.opinion == -1" (click)="voteAlternative(alternative.value.product_code_alternative,false)" type="button">
                       <mat-icon style="vertical-align: middle" >remove</mat-icon>
                     </button>
+<!--                    <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>-->
                     <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>
-                    <button class="modal-product-details_alternativeForBtn" (click)="voteAlternative(alternative.value.product_code_alternative,true)" type="button">
+                    <button class="modal-product-details_alternativeForBtn" [disabled]="alternative.value.opinion == 1" (click)="voteAlternative(alternative.value.product_code_alternative,true)" type="button">
                       <mat-icon style="vertical-align: middle">add</mat-icon>
                     </button>
                   </div>

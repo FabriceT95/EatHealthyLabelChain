@@ -360,6 +360,10 @@ function createRouter(db) {
     insertFunction('DELETE FROM productInfos_SC', res);
   });
 
+  router.delete('/delete_alternatives_SC', async (req, res, next) => {
+    insertFunction('DELETE FROM alternatives_SC', res);
+  });
+
   router.put('/reset_auto_increment_Users', async (req, res, next) => {
     insertFunction('ALTER TABLE Users_SC AUTO_INCREMENT = 1', res);
   });
@@ -390,6 +394,10 @@ function createRouter(db) {
 
   router.put('/reset_auto_increment_productInfos', async (req, res, next) => {
     insertFunction('ALTER TABLE productInfos_SC AUTO_INCREMENT = 1', res);
+  });
+
+  router.put('/reset_auto_increment_alternatives', async (req, res, next) => {
+    insertFunction('ALTER TABLE alternatives_SC AUTO_INCREMENT = 1', res);
   });
 
   async function insertFunction(myQuery, res) {
