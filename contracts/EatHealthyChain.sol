@@ -23,6 +23,7 @@ contract EatHealthyChain {
     uint64 productCodeAlternative;
     uint16 forVotes;
     uint16 againstVotes;
+    bool isVotedToday;
   }
 
   struct Hashes {
@@ -236,7 +237,7 @@ contract EatHealthyChain {
 
   }
 
-  function manageAlternative(Alternative[] memory _alternativeVotes) public {
+  function manageAlternatives(Alternative[] memory _alternativeVotes) public {
     require(msg.sender == endVoteResponsible, 'Vous ne pouvez pas mettre à jour les alternatives !');
    // require(productCodeToProduct[_productCodeTarget].productProposerAddress != address(0), "Ce produit n'existe pas !");
     for(uint i = 0; i < _alternativeVotes.length; i++) {

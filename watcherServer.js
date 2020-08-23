@@ -3,6 +3,7 @@ const Web3 = require('web3');
 const web3 = new Web3('ws://localhost:7545');
 const Tx = require('ethereumjs-tx').Transaction;
 const fetch = require('node-fetch');
+const schedule = require('node-schedule');
 const privateKey = Buffer.from('fef84965c51e2b7fa41be75f70b1d467ca72b898f808e4fb0e07d28be6f3c130', 'hex');
 
 class Web3Worker {
@@ -149,6 +150,19 @@ worker.init().then(() => {
 
       });
   }, 5000);
+
+  schedule.scheduleJob('0 0 * * *', () => {
+    fetch('http://192.168.42.219:8090/get_voted_alternatives/', {method: 'GET'})
+      .then(res => res.json())
+      .then(async json => {
+        await worker.contract.methods.manageAlternatives(json).send({from:worker.accounts[7]}).on('receipt', async () => {
+          fetch('http://192.168.42.219:8090/new_day_alternative_votes/', {method: 'PUT'}).then(() => {
+            console.log('SUCCESS : new_votes_today reset to false');
+          });
+
+        })
+      })
+  }); // run everyday at midnight
 });
 
 

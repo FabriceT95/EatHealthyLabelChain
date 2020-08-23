@@ -101,7 +101,7 @@ function createRouter(db) {
   });
 
   router.put('/new_vote_alternative/:product_code/:product_code_alternative/:opinion/:prev_opinion', async (req, res, next) => {
-    const  query = 'UPDATE alternatives_SC SET for_votes = IF(' + req.params.opinion + ' = 1, for_votes + 1, IF(' + req.params.prev_opinion + ' = 1, for_votes - 1, for_votes)), against_votes =  IF(' + req.params.opinion + ' = -1, against_votes + 1,  IF(' + req.params.prev_opinion + ' = -1, against_votes - 1, against_votes)) WHERE product_code_target = ' + req.params.product_code + ' AND product_code_alternative = ' + req.params.product_code_alternative + ';';
+    const  query = 'UPDATE alternatives_SC SET for_votes = IF(' + req.params.opinion + ' = 1, for_votes + 1, IF(' + req.params.prev_opinion + ' = 1, for_votes - 1, for_votes)), against_votes =  IF(' + req.params.opinion + ' = -1, against_votes + 1,  IF(' + req.params.prev_opinion + ' = -1, against_votes - 1, against_votes)), new_votes_today = true WHERE product_code_target = ' + req.params.product_code + ' AND product_code_alternative = ' + req.params.product_code_alternative + ';';
     insertFunction(query, res);
 
   });
@@ -121,6 +121,11 @@ function createRouter(db) {
     insertFunction(query, res);
   });
 
+  router.put('/new_day_alternative_votes/', async (req, res, next) => {
+    const query = 'UPDATE alternatives_SC SET new_votes_today = false';
+    insertFunction(query, res);
+  });
+
   router.get('/votable_products/', async (req, res, next) => {
     db.query("SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id INNER JOIN labels_SC ON productInfos_SC.id = labels_SC.id INNER JOIN nutriments_SC ON productInfos_SC.id = nutriments_SC.id INNER JOIN additives_SC ON productInfos_SC.id = additives_SC.id INNER JOIN ingredients_SC ON productInfos_SC.id = ingredients_SC.id WHERE status = 'NEW' OR status = 'IN_MODIFICATION';",
       (error, results) => {
@@ -136,6 +141,19 @@ function createRouter(db) {
 
   router.get('/get_alternative_voter_for_product/:user_address/:product_code', async (req, res, next) => {
     db.query('SELECT * FROM Voters_SC WHERE product_code = ' + req.params.product_code + ' AND address =  "' + req.params.user_address + '" AND type = "Alternative";',
+      (error, results) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({status: 'error', error: error});
+        } else {
+          res.status(200).json(results);
+        }
+      })
+
+  });
+
+  router.get('/get_voted_alternatives/', async (req, res, next) => {
+    db.query('SELECT product_code_target as productCode, product_code_alternative as productCodeAlternative, for_votes as forVotes, against_votes as againstVotes, new_votes_today as isVotedToday FROM alternatives_SC WHERE new_votes_today = true',
       (error, results) => {
         if (error) {
           console.log(error);
