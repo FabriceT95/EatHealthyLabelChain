@@ -44,6 +44,7 @@ export class ModalProductDetailsComponent implements OnInit {
   displayAddAlternativeField = false;
   displayAlternativeInputResult = '';
   displayDefaultResponseInputResult = '';
+  isAlreadyBeingModified = false;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -67,6 +68,7 @@ export class ModalProductDetailsComponent implements OnInit {
     console.log('Date du jour : ' + Date.now());
     console.log('vérification établie : ' + this.verifiedProduct);
     this.getAlternatives();
+    this.checkAlreadyBeingModified();
 
 
   }
@@ -75,7 +77,7 @@ export class ModalProductDetailsComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  async checkProductExists(input_product_code) {
+  checkProductExists(input_product_code) {
     const that = this;
     const barcodeValue = input_product_code.value.trim();
     if (Number(barcodeValue) === this.product.code) {
@@ -89,16 +91,20 @@ export class ModalProductDetailsComponent implements OnInit {
         console.log(that.alternatives);
         if (result.length === 1 && !(result[0].product_code in that.alternatives)) {
           that.displayAlternativeInputResult = result[0].product_name;
+          this.displayDefaultResponseInputResult = '';
         } else if (result.length === 0) {
           that.displayDefaultResponseInputResult = barcodeValue + ' : Ce code-barre n\'existe pas';
         } else {
           that.displayDefaultResponseInputResult = barcodeValue + ' : Ce produit est déjà une alternative';
         }
       });
+    } else {
+      this.displayDefaultResponseInputResult = '';
+      this.displayAlternativeInputResult = '';
     }
   }
 
-  async getAlternatives() {
+  getAlternatives() {
    const alternative_object = {
       productCode: this.product.code,
      user_address: this.web3.accounts[0]
@@ -125,7 +131,7 @@ export class ModalProductDetailsComponent implements OnInit {
 
   }
 
-  async addAlternative(product_code_alternative) {
+  addAlternative(product_code_alternative) {
     const that = this;
     const product_object = {
       productCode : this.product.code,
@@ -133,10 +139,11 @@ export class ModalProductDetailsComponent implements OnInit {
     };
     this.server_sc.addAlternative(product_object).then(() => {
       that.getAlternatives();
+      this.displayAlternativeInputResult = '';
     });
   }
 
-  async voteAlternative(product_code_alternative, opinion) {
+  voteAlternative(product_code_alternative, opinion) {
     console.log(product_code_alternative);
     console.log('cette alternative : ' + this.alternatives[product_code_alternative]);
     const previous_opinion = this.alternatives[product_code_alternative].opinion;
@@ -157,8 +164,18 @@ export class ModalProductDetailsComponent implements OnInit {
 
       });
     });
+  }
 
-
+  checkAlreadyBeingModified () {
+    const checkAlreadyBeingModified_object = {
+      productCode : this.product.code
+    };
+    this.server_sc.getCheckModificationStatus(checkAlreadyBeingModified_object).then((result) => {
+      const uniqueSqlResult = result as any;
+      if (uniqueSqlResult.length === 1) {
+        this.isAlreadyBeingModified = true;
+      }
+    });
   }
 
   async verifyCompliance() {
@@ -194,6 +211,7 @@ export class ModalProductDetailsComponent implements OnInit {
 
   compareHashes(product_hashes_contrat, product_hashes_DB) {
     try {
+      let corrupted = true;
       if (product_hashes_contrat[1] !== product_hashes_DB[1]) {
         console.log('Les labels ne sont pas conforme');
       } else if (product_hashes_contrat[2] !== product_hashes_DB[2]) {
@@ -205,6 +223,7 @@ export class ModalProductDetailsComponent implements OnInit {
       } else if (product_hashes_contrat[5] !== product_hashes_DB[5]) {
         console.log('Les divers ne sont pas conforme');
       } else {
+        corrupted = false;
         console.log('L\'article est conforme !');
         const verification_object = {
           productCode: this.product.code,
@@ -214,10 +233,23 @@ export class ModalProductDetailsComponent implements OnInit {
           console.log('La date de vérification a bien été modifée. Elle est active pendant une semaine');
         });
       }
+      if (corrupted) {
+        this.setProductToCorrupted();
+      }
       this.inProgress = false;
     } catch (err) {
       console.log(err);
     }
+  }
+
+  setProductToCorrupted() {
+    const setCorrupted_object = {
+      productCode : this.product.code
+    };
+    this.server_sc.setCorrupted(setCorrupted_object).then(() => {
+      console.log('Produit corrumpu : incohérence de la DB et de la BC');
+    });
+
   }
 
   add(event: MatChipInputEvent, elType): void {
@@ -276,55 +308,58 @@ export class ModalProductDetailsComponent implements OnInit {
   }
 
   modifyProduct() {
-    const that = this;
-    const json = JSON.stringify(this.modifiedProduct.nutriments);
-    this.modifiedProduct.nutriments = JSON.parse(json, (key, val) => (
-      typeof val !== 'object' && val !== null ? String(val) : val
-    ));
-    this.web3.contract.methods.addProductToProposal(
-      this.modifiedProduct.code,
-      this.modifiedProduct.labels,
-      this.modifiedProduct.ingredients,
-      this.modifiedProduct.additifs,
-      this.modifiedProduct.nutriments,
-      this.modifiedProduct.product_name,
-      this.modifiedProduct.generic_name,
-      this.modifiedProduct.quantity,
-      this.modifiedProduct.packaging
-    )
-      .send({from: this.web3.accounts[0]})
-      .on('receipt', function (receipt) {
-        console.log('VOYOJIFJDLZ : ' + receipt.events.TriggerAddProduct.returnValues.hashes);
-        console.log('Proposer : ' + receipt.events.TriggerAddProduct.returnValues.proposerProduct);
-        console.log('1234 : ' + receipt.events.TriggerAddProduct.returnValues.voteDates[0]);
-        console.log('5678 : ' + receipt.events.TriggerAddProduct.returnValues.voteDates[1]);
-        that.addLabel_SC(receipt.events.TriggerAddProduct.returnValues.hashes[0], that.modifiedProduct.labels.join(','));
-        that.addIngredients(receipt.events.TriggerAddProduct.returnValues.hashes[1], that.modifiedProduct.ingredients.join(','));
-        that.addAdditives(receipt.events.TriggerAddProduct.returnValues.hashes[2], that.modifiedProduct.additifs.join(','));
-        that.addNutriments(receipt.events.TriggerAddProduct.returnValues.hashes[3], JSON.stringify(that.modifiedProduct.nutriments));
-        that.addVariousDatas(
-          receipt.events.TriggerAddProduct.returnValues.hashes[4],
-          that.modifiedProduct.code,
-          that.modifiedProduct.product_name,
-          that.modifiedProduct.generic_name,
-          that.modifiedProduct.quantity,
-          that.modifiedProduct.packaging
-        );
-        setTimeout(() => {
-          that.addHashes(
-            receipt.events.TriggerAddProduct.returnValues.hashes[5],
-            receipt.events.TriggerAddProduct.returnValues.proposerProduct,
-            receipt.events.TriggerAddProduct.returnValues.voteDates
+    this.checkAlreadyBeingModified();
+    if (this.isAlreadyBeingModified === false) {
+      const that = this;
+      const json = JSON.stringify(this.modifiedProduct.nutriments);
+      this.modifiedProduct.nutriments = JSON.parse(json, (key, val) => (
+        typeof val !== 'object' && val !== null ? String(val) : val
+      ));
+      this.web3.contract.methods.addProductToProposal(
+        this.modifiedProduct.code,
+        this.modifiedProduct.labels,
+        this.modifiedProduct.ingredients,
+        this.modifiedProduct.additifs,
+        this.modifiedProduct.nutriments,
+        this.modifiedProduct.product_name,
+        this.modifiedProduct.generic_name,
+        this.modifiedProduct.quantity,
+        this.modifiedProduct.packaging
+      )
+        .send({from: this.web3.accounts[0]})
+        .on('receipt', function (receipt) {
+          // console.log('VOYOJIFJDLZ : ' + receipt.events.TriggerAddProduct.returnValues.hashes);
+          // console.log('Proposer : ' + receipt.events.TriggerAddProduct.returnValues.proposerProduct);
+          // console.log('1234 : ' + receipt.events.TriggerAddProduct.returnValues.voteDates[0]);
+          // console.log('5678 : ' + receipt.events.TriggerAddProduct.returnValues.voteDates[1]);
+          that.addLabel_SC(receipt.events.TriggerAddProduct.returnValues.hashes[0], that.modifiedProduct.labels.join(','));
+          that.addIngredients(receipt.events.TriggerAddProduct.returnValues.hashes[1], that.modifiedProduct.ingredients.join(','));
+          that.addAdditives(receipt.events.TriggerAddProduct.returnValues.hashes[2], that.modifiedProduct.additifs.join(','));
+          that.addNutriments(receipt.events.TriggerAddProduct.returnValues.hashes[3], JSON.stringify(that.modifiedProduct.nutriments));
+          that.addVariousDatas(
+            receipt.events.TriggerAddProduct.returnValues.hashes[4],
+            that.modifiedProduct.code,
+            that.modifiedProduct.product_name,
+            that.modifiedProduct.generic_name,
+            that.modifiedProduct.quantity,
+            that.modifiedProduct.packaging
           );
-        }, 500);
-        that.onNoClick();
-        //  alert('Le produit suivant a été placé dans la liste d\'attente : ' + newProduct.code + ' - ' + newProduct.product_name);
-        that.onNoClick();
-        alert('Le produit suivant a été placé dans la liste d\'attente : '
-          + that.modifiedProduct.code +
-          ' - ' +
-          that.modifiedProduct.product_name);
-      });
+          setTimeout(() => {
+            that.addHashes(
+              receipt.events.TriggerAddProduct.returnValues.hashes[5],
+              receipt.events.TriggerAddProduct.returnValues.proposerProduct,
+              receipt.events.TriggerAddProduct.returnValues.voteDates
+            );
+          }, 500);
+          that.onNoClick();
+          alert('Le produit suivant a été placé dans la liste d\'attente : '
+            + that.modifiedProduct.code +
+            ' - ' +
+            that.modifiedProduct.product_name);
+        });
+    } else {
+      alert('Vous ne pouvez pas faire ça, le produit est déjà en cours de vote');
+    }
   }
 
   addVariousDatas(variousData_hash, productCode, product_name, product_type, quantity, packaging) {

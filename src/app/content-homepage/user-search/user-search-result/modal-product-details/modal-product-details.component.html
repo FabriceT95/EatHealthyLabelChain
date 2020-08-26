@@ -58,7 +58,8 @@
               <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ product.againstVotes}}</strong></li>
             </ul>
           </div>
-          <mat-checkbox (change)="activateFields()" class="example-margin" name="none">JE CERTIFIE D'AVOIR LE MILLIARD
+          <mat-checkbox (change)="activateFields()" class="example-margin" name="none">
+            JE CERTIFIE D'AVOIR LE MILLIARD
             DE
             PAGES DE CGU AINSI QUE DE NE PAS ETRE UN GROS CONNARD
           </mat-checkbox>
@@ -331,8 +332,12 @@
               <mat-label>Saisissez un code-barre (13 chiffres)</mat-label>
               <input #input_alternative (input)="checkProductExists(input_alternative)" matInput/>
             </mat-form-field>
+            <button class="modal-product-details_alternativeCancel" (click)="displayAddAlternativeField = !displayAddAlternativeField"
+                    *ngIf="displayAddAlternativeField" type="button">
+              <mat-icon style="vertical-align: middle">clear</mat-icon>
+            </button>
             <div *ngIf="displayAlternativeInputResult"
-                 style="display:flex; align-items:center; justify-content: space-between; width:50%; margin-left:5%">
+                 style="display:flex; align-items:center; justify-content: space-between; width:50%;">
               <mat-icon>arrow_right_alt</mat-icon>
               <span>{{ displayAlternativeInputResult }}</span>
               <button (click)="addAlternative(input_alternative)" color="primary" mat-flat-button>OK</button>

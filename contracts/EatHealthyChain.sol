@@ -3,6 +3,7 @@ pragma solidity 0.5.16;
 pragma experimental ABIEncoderV2;
 
 contract EatHealthyChain {
+
   // Basic Product definition containing values about the product itself
   // but also about consensus
   struct Product {
@@ -13,19 +14,23 @@ contract EatHealthyChain {
     uint64 productCode;
     uint startDate;
     uint endDate;
-    //  bool isExist;
     bool isVotable;
     mapping(uint => Alternative) alternatives;
   }
 
+  // Basic Alternative definition
+  // It sets for and against votes for a product code alternative to the product code defined
   struct Alternative {
     uint64 productCode;
     uint64 productCodeAlternative;
     uint16 forVotes;
     uint16 againstVotes;
     bool isVotedToday;
+    uint propositionDate;
   }
 
+  // Hashes structure
+  // Contains all hashes for a given product code / Can't store unhashed data
   struct Hashes {
     bytes32 ingredients_hash;
     bytes32 labels_hash;
@@ -33,6 +38,14 @@ contract EatHealthyChain {
     bytes32 additives_hash;
     bytes32 variousData_hash;
     bytes32 all_hash;
+  }
+
+  // Label structure
+  // Supposed to be real labels given by growers
+  struct Label {
+    uint id;
+    string label_name;
+    uint expiration_date;
   }
 
   // Basic Nutriment structure needed for the Product structure
@@ -59,74 +72,110 @@ contract EatHealthyChain {
     int16 tokenNumber;
     int16 reputation;
     bool isExist;
-    //  Role role;
   }
 
+  // Contract deployer
   address private _owner;
 
+  // Default user id increasing each time a user subscribes
   uint32 private uniqueIdUser;
 
+  // Default product id increasing each time a product is proposed/modified
   uint32 private uniqueProductId;
 
+  // Default product id increasing each time we add a product code with real labels
+  uint32 private uniqueRealLabelId;
+
+
+  // Address needed to end votes and manage alternative update into the contract
   address internal endVoteResponsible;
 
   // Accessing to a User structure by his address
   mapping(address => User) public addressToUser;
 
+  // Describing users who has already voted for a proposed product(
   mapping(uint => mapping(uint => mapping(address => bool[2]))) public alreadyVoted;
 
   // Accessing to a Product in proposal phase by his code
   mapping(uint => Product) public productCodeToProposalProduct;
 
+  // Accessing to Hashes product in proposal phase by his code
   mapping(uint => Hashes) public productCodeToProposalHashes;
 
   // Accessing to a Product adopted by his code
   mapping(uint => Product) public productCodeToProduct;
 
+  // Accessing to Hashes product adopted by product code
   mapping(uint => Hashes) public productCodeToHashes;
 
-  // mapping(address => mapping(uint => Product)) addressToProducts;
+  // Accessing to real labels defined by growers (they are actually fake in this contract)
+  mapping(uint => Label[]) public productCodeToRealLabels;
 
+  // mapping(address => mapping(uint => Product)) addressToProducts;
+  uint[] private trueLabelizedProductCode;
+
+  // Event triggering product hashes, product proposer address and start/end vote dates when a new product is proposed
   event TriggerAddProduct(bytes32[6] hashes, address proposerProduct, uint[2] voteDates);
 
+  // Event triggering product hashes
   event TriggerVerifyCompliance(bytes32[6] hashes);
 
+  // Constructor setting the owner, the vote closer and alternatives setup
+  // Owner is automatically set as user
   constructor() public {
     _owner = msg.sender;
     endVoteResponsible = 0x712EB6c16Ab3694b684B6c74B40A676c6d13621a;
-    addressToUser[_owner] = User(uniqueIdUser, now, 10, 0, true /*,  Role.ADMIN*/);
+    addressToUser[_owner] = User(uniqueIdUser, now, 10, 0, true);
     uniqueIdUser++;
+    setupRealLabels();
   }
 
-  modifier checkLengthGS1 (uint productCode){
-    require(productCode > 1111111111111, "Le code de produit n'a pas la bonne longueur !");
+  // Checks the code length, which has to be a length of 13 numbers
+  modifier checkLengthGS1 (uint _productCode){
+    require(_productCode > 1111111111111, "Le code de produit n'a pas la bonne longueur !");
+    _;
+  }
+
+  // Checks if the user calling a function exists
+  modifier onlyUsers () {
+    require(addressToUser[msg.sender].isExist == true, "Cet utilisateur n'existe pas");
+    _;
+  }
+
+  // Checks if the user calling a function exists
+  modifier isNotProposed (uint _productCode) {
+    require(productCodeToProposalProduct[_productCode].productProposerAddress == address(0), "Ce produit est déjà proposé !");
+    _;
+  }
+
+  // Checks if the user is the responsible for ending a vote or set alternatives
+  modifier isResponsible() {
+    require(msg.sender == endVoteResponsible, 'Vous n\'êtes pas le responsable');
     _;
   }
 
   /**
-@notice Product is added in proposal phase by the user,
-        then visible for all users for votes
-@dev
-       Add a new Product and Nutriments object in corresponding proposal mappings
-       Also added in corresponding arrays, useful to get them all from front-end
-       Finally, emitting an event to warn the user, all is OK
-@param _productCode, _productName, _labels, _ingredients, _quantity,
-       _typeOfProduct, _packaging, _nutriments, _addiditfs
-       => Elements needed to fill in both Product and Nutriments object
+  @notice Product is added in proposal phase by the user,
+          then visible for all users for votes
+  @dev
+         Add a new Product and Nutriments object in corresponding proposal mappings
+         Also added in corresponding arrays, useful to get them all from front-end
+         Finally, emitting an event to warn the user, all is OK
+  @param _productCode, _productName, _labels, _ingredients, _quantity,
+         _typeOfProduct, _packaging, _nutriments, _addiditfs
+         => Elements needed to fill in both Product and Nutriments object
  */
   function addProductToProposal(
     uint64 _productCode,
     string[] memory _labels,
     string[] memory _ingredients,
-    string[] memory _additifs,
+    string[] memory _additives,
     Nutriment memory _nutriments,
     string memory _productName,
     string memory _typeOfProduct,
     uint16 _quantity,
     string memory _packaging
-  ) checkLengthGS1(_productCode) public {
-    require(addressToUser[msg.sender].isExist == true, "Cet utilisateur n'existe pas");
-    require(productCodeToProposalProduct[_productCode].productProposerAddress == address(0), "Ce produit est déjà proposé !");
+  ) checkLengthGS1(_productCode) onlyUsers() isNotProposed(_productCode) public {
     Product memory _product;
     Hashes memory _hashes;
     _product.productId = uniqueProductId;
@@ -134,11 +183,10 @@ contract EatHealthyChain {
     _product.productProposerAddress = msg.sender;
     _hashes.labels_hash = keccak256(abi.encode(_labels));
     _hashes.ingredients_hash = keccak256(abi.encode(_ingredients));
-    _hashes.additives_hash = keccak256(abi.encode(_additifs));
+    _hashes.additives_hash = keccak256(abi.encode(_additives));
     _hashes.nutriments_hash = keccak256(abi.encode(_nutriments));
     _hashes.variousData_hash = keccak256(abi.encodePacked(_productCode, _productName, _typeOfProduct, _quantity, _packaging));
     _hashes.all_hash = keccak256(abi.encodePacked(_hashes.labels_hash, _hashes.ingredients_hash, _hashes.additives_hash, _hashes.nutriments_hash, _hashes.variousData_hash));
-    //  _product.isExist = true;
     _product.isVotable = true;
     _product.startDate = now;
     _product.endDate = now + 5 minutes;
@@ -150,6 +198,12 @@ contract EatHealthyChain {
     emit TriggerAddProduct([_hashes.labels_hash, _hashes.ingredients_hash, _hashes.additives_hash, _hashes.nutriments_hash, _hashes.variousData_hash, _hashes.all_hash], msg.sender, [_product.startDate, _product.endDate]);
   }
 
+
+  modifier isProductVotable(uint _productCode) {
+    require(productCodeToProposalProduct[_productCode].isVotable, "Ce produit n'est pas en vote");
+    _;
+  }
+
   /**
   @notice User is voting for a product in proposal phase (new or update)
   @dev
@@ -158,11 +212,10 @@ contract EatHealthyChain {
   @param _opinion vote value (for or against)
          _productCode product targeted for the vote
   */
-  function vote(bool _opinion, uint _productCode) public {
+  function vote(bool _opinion, uint _productCode) isProductVotable(_productCode) public {
     require(productCodeToProposalProduct[_productCode].productProposerAddress != msg.sender, "Vous ne pouvez pas voter pour votre propre proposition");
     require(addressToUser[msg.sender].tokenNumber > 0, "Vous n'avez pas assez de token");
-    require(productCodeToProposalProduct[_productCode].isVotable, "Ce produit n'est pas en vote");
-    require(productCodeToProposalProduct[_productCode].startDate < productCodeToProposalProduct[_productCode].endDate, "Le vote de ce produit est clos");
+  //  require(productCodeToProposalProduct[_productCode].startDate < productCodeToProposalProduct[_productCode].endDate, "Le vote de ce produit est clos");
     require(alreadyVoted[_productCode][productCodeToProposalProduct[_productCode].productId][msg.sender][0] == false, "Vous avez déjà voté");
     alreadyVoted[_productCode][productCodeToProposalProduct[_productCode].productId][msg.sender][0] = true;
     if (_opinion == true) {
@@ -183,15 +236,13 @@ contract EatHealthyChain {
          _productCode product targeted for the vote
          _productCode product targeted for the vote
 */
-  function endVote(uint _productCode, address proposerAddress) public {
-    require(msg.sender == endVoteResponsible, 'Vous ne pouvez pas mettre fin au vote !');
-    require(productCodeToProposalProduct[_productCode].startDate < productCodeToProposalProduct[_productCode].endDate, "La fin du vote n'est pas depassée !");
-    require(productCodeToProposalProduct[_productCode].isVotable, "Ce produit n'est pas NOUVEAU ni en MODIFICATION");
+  function endVote(uint _productCode, address proposerAddress) isResponsible() isProductVotable(_productCode) public {
+  //  require(productCodeToProposalProduct[_productCode].startDate < productCodeToProposalProduct[_productCode].endDate, "La fin du vote n'est pas depassée !");
     require(productCodeToProposalProduct[_productCode].productProposerAddress != address(0), "Ce produit n'existe pas en proposition");
     if (productCodeToProposalProduct[_productCode].forVotes >= productCodeToProposalProduct[_productCode].againstVotes) {
-      acceptedProduct(_productCode, proposerAddress);
+      acceptedProduct(_productCode);
     } else {
-      refusedProduct(_productCode, proposerAddress);
+      refusedProduct(_productCode);
     }
   }
 
@@ -205,7 +256,6 @@ contract EatHealthyChain {
     require(addressToUser[msg.sender].isExist == false);
     User memory user;
     user.userId = uniqueIdUser;
-    // user.role = Role.CUSTOMER;
     user.lastTimeTokenGiven = now;
     user.tokenNumber = 5;
     user.reputation = 50;
@@ -214,45 +264,80 @@ contract EatHealthyChain {
     addressToUser[msg.sender] = user;
   }
 
-  function deleteProductFromProposal(uint _productCode, address proposerAddress) internal {
+  /*
+  @notice Delete a product from proposal product, no more available anywhere
+  @dev
+  Deletes the proposed product corresponding the product code in argument
+  But also its corresponding hashes
+  @params _productCode product code which needs to be deleted from the proposal
+  */
+  function deleteProductFromProposal(uint _productCode) internal {
     delete productCodeToProposalProduct[_productCode];
-    delete productCodeToProposalProduct[_productCode];
+    delete productCodeToProposalHashes[_productCode];
   }
 
-  function refusedProduct(uint _productCode, address proposerAddress) internal {
+  /*
+  @notice Deletes a product from proposal product, no more available anywhere
+  @dev
+  Deletes the proposed product corresponding the product code in argument
+  But also its corresponding hashes
+  @params _productCode product code which needs to be deleted from the proposal
+  */
+  function refusedProduct(uint _productCode) internal {
     if (productCodeToProduct[_productCode].productProposerAddress != address(0)) {
-      deleteProductFromProposal(_productCode, proposerAddress);
+      deleteProductFromProposal(_productCode);
     } else {
       productCodeToProposalProduct[_productCode].isVotable = false;
       //  addressToProducts[proposerAddress][_productCode].isVotable = false;
     }
   }
 
-  function acceptedProduct(uint _productCode, address proposerAddress) internal {
+  /*
+  @notice Accepts the product voted by the community
+  @dev
+  Accepts the proposed product corresponding the product code in argument
+  But also its corresponding hashes
+  Deletes it from proposal because it no more exists as proposed
+  @params _productCode product code which needs to be accepted from the proposal
+  */
+  function acceptedProduct(uint _productCode) internal {
     productCodeToProposalProduct[_productCode].isVotable = false;
     //  addressToProducts[proposerAddress][_productCode].isVotable = false;
     productCodeToProduct[_productCode] = productCodeToProposalProduct[_productCode];
     productCodeToHashes[_productCode] = productCodeToProposalHashes[_productCode];
-    deleteProductFromProposal(_productCode, proposerAddress);
+    deleteProductFromProposal(_productCode);
 
   }
 
-  function manageAlternatives(Alternative[] memory _alternativeVotes) public {
-    require(msg.sender == endVoteResponsible, 'Vous ne pouvez pas mettre à jour les alternatives !');
-   // require(productCodeToProduct[_productCodeTarget].productProposerAddress != address(0), "Ce produit n'existe pas !");
+
+  /*
+  @notice Setting up new alternatives into the contract
+  @dev
+  Takes a list of Alternative coming from and adding them all into the alternative mapping in accepted products structure
+  Sets up votes and expiration date to the alternative
+  @params _alternativeVotes list of Alternatives object
+  */
+  function manageAlternatives(Alternative[] memory _alternativeVotes) isResponsible() public {
     for(uint i = 0; i < _alternativeVotes.length; i++) {
       productCodeToProduct[_alternativeVotes[i].productCode].alternatives[_alternativeVotes[i].productCodeAlternative] = _alternativeVotes[i];
     }
-
-
   }
 
-
+  /*
+  @notice Simply returns hashes of each group of data (labels, ingredients, additives, nutriments and other various datas).
+          Really useful with our app !
+  @dev
+  Takes all datas needed to build the product object (in the addProductToProposal methods) and hashing them.
+  @params _productCode, _productName, _labels, _ingredients, _quantity,
+         _typeOfProduct, _packaging, _nutriments, _additives
+         => Elements used to build hashes during the addProductToProposal methods
+  @returns hash build in the method
+  */
   function verifyCompliance(
     uint64 _productCode,
     string[] memory _labels,
     string[] memory _ingredients,
-    string[] memory _additifs,
+    string[] memory _additives,
     Nutriment memory _nutriments,
     string memory _productName,
     string memory _typeOfProduct,
@@ -260,7 +345,7 @@ contract EatHealthyChain {
     string memory _packaging) public view returns (bytes32[6] memory) {
       bytes32 labels_hash =  keccak256(abi.encode(_labels));
       bytes32 ingredients_hash =  keccak256(abi.encode(_ingredients));
-      bytes32 additives_hash =  keccak256(abi.encode(_additifs));
+      bytes32 additives_hash =  keccak256(abi.encode(_additives));
       bytes32 nutriments_hash =  keccak256(abi.encode(_nutriments));
       bytes32 variousDatas_hash = keccak256(abi.encodePacked(_productCode, _productName, _typeOfProduct, _quantity, _packaging));
 
@@ -273,6 +358,13 @@ contract EatHealthyChain {
     ];
   }
 
+  /*
+  @notice Simply returns hashes of an accepted product by code. Really useful with our app !
+  @dev
+  Checks into hashes mapping of accepted mapping and returning each hashes
+  @params _productCode product code hashes which needs to be returned
+  @returns hashes of the product code given
+  */
   function getProductHashes(uint _productCode) public view  returns (bytes32[6] memory){
     return [productCodeToHashes[_productCode].all_hash,
     productCodeToHashes[_productCode].labels_hash,
@@ -292,16 +384,35 @@ contract EatHealthyChain {
     }
   }
 
+  // Returning a boolean, checking if user is product proposer
   function isProductProposer(uint _productCode) public view returns (bool) {
     return productCodeToProposalProduct[_productCode].productProposerAddress == msg.sender;
   }
 
+  // Returning a boolean, checking if user is product proposer
   function isAlreadyVotedByCurrentUser(uint _productCode) public view returns (bool) {
     return alreadyVoted[_productCode][productCodeToProposalProduct[_productCode].productId][msg.sender][0] == true;
   }
 
+  // Returning start and end dates of a vote
   function getDates(uint _productCode) public view returns (uint, uint) {
     return (productCodeToProposalProduct[_productCode].startDate, productCodeToProposalProduct[_productCode].endDate);
+  }
+
+  /*
+  @notice setting up fake "real" labels for demo purpose. For example : label called 'Campagne' expire in 10 days
+  @dev
+  Simply add objects into mapping
+  */
+  function setupRealLabels() internal {
+    productCodeToRealLabels[1234567891234].push(Label(uniqueRealLabelId,'', now + 10 days));
+    productCodeToRealLabels[1234567891234].push(Label(uniqueRealLabelId,'', now + 10 days));
+    trueLabelizedProductCode.push(1234567891234);
+    uniqueRealLabelId++;
+    productCodeToRealLabels[5555555555555].push(Label(uniqueRealLabelId,'', now + 8 days));
+    productCodeToRealLabels[5555555555555].push(Label(uniqueRealLabelId,'', now + 8 days));
+    trueLabelizedProductCode.push(5555555555555);
+    uniqueRealLabelId++;
   }
 
 }

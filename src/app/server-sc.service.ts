@@ -110,6 +110,10 @@ export class ServerSCService {
     return this.request('GET', `${environment.serverUrl_SC}/get_product_and_older_version/${event.productCode}}`, event);
   }
 
+  getCheckModificationStatus(event) {
+    return this.request('GET', `${environment.serverUrl_SC}/get_in_modification_status/${event.productCode}}`, event);
+  }
+
   getProduct(event) {
     return this.request('GET', `${environment.serverUrl_SC}/get_product/${event.productCode}`, event);
   }
@@ -136,6 +140,10 @@ export class ServerSCService {
 
   UpdateVoteAlternative(event) {
     return this.request('PUT', `${environment.serverUrl_SC}/new_vote_alternative/${event.productCode}/${event.productCode_alternative}/${event.opinion}/${event.prev_opinion}`, event);
+  }
+
+  setCorrupted(event) {
+    return this.request('PUT', `${environment.serverUrl_SC}/corrupted/${event.productCode}`, event);
   }
 
 

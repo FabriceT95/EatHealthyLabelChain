@@ -116,6 +116,11 @@ function createRouter(db) {
     insertFunction(query, res);
   });
 
+  router.put('/corrupted/:product_code', async (req, res, next) => {
+    const query = 'UPDATE productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id SET lastVerificationDate = NULL, SET productInfos_SC.status = "CORRUPTED" WHERE variousDatas_SC.product_code = ' + req.params.product_code + ';';
+    insertFunction(query, res);
+  });
+
   router.put('/accepted_to_modified/:product_code', async (req, res, next) => {
     const query = 'UPDATE productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id SET lastVerificationDate = NULL, productInfos_SC.status = "MODIFIED" WHERE variousDatas_SC.product_code = ' + req.params.product_code + ' AND productInfos_SC.status = "ACCEPTED";';
     insertFunction(query, res);
@@ -153,7 +158,7 @@ function createRouter(db) {
   });
 
   router.get('/get_voted_alternatives/', async (req, res, next) => {
-    db.query('SELECT product_code_target as productCode, product_code_alternative as productCodeAlternative, for_votes as forVotes, against_votes as againstVotes, new_votes_today as isVotedToday FROM alternatives_SC WHERE new_votes_today = true',
+    db.query('SELECT product_code_target as productCode, product_code_alternative as productCodeAlternative, for_votes as forVotes, against_votes as againstVotes, new_votes_today as isVotedToday, proposition_date as propositionDate FROM alternatives_SC WHERE new_votes_today = true',
       (error, results) => {
         if (error) {
           console.log(error);
@@ -179,7 +184,8 @@ function createRouter(db) {
   });
 
   router.get('/get_alternatives/:product_code', async (req, res, next) => {
-    db.query("SELECT * FROM (SELECT prod2.product_code, prod2.product_name, alt.for_votes, alt.against_votes, productInfos_SC.status FROM alternatives_SC as alt INNER JOIN variousDatas_SC as prod1 ON prod1.product_code = alt.product_code_target INNER JOIN variousDatas_SC as prod2 ON prod2.product_code = alt.product_code_alternative INNER JOIN productInfos_SC ON productInfos_SC.id = prod2.id WHERE prod1.product_code = " + req.params.product_code + " AND (productInfos_SC.status = 'ACCEPTED' OR productInfos_SC.status = 'IN_MODIFICATION') ORDER BY FIELD(productInfos_SC.status, 'ACCEPTED', 'IN_MODIFICATION')) as d GROUP BY d.product_name, d.product_code, d.for_votes;",
+    db.query("(SELECT * FROM (SELECT prod2.product_code, prod2.product_name, alt.for_votes, alt.against_votes, productInfos_SC.status FROM alternatives_SC as alt INNER JOIN variousDatas_SC as prod1 ON prod1.product_code = alt.product_code_target INNER JOIN variousDatas_SC as prod2 ON prod2.product_code = alt.product_code_alternative INNER JOIN productInfos_SC ON productInfos_SC.id = prod2.id WHERE prod1.product_code = " + req.params.product_code + " AND (productInfos_SC.status = 'ACCEPTED' OR productInfos_SC.status = 'IN_MODIFICATION') ORDER BY FIELD(productInfos_SC.status, 'ACCEPTED', 'IN_MODIFICATION'), for_votes DESC LIMIT 5) as d GROUP BY d.product_name, d.product_code, d.for_votes)" +
+      "(SELECT * FROM (SELECT prod2.product_code, prod2.product_name, alt.for_votes, alt.against_votes, productInfos_SC.status FROM alternatives_SC as alt INNER JOIN variousDatas_SC as prod1 ON prod1.product_code = alt.product_code_target INNER JOIN variousDatas_SC as prod2 ON prod2.product_code = alt.product_code_alternative INNER JOIN productInfos_SC ON productInfos_SC.id = prod2.id WHERE prod1.product_code = " + req.params.product_code + " AND (productInfos_SC.status = 'ACCEPTED' OR productInfos_SC.status = 'IN_MODIFICATION') AND proposition_date >= DATE(NOW()) - INTERVAL 7 DAY ORDER BY FIELD(productInfos_SC.status, 'ACCEPTED', 'IN_MODIFICATION'), proposition_date DESC ) as d GROUP BY d.product_name, d.product_code, d.for_votes);",
       (error, results) => {
         if (error) {
           console.log(error);
@@ -305,7 +311,6 @@ function createRouter(db) {
 
   });
 
-
   router.get('/get_product_and_older_version/:product_code', async (req, res, next) => {
     db.query("SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos_SC INNER JOIN variousDatas_SC ON productInfos_SC.id = variousDatas_SC.id INNER JOIN labels_SC ON productInfos_SC.id = labels_SC.id INNER JOIN nutriments_SC ON productInfos_SC.id = nutriments_SC.id INNER JOIN additives_SC ON productInfos_SC.id = additives_SC.id INNER JOIN ingredients_SC ON productInfos_SC.id = ingredients_SC.id WHERE (status = 'ACCEPTED' OR status = 'MODIFIED') AND variousDatas_SC.product_code = '" + req.params.product_code + "';",
       (error, results) => {
@@ -316,7 +321,18 @@ function createRouter(db) {
           res.status(200).json(results);
         }
       })
+  });
 
+  router.get('/get_in_modification_status/:product_code', async (req, res, next) => {
+    db.query("SELECT * productInfos_SC INNER JOIN variousDatas_SC ON variousDatas_SC.id = productInfos_SC.id WHERE FROM variousDatas_SC.product_code = '" + req.params.product_code + "'  AND productInfos_SC.status = 'IN_MODIFICATION;",
+      (error, results) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({status: 'error', error: error});
+        } else {
+          res.status(200).json(results);
+        }
+      })
   });
 
   router.get('/user/:user_address', async (req, res, next) => {

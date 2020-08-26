@@ -24,6 +24,13 @@
   background-color : transparent;
 }
 
+.modal-product-details_alternativeCancel {
+  vertical-align: middle;
+  border: none;
+  background-color : transparent;
+
+}
+
 .modal-product-details_alternativeAgainstBtn:hover {
   transition: transform 0.2s ease-in-out;
   transform: scale(1.2) !important;

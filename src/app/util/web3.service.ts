@@ -18,6 +18,7 @@ export class Web3Service {
   accountChanged = new EventEmitter<any>();
   newVote = new EventEmitter<any>();
   endVote = new EventEmitter<any>();
+  realLabelizedProductArray: { [productCode: number]: any[] } = {};
   isChecked = true;
   that: any;
   accounts: any;
@@ -46,11 +47,36 @@ export class Web3Service {
       console.log('DeployedNetwork ABI : ' + that.deployedNetwork.address);
     });
     setTimeout(() => {
-      that.getContract().then(function (result) {
+      that.getContract().then(async function (result) {
         that.contract = result;
         // Define functions which are needed to be launched on load just after getContract is setup
         // that.getMyRole();
         console.log('GetContract in Web3Service : ' + that.contract);
+        const labelizedProductCode = [1234567891234, 5555555555555];
+        const lengthEachProductLabels = 2;
+        for (const element of labelizedProductCode) {
+          const arrayOneProductLabels = [];
+          let iterationOverProductLabels = 0;
+          const LabelObject = {
+            uniqueRealLabelId: 0 ,
+            label_name: '',
+            expiration_date : 0
+          };
+          while (true) {
+            try {
+              const realLabelizedProduct = await that.contract.methods.productCodeToRealLabels(element, iterationOverProductLabels).call();
+              LabelObject.uniqueRealLabelId = realLabelizedProduct.uniqueRealLabelId;
+              LabelObject.label_name = realLabelizedProduct.label_name;
+              LabelObject.expiration_date = realLabelizedProduct.expiration_date;
+              arrayOneProductLabels.push(LabelObject);
+              iterationOverProductLabels++;
+            } catch (e) {
+                break;
+              }
+          }
+          that.realLabelizedProductArray[element] = arrayOneProductLabels;
+          console.log('aiee : ' + JSON.stringify(that.realLabelizedProductArray));
+       }
       });
     }, 500);
   }
@@ -72,7 +98,6 @@ export class Web3Service {
     const web3Provider = this.web3;
     return new Promise(function (resolve, reject) {
       resolve(web3Provider.eth.net.getId());
-
     });
   }
 
@@ -85,12 +110,6 @@ export class Web3Service {
       resolve(new web3Provider.eth.Contract(EatHealthyChain.abi, that.deployedNetwork.address));
     });
   }
-
-  // async getMyRole() {
-  //   this.role = await this.contract.methods.getRole().call({from: this.accounts[0]});
-  //   console.log('Mon rôle : ' + this.role);
-  // }
-
 }
 
 
