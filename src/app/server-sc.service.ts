@@ -95,11 +95,11 @@ export class ServerSCService {
   }
 
   getVotingProducts(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/votable_products/${event.typeSelected}/${event.inputSearch}/${event.alphabetOrder}/${event.dateOrder}}`, event);
+    return this.request('GET', `${environment.serverUrl_SC}/votable_products/${event.typeSelected}/${event.inputSearch}/${event.alphabetOrder}/${event.dateOrder}`, event);
   }
 
   getAcceptedProducts(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/accepted_products/${event.typeSelected}/${event.inputSearch}/${event.alphabetOrder}/${event.dateOrder}}`, event);
+    return this.request('GET', `${environment.serverUrl_SC}/accepted_products/${event.typeSelected}/${event.inputSearch}/${event.alphabetOrder}/${event.dateOrder}`, event);
   }
 
   setVerification(event) {
@@ -107,11 +107,11 @@ export class ServerSCService {
   }
 
   getProductAndOlderVersions(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/get_product_and_older_version/${event.productCode}}`, event);
+    return this.request('GET', `${environment.serverUrl_SC}/get_product_and_older_version/${event.productCode}`, event);
   }
 
   getCheckModificationStatus(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/get_in_modification_status/${event.productCode}}`, event);
+    return this.request('GET', `${environment.serverUrl_SC}/get_in_modification_status/${event.productCode}`, event);
   }
 
   getProduct(event) {
