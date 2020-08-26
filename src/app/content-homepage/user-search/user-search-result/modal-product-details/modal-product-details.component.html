@@ -53,22 +53,26 @@
               </li>
               <li><span>Début du vote : </span><strong>{{ product.startDate }}</strong></li>
               <li><span>Fin du vote : </span><strong>{{ product.endDate }}</strong></li>
-              <!--        <li><span>Nombre de votes actuel : </span><strong>{{ product[0].totalVotes}}</strong></li>-->
               <li><span>Nombre de votes "Pour" actuel : </span><strong>{{ product.forVotes}}</strong></li>
               <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ product.againstVotes}}</strong></li>
             </ul>
           </div>
-          <mat-checkbox (change)="activateFields()" class="example-margin" name="none">
-            JE CERTIFIE D'AVOIR LE MILLIARD
-            DE
-            PAGES DE CGU AINSI QUE DE NE PAS ETRE UN GROS CONNARD
-          </mat-checkbox>
-          <div class="row" style="margin:5%">
-            <div class="col-sm-6">
-              <button [disabled]="sameObject" color="primary" mat-raised-button type="submit">PROPOSER MA MODIFICATION
-              </button>
+          <div *ngIf="!isAlreadyBeingModified; else warning">
+            <mat-checkbox (change)="activateFields()">
+              CGU
+            </mat-checkbox>
+            <div class="row" style="margin:5%">
+              <div class="col-sm-6">
+                <button [disabled]="sameObject" color="primary" mat-raised-button type="submit">PROPOSER MA MODIFICATION
+                </button>
+              </div>
             </div>
           </div>
+          <ng-template #warning>
+            <div>
+              <span> Ce produit est déjà en phase de modification, vous ne pouvez rien proposer pour le moment ! </span>
+            </div>
+          </ng-template>
         </div>
 
         <div class="col-sm-8">
@@ -332,8 +336,9 @@
               <mat-label>Saisissez un code-barre (13 chiffres)</mat-label>
               <input #input_alternative (input)="checkProductExists(input_alternative)" matInput/>
             </mat-form-field>
-            <button class="modal-product-details_alternativeCancel" (click)="displayAddAlternativeField = !displayAddAlternativeField"
-                    *ngIf="displayAddAlternativeField" type="button">
+            <button (click)="displayAddAlternativeField = !displayAddAlternativeField"
+                    *ngIf="displayAddAlternativeField"
+                    class="modal-product-details_alternativeCancel" type="button">
               <mat-icon style="vertical-align: middle">clear</mat-icon>
             </button>
             <div *ngIf="displayAlternativeInputResult"
@@ -362,12 +367,14 @@
   box-shadow: 10px 0 10px -3px #fff;
  position: relative;
  z-index: 10; border: 1px solid;border-radius: 5px; padding:5px; flex:0.3; display:flex; justify-content: space-around; align-items: center">
-                    <button class="modal-product-details_alternativeAgainstBtn" [disabled]="alternative.value.opinion == -1" (click)="voteAlternative(alternative.value.product_code_alternative,false)" type="button">
-                      <mat-icon style="vertical-align: middle" >remove</mat-icon>
+                    <button (click)="voteAlternative(alternative.value.product_code_alternative,false)"
+                            [disabled]="alternative.value.opinion == -1"
+                            class="modal-product-details_alternativeAgainstBtn" type="button">
+                      <mat-icon style="vertical-align: middle">remove</mat-icon>
                     </button>
-<!--                    <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>-->
                     <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>
-                    <button class="modal-product-details_alternativeForBtn" [disabled]="alternative.value.opinion == 1" (click)="voteAlternative(alternative.value.product_code_alternative,true)" type="button">
+                    <button (click)="voteAlternative(alternative.value.product_code_alternative,true)" [disabled]="alternative.value.opinion == 1"
+                            class="modal-product-details_alternativeForBtn" type="button">
                       <mat-icon style="vertical-align: middle">add</mat-icon>
                     </button>
                   </div>
