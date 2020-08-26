@@ -324,7 +324,7 @@ function createRouter(db) {
   });
 
   router.get('/get_in_modification_status/:product_code', async (req, res, next) => {
-    db.query("SELECT * productInfos_SC INNER JOIN variousDatas_SC ON variousDatas_SC.id = productInfos_SC.id WHERE FROM variousDatas_SC.product_code = '" + req.params.product_code + "'  AND productInfos_SC.status = 'IN_MODIFICATION';",
+    db.query("SELECT * FROM productInfos_SC INNER JOIN variousDatas_SC ON variousDatas_SC.id = productInfos_SC.id WHERE variousDatas_SC.product_code = '" + req.params.product_code + "'  AND productInfos_SC.status = 'IN_MODIFICATION';",
       (error, results) => {
         if (error) {
           console.log(error);
