@@ -125,7 +125,7 @@ contract EatHealthyChain {
   constructor() public {
     _owner = msg.sender;
     endVoteResponsible = 0x712EB6c16Ab3694b684B6c74B40A676c6d13621a;
-    addressToUser[_owner] = User(uniqueIdUser, now, 10, 0, true);
+    addressToUser[_owner] = User(uniqueIdUser, now, 10, 0, true);checkProductIsNew
     uniqueIdUser++;
     setupRealLabels();
   }
@@ -154,6 +154,12 @@ contract EatHealthyChain {
     _;
   }
 
+  // Checks if the product is votable
+  modifier isProductVotable(uint _productCode) {
+    require(productCodeToProposalProduct[_productCode].isVotable, "Ce produit n'est pas en vote");
+    _;
+  }
+
   /**
   @notice Product is added in proposal phase by the user,
           then visible for all users for votes
@@ -164,7 +170,7 @@ contract EatHealthyChain {
   @param _productCode, _productName, _labels, _ingredients, _quantity,
          _typeOfProduct, _packaging, _nutriments, _addiditfs
          => Elements needed to fill in both Product and Nutriments object
- */
+  */
   function addProductToProposal(
     uint64 _productCode,
     string[] memory _labels,
@@ -196,12 +202,6 @@ contract EatHealthyChain {
     uniqueProductId++;
     // addressToUser[msg.sender].tokenNumber--;
     emit TriggerAddProduct([_hashes.labels_hash, _hashes.ingredients_hash, _hashes.additives_hash, _hashes.nutriments_hash, _hashes.variousData_hash, _hashes.all_hash], msg.sender, [_product.startDate, _product.endDate]);
-  }
-
-
-  modifier isProductVotable(uint _productCode) {
-    require(productCodeToProposalProduct[_productCode].isVotable, "Ce produit n'est pas en vote");
-    _;
   }
 
   /**

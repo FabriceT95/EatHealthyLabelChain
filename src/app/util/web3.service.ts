@@ -19,7 +19,7 @@ export class Web3Service {
   newVote = new EventEmitter<any>();
   endVote = new EventEmitter<any>();
   realLabelizedProductArray: { [productCode: number]: any[] } = {};
-  isChecked = true;
+  // isChecked = true;
   that: any;
   accounts: any;
   networkId: any;

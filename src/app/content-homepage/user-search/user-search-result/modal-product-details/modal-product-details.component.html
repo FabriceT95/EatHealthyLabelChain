@@ -100,6 +100,11 @@
                   <mat-chip (removed)="remove(label,1)" *ngFor="let label of modifiedProduct.labels"
                             [removable]="!readOnly" [selectable]="selectable">
                     {{label}}
+<!--                    <span *ngFor="let realLabels of web3.realLabelizedProductArray[product.code]">-->
+<!--                      <span *ngIf="">-->
+
+<!--                      </span>-->
+<!--                    </span>-->
                     <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
                   </mat-chip>
                   <input (matChipInputTokenEnd)="add($event,1)" *ngIf="!readOnly"
@@ -355,10 +360,10 @@
 
         <div class="modal-product-details__alternativesList"
              style="display:flex; padding : 20px; justify-content: space-between;">
-          <div style="display:flex; margin-top:10px; align-items: center; flex-direction: column">
+          <div style="display:flex; flex:0.5; margin-top:10px; align-items: center; flex-direction: column">
             <h4>Top Alternatives : </h4>
-            <div *ngIf="alternatives">
-              <div *ngFor="let alternative of alternatives | keyvalue"
+            <div *ngIf="topAlternatives">
+              <div *ngFor="let alternative of topAlternatives | keyvalue"
                    class="modal-product-details__alternativesListTop">
                 <mat-card
                   style="width: 400px; max-width: 400px; margin-bottom : 5px; display:flex; justify-content: space-between; align-items: center">
@@ -379,42 +384,34 @@
                     </button>
                   </div>
                 </mat-card>
-
-                <!--            <mat-expansion-panel style="width: 400px; max-width: 400px; margin-bottom : 5px">-->
-                <!--              <mat-expansion-panel-header>-->
-                <!--                <mat-panel-title style="width: 200px; max-width: 200px; overflow:auto; align-items: center">-->
-                <!--                  -->
-                <!--                </mat-panel-title>-->
-                <!--                <mat-panel-description style="justify-content: center;">-->
-                <!--                  <div style="    background-color: #fff;-->
-                <!--    box-shadow: 10px 0 10px -3px #fff;-->
-                <!--    position: relative;-->
-                <!--    z-index: 10; border: 1px solid;border-radius: 5px; padding:5px">-->
-                <!--                    <mat-icon class="modal-product-details_alternativeAgainstBtn">remove</mat-icon>-->
-                <!--                    <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>-->
-                <!--                    <mat-icon class="modal-product-details_alternativeForBtn">add</mat-icon>-->
-                <!--                  </div>-->
-                <!--                </mat-panel-description>-->
-                <!--              </mat-expansion-panel-header>-->
-                <!--              <p>This is the primary content of the panel.</p>-->
-                <!--            </mat-expansion-panel>-->
               </div>
             </div>
           </div>
-          <div style="display:flex; margin-top:10px; align-items: center; flex-direction: column">
+          <div style="display:flex; flex:0.5; margin-top:10px; align-items: center; flex-direction: column">
             <h4>New/Fresh Alternatives : </h4>
-            <div class="modal-product-details__alternativesListNew">
-              <mat-expansion-panel style="max-width: 400px;">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    This is the expansion title
-                  </mat-panel-title>
-                  <mat-panel-description>
-                    This is a summary of the content
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
-                <p>This is the primary content of the panel.</p>
-              </mat-expansion-panel>
+            <div *ngIf="freshAlternatives">
+              <div *ngFor="let alternative of freshAlternatives | keyvalue"
+                   class="modal-product-details__alternativesListTop">
+                <mat-card
+                  style="width: 400px; max-width: 400px; margin-bottom : 5px; display:flex; justify-content: space-between; align-items: center">
+                  <div style="flex:0.7">{{ alternative.value.product_name }}</div>
+                  <div style="    background-color: #fff;
+  box-shadow: 10px 0 10px -3px #fff;
+ position: relative;
+ z-index: 10; border: 1px solid;border-radius: 5px; padding:5px; flex:0.3; display:flex; justify-content: space-around; align-items: center">
+                    <button (click)="voteAlternative(alternative.value.product_code_alternative,false)"
+                            [disabled]="alternative.value.opinion == -1"
+                            class="modal-product-details_alternativeAgainstBtn" type="button">
+                      <mat-icon style="vertical-align: middle">remove</mat-icon>
+                    </button>
+                    <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>
+                    <button (click)="voteAlternative(alternative.value.product_code_alternative,true)" [disabled]="alternative.value.opinion == 1"
+                            class="modal-product-details_alternativeForBtn" type="button">
+                      <mat-icon style="vertical-align: middle">add</mat-icon>
+                    </button>
+                  </div>
+                </mat-card>
+              </div>
             </div>
           </div>
         </div>

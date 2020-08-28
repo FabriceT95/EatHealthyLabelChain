@@ -5,7 +5,7 @@
 <!--  <mat-divider></mat-divider>-->
   <mat-card-content class="user-profile__content">
     <div class="row">
-      <div class="col-sm-12" style="margin:auto">
+      <div *ngIf="reputationPoints != null && remainingVotes != null; else error_userProfile" class="col-sm-12" style="margin:auto">
         <p>
           <strong>Adresse</strong><br/><span style="font-size:1.2vh">{{ walletAddress }}</span>
         </p>
@@ -18,6 +18,11 @@
           <strong>Nombre de votes restant</strong><br><span>{{ remainingVotes }}</span>
         </p>
       </div>
+      <ng-template #error_userProfile>
+        <div style="margin:auto">
+          {{ errorUserProfile }}
+        </div>
+      </ng-template>
 
     </div>
 

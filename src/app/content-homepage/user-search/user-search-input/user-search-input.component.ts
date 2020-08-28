@@ -9,6 +9,7 @@ import {ProductService} from '../../../product.service';
   templateUrl: './user-search-input.component.html',
   styleUrls: ['./user-search-input.component.css']
 })
+// Component used in Homepage for managing input search
 export class UserSearchInputComponent implements OnInit {
   alphabet_vote = false;
   date_vote = false;
@@ -21,6 +22,8 @@ export class UserSearchInputComponent implements OnInit {
   subscriptionAlphabet: Subscription;
   subscriptionTypeSelected: Subscription;
 
+  // ServerSCService to get database access, ProductService creating a product object
+  // Set up event catchers (Date order, alphabetical order, input search type)
   constructor(private server_sc: ServerSCService, private product: ProductService) {
     this.subscriptionDate = this.server_sc.date_order_change_accepted
       .subscribe(date => {
@@ -45,6 +48,7 @@ export class UserSearchInputComponent implements OnInit {
   ngOnInit() {
   }
 
+  // returns only accepted product depending on the input typed in searchbar and by filters
   searchAccepted(input = '') {
     const that = this;
     this.ProductsAccepted = {};

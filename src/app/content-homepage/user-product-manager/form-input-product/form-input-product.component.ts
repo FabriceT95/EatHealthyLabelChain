@@ -114,14 +114,14 @@ export class FormInputProductComponent implements OnInit {
       ''
     );
     // Si Mysql Server is ON
-    if (this.server.isChecked && !this.web3.isChecked) {
+    if (this.server.isChecked && !this.server_sc.isChecked) {
       // newProduct.nutriments = JSON.stringify(newProduct.nutriments);
       // this.server.createProduct(newProduct).then((result) => {
       //   console.log('Votre produit a été ajouté : ', result);
       // });
-    } else if (!this.server.isChecked && this.web3.isChecked) {
+    } else if (!this.server.isChecked && this.server_sc.isChecked) {
       const that = this;
-      this.web3.contract.methods.addProductToProposal(
+     /* this.web3.contract.methods.addProductToProposal(
         newProduct.code,
         newProduct.labels,
         newProduct.ingredients,
@@ -133,7 +133,7 @@ export class FormInputProductComponent implements OnInit {
         newProduct.packaging
       ).estimateGas({from: this.web3.accounts[0]}).then(function (gasAmount) {
         console.log('LE PRIX  : ' + gasAmount);
-      });
+      });*/
       this.web3.contract.methods.addProductToProposal(
         newProduct.code,
         newProduct.labels,
@@ -168,7 +168,10 @@ export class FormInputProductComponent implements OnInit {
           }, 500);
           that.onNoClick();
           //  alert('Le produit suivant a été placé dans la liste d\'attente : ' + newProduct.code + ' - ' + newProduct.product_name);
-        });
+        })
+      .on('error', function(error, receipt) {
+        alert('Erreur lors de l\'ajout de votre produit : ' + error.message + ' \n Merci de bien vouloir ré-essayer plus tard.');
+      });
       /*   this.web3.contract.events.TriggerAddProduct({
            fromBlock: await this.web3.web3.eth.getBlockNumber()
          },

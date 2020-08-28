@@ -8,6 +8,8 @@ import {BehaviorSubject, Observable} from 'rxjs';
 })
 export class ServerSCService {
 
+  isChecked = true;
+
   date_order_change = new EventEmitter<any>();
   alphabetical_order_change = new EventEmitter<any>();
   typeSelected_change = new EventEmitter<any>();

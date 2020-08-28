@@ -20,11 +20,15 @@ interface Alternative {
   templateUrl: './modal-product-details.component.html',
   styleUrls: ['./modal-product-details.component.css']
 })
+// Component used in Homepage/Search results items : openable modal for display product to modify
+// and propose/see alternatives to the product selected
 export class ModalProductDetailsComponent implements OnInit {
   public product: Product;
   public modifiedProduct: Product;
   public olderVersions: Product[];
   public alternatives: { [productCode: number]: Alternative } = {};
+  public topAlternatives: { [productCode: number]: Alternative } = {};
+  public freshAlternatives: { [productCode: number]: Alternative } = {};
   inProgress = false;
   visible = true;
   selectable = false;
@@ -48,35 +52,36 @@ export class ModalProductDetailsComponent implements OnInit {
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
+  // MatDialog for opening a Dialog, Web3Service for accessing the contract
+  // ServerSCService to get database access
   constructor(@Optional() @Inject(MAT_DIALOG_DATA) public data: any,
               public dialogRef: MatDialogRef<ModalProductDetailsComponent>,
               private web3: Web3Service,
               private server_sc: ServerSCService
   ) {
-    console.log(data.product);
     this.product = data.product;
     this.modifiedProduct = JSON.parse(JSON.stringify(this.product));
     this.olderVersions = data.olderVersions;
-    console.log('OLDERS : ' + this.olderVersions);
   }
 
+  // Check if product has been verify by a user the last 7 days
   ngOnInit() {
     const lastVerifDate = new Date(this.product.lastVerification);
     this.product.lastVerification = lastVerifDate.setDate(lastVerifDate.getDate() + 7);
     this.verifiedProduct = new Date(this.product.lastVerification).getTime() > Date.now();
-    console.log('Date de validité jusqu"au : ' + new Date(this.product.lastVerification).getTime());
-    console.log('Date du jour : ' + Date.now());
-    console.log('vérification établie : ' + this.verifiedProduct);
+    // console.log('Date de validité jusqu"au : ' + new Date(this.product.lastVerification).getTime());
+    // console.log('Date du jour : ' + Date.now());
+    // console.log('vérification établie : ' + this.verifiedProduct);
     this.getAlternatives();
     this.checkAlreadyBeingModified();
 
 
   }
-
+  // Closes dialog
   onNoClick(): void {
     this.dialogRef.close();
   }
-
+  // Alternative input : checks if product exists or already an alternative
   checkProductExists(input_product_code) {
     const that = this;
     const barcodeValue = input_product_code.value.trim();
@@ -104,33 +109,43 @@ export class ModalProductDetailsComponent implements OnInit {
     }
   }
 
+  // Get product selected alternatives
   getAlternatives() {
    const alternative_object = {
       productCode: this.product.code,
      user_address: this.web3.accounts[0]
     };
     this.server_sc.getAlternatives(alternative_object).then((result: any) => {
-      for (let i = 0; i < result.length; i++) {
-        const uniqueSqlResult = result[i] as any;
-       this.alternatives[uniqueSqlResult.product_code] = {
-          product_name: uniqueSqlResult.product_name,
-          product_code_alternative: uniqueSqlResult.product_code,
-          for_votes: uniqueSqlResult.for_votes,
-          against_votes: uniqueSqlResult.against_votes
-        };
+      const top_alternatives = result.slice(0, 5);
+      const fresh_alternatives = result.slice(5, -1);
+      if (top_alternatives.length > 0) {
+        this.dispatchAlternatives(top_alternatives, this.topAlternatives, alternative_object);
       }
-      this.server_sc.getAlternatives_voter_for_product(alternative_object).then((result_2: any) => {
-        for (let i = 0; i < result_2.length; i++) {
-          const uniqueSqlResult = result_2[i] as any;
-          this.alternatives[uniqueSqlResult.product_code_alternative].opinion = uniqueSqlResult.opinion;
-        }
-        console.log(this.alternatives);
-      });
+      if (fresh_alternatives.length > 0) {
+        this.dispatchAlternatives(fresh_alternatives, this.freshAlternatives, alternative_object);
+      }
     });
-
-
+  }
+  // Alternatives can be split into two categories : Top alternatives and New alternatives (less than 7 days)
+  dispatchAlternatives(alternatives_array, dict, alternative_object) {
+    for (let i = 0; i < alternatives_array.length; i++) {
+      const uniqueSqlResult = alternatives_array[i] as any;
+      dict[uniqueSqlResult.product_code] = {
+        product_name: uniqueSqlResult.product_name,
+        product_code_alternative: uniqueSqlResult.product_code,
+        for_votes: uniqueSqlResult.for_votes,
+        against_votes: uniqueSqlResult.against_votes
+      };
+    }
+    this.server_sc.getAlternatives_voter_for_product(alternative_object).then((result_2: any) => {
+      for (let i = 0; i < result_2.length; i++) {
+        const uniqueSqlResult = result_2[i] as any;
+        dict[uniqueSqlResult.product_code_alternative].opinion = uniqueSqlResult.opinion;
+      }
+    });
   }
 
+  // Allow the user to add a new alternative
   addAlternative(product_code_alternative) {
     const that = this;
     const product_object = {
@@ -143,6 +158,7 @@ export class ModalProductDetailsComponent implements OnInit {
     });
   }
 
+  // Allow the user to vote for an alternative
   voteAlternative(product_code_alternative, opinion) {
     console.log(product_code_alternative);
     console.log('cette alternative : ' + this.alternatives[product_code_alternative]);
@@ -160,12 +176,12 @@ export class ModalProductDetailsComponent implements OnInit {
       console.log('Nouveau vote pour ce produit : ' + product_vote_object.productCode);
       this.server_sc.UpdateVoteAlternative(product_vote_object).then(() => {
         this.getAlternatives();
-
-
       });
     });
   }
 
+  // Before a user can modify a product, it checks the product status :
+  // it can't be modified if already in modification status
   checkAlreadyBeingModified () {
     const checkAlreadyBeingModified_object = {
       productCode : this.product.code
@@ -178,6 +194,8 @@ export class ModalProductDetailsComponent implements OnInit {
     });
   }
 
+  // Allows the user to check if a product has not been corrupted,
+  // update the compliance into the DB for 7 days
   async verifyCompliance() {
     this.inProgress = true;
     console.log(JSON.stringify(this.product));
@@ -193,24 +211,28 @@ export class ModalProductDetailsComponent implements OnInit {
       fiber: this.product.nutriments.fiber.toString(),
       sodium: this.product.nutriments.sodium.toString(),
     };
-    const product_hashes_contrat = await this.web3.contract.methods.getProductHashes(this.product.code)
-      .call({from: this.web3.accounts[0]});
-    const product_hashes_DB = await this.web3.contract.methods.verifyCompliance(
-      this.product.code,
-      this.product.labels,
-      this.product.ingredients,
-      this.product.additifs,
-      nutriments,
-      this.product.product_name,
-      this.product.generic_name,
-      this.product.quantity,
-      this.product.packaging
-    ).call({from: this.web3.accounts[0]});
-    this.compareHashes(product_hashes_contrat, product_hashes_DB);
+    try {
+      const product_hashes_contrat = await this.web3.contract.methods.getProductHashes(this.product.code)
+        .call({from: this.web3.accounts[0]});
+      const product_hashes_DB = await this.web3.contract.methods.verifyCompliance(
+        this.product.code,
+        this.product.labels,
+        this.product.ingredients,
+        this.product.additifs,
+        nutriments,
+        this.product.product_name,
+        this.product.generic_name,
+        this.product.quantity,
+        this.product.packaging
+      ).call({from: this.web3.accounts[0]});
+      this.compareHashes(product_hashes_contrat, product_hashes_DB);
+    } catch (Error) {
+      alert('Serveur inaccessible');
+    }
   }
 
+  // Compare hashes of each category and verify unity between Smart contract and DB
   compareHashes(product_hashes_contrat, product_hashes_DB) {
-    try {
       let corrupted = true;
       if (product_hashes_contrat[1] !== product_hashes_DB[1]) {
         console.log('Les labels ne sont pas conforme');
@@ -231,17 +253,16 @@ export class ModalProductDetailsComponent implements OnInit {
         };
         this.server_sc.setVerification(verification_object).then(() => {
           console.log('La date de vérification a bien été modifée. Elle est active pendant une semaine');
-        });
+        })
+          .catch(() => alert('Vérification non mise à jour (Erreur DB), veuillez ré-essayer ulterieurement'));
       }
       if (corrupted) {
         this.setProductToCorrupted();
       }
       this.inProgress = false;
-    } catch (err) {
-      console.log(err);
-    }
   }
 
+  // set Product to corrupted status
   setProductToCorrupted() {
     const setCorrupted_object = {
       productCode : this.product.code
@@ -252,6 +273,7 @@ export class ModalProductDetailsComponent implements OnInit {
 
   }
 
+  // Brings element to modify into specified array
   add(event: MatChipInputEvent, elType): void {
     const input = event.input;
     const value = event.value;
@@ -278,6 +300,7 @@ export class ModalProductDetailsComponent implements OnInit {
     this.compareObjects();
   }
 
+  // Remove element to remove from specified array
   remove(productElement: string, elType): void {
     let index;
     switch (elType) {
@@ -299,14 +322,17 @@ export class ModalProductDetailsComponent implements OnInit {
     this.compareObjects();
   }
 
+  // Allows user to enable inputs which are initially disabled
   activateFields() {
     this.readOnly = !this.readOnly;
   }
 
+  // Compare product initially opened and modified product by user
   compareObjects() {
     this.sameObject = JSON.stringify(this.product) === JSON.stringify(this.modifiedProduct);
   }
 
+  // Sends product modified by user into the contract and DB then it will be voted by users
   modifyProduct() {
     this.checkAlreadyBeingModified();
     if (this.isAlreadyBeingModified === false) {
@@ -328,10 +354,6 @@ export class ModalProductDetailsComponent implements OnInit {
       )
         .send({from: this.web3.accounts[0]})
         .on('receipt', function (receipt) {
-          // console.log('VOYOJIFJDLZ : ' + receipt.events.TriggerAddProduct.returnValues.hashes);
-          // console.log('Proposer : ' + receipt.events.TriggerAddProduct.returnValues.proposerProduct);
-          // console.log('1234 : ' + receipt.events.TriggerAddProduct.returnValues.voteDates[0]);
-          // console.log('5678 : ' + receipt.events.TriggerAddProduct.returnValues.voteDates[1]);
           that.addLabel_SC(receipt.events.TriggerAddProduct.returnValues.hashes[0], that.modifiedProduct.labels.join(','));
           that.addIngredients(receipt.events.TriggerAddProduct.returnValues.hashes[1], that.modifiedProduct.ingredients.join(','));
           that.addAdditives(receipt.events.TriggerAddProduct.returnValues.hashes[2], that.modifiedProduct.additifs.join(','));
@@ -356,12 +378,16 @@ export class ModalProductDetailsComponent implements OnInit {
             + that.modifiedProduct.code +
             ' - ' +
             that.modifiedProduct.product_name);
+        })
+        .on('error', function(error, receipt) {
+          alert('Erreur lors de la modification : ré-essayer ulterieurement');
         });
     } else {
       alert('Vous ne pouvez pas faire ça, le produit est déjà en cours de vote');
     }
   }
 
+  // Sends data and hash of these data to DB
   addVariousDatas(variousData_hash, productCode, product_name, product_type, quantity, packaging) {
     const insertVariousDatas = {
       variousData_hash: variousData_hash,
@@ -376,6 +402,7 @@ export class ModalProductDetailsComponent implements OnInit {
     });
   }
 
+  // Sends data and hash of these data to DB
   addLabel_SC(labels_hash, labels) {
     const insertLabels = {labels_hash: labels_hash, labels: labels};
     this.server_sc.addLabels(insertLabels).then((result) => {
@@ -383,6 +410,7 @@ export class ModalProductDetailsComponent implements OnInit {
     });
   }
 
+  // Sends data and hash of these data to DB
   addAdditives(additives_hash, additives) {
     const insertAdditives = {additives_hash: additives_hash, additives: additives};
     this.server_sc.addAdditives(insertAdditives).then((result) => {
@@ -390,6 +418,7 @@ export class ModalProductDetailsComponent implements OnInit {
     });
   }
 
+  // Sends data and hash of these data to DB
   addIngredients(ingredients_hash, ingredients) {
     const insertIngredients = {ingredients_hash: ingredients_hash, ingredients: ingredients};
     this.server_sc.addIngredients(insertIngredients).then((result) => {
@@ -397,6 +426,7 @@ export class ModalProductDetailsComponent implements OnInit {
     });
   }
 
+  // Sends data and hash of these data to DB
   addNutriments(nutriments_hash, nutriments) {
     const insertNutriments = {nutriments_hash: nutriments_hash, nutriments: nutriments};
     this.server_sc.addNutriments(insertNutriments).then((result) => {
@@ -404,6 +434,7 @@ export class ModalProductDetailsComponent implements OnInit {
     });
   }
 
+  // Sends all hashes in a unique DB table
   addHashes(all_hash, addressProposer, voteDates) {
     const insertHashes = {
       all_hash: all_hash,
