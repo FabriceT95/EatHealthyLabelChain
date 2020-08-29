@@ -2,10 +2,8 @@ const express = require('express');
 
 // Gathering all routes queries to the DB
 function createRouter(db) {
-  let suffix;
-  if(db.config.database === 'eatHealthy' + suffix + '') {
-    suffix = '' + suffix + '';
-  } else {
+  let suffix = '_SC';
+  if(db.config.database === 'eatHealthy') {
     suffix = '';
   }
 
