@@ -207,13 +207,13 @@ function createRouter(db) {
 
   // Gets all products which are being modified or totally new
   router.get('/votable_products/', async (req, res, next) => {
-    db.query("SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' " +
-      "INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id " +
-      "INNER JOIN labels' + suffix + ' ON productInfos' + suffix + '.id = labels' + suffix + '.id " +
-      "INNER JOIN nutriments' + suffix + ' ON productInfos' + suffix + '.id = nutriments' + suffix + '.id " +
-      "INNER JOIN additives' + suffix + ' ON productInfos' + suffix + '.id = additives' + suffix + '.id " +
-      "INNER JOIN ingredients' + suffix + ' ON productInfos' + suffix + '.id = ingredients' + suffix + '.id " +
-      "WHERE status = 'NEW' OR status = 'IN_MODIFICATION';",
+    db.query('SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' ' +
+      'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
+      'INNER JOIN labels' + suffix + ' ON productInfos' + suffix + '.id = labels' + suffix + '.id ' +
+      'INNER JOIN nutriments' + suffix + ' ON productInfos' + suffix + '.id = nutriments' + suffix + '.id ' +
+      'INNER JOIN additives' + suffix + ' ON productInfos' + suffix + '.id = additives' + suffix + '.id ' +
+      'INNER JOIN ingredients' + suffix + ' ON productInfos' + suffix + '.id = ingredients' + suffix + '.id ' +
+      'WHERE status = "NEW" OR status = "IN_MODIFICATION";',
       (error, results) => {
         if (error) {
           console.log(error);
@@ -263,9 +263,9 @@ function createRouter(db) {
 
   // Gets a single accepted product (mainly used to check existence)
   router.get('/get_product/:product_code', async (req, res, next) => {
-    db.query("SELECT * FROM variousDatas' + suffix + ' " +
-      "INNER JOIN productInfos' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id " +
-      "WHERE status = 'ACCEPTED' AND product_code = " + req.params.product_code + "; ",
+    db.query('SELECT * FROM variousDatas' + suffix + ' ' +
+      'INNER JOIN productInfos' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
+      'WHERE status = "ACCEPTED" AND product_code = ' + req.params.product_code + '; ',
       (error, results) => {
         if (error) {
           console.log(error);
@@ -278,23 +278,23 @@ function createRouter(db) {
   });
   // Gets all alternatives of a product split in two categories : top alternatives and new alternatives (newest, less than 7 days)
   router.get('/get_alternatives/:product_code', async (req, res, next) => {
-    db.query("(SELECT * FROM " +
-      "(SELECT prod2.product_code, prod2.product_name, alt.for_votes, alt.against_votes, productInfos' + suffix + '.status FROM alternatives' + suffix + ' as alt " +
-      "INNER JOIN variousDatas' + suffix + ' as prod1 ON prod1.product_code = alt.product_code_target " +
-      "INNER JOIN variousDatas' + suffix + ' as prod2 ON prod2.product_code = alt.product_code_alternative " +
-      "INNER JOIN productInfos' + suffix + ' ON productInfos' + suffix + '.id = prod2.id " +
-      "WHERE prod1.product_code = " + req.params.product_code + " AND (productInfos' + suffix + '.status = 'ACCEPTED' OR productInfos' + suffix + '.status = 'IN_MODIFICATION') " +
-      "ORDER BY FIELD(productInfos' + suffix + '.status, 'ACCEPTED', 'IN_MODIFICATION'), for_votes DESC LIMIT 5) " +
-      "as d GROUP BY d.product_name, d.product_code, d.for_votes) " +
-      "UNION" +
-      "(SELECT * FROM " +
-      "(SELECT prod2.product_code, prod2.product_name, alt.for_votes, alt.against_votes, productInfos' + suffix + '.status FROM alternatives' + suffix + ' as alt " +
-      "INNER JOIN variousDatas' + suffix + ' as prod1 ON prod1.product_code = alt.product_code_target " +
-      "INNER JOIN variousDatas' + suffix + ' as prod2 ON prod2.product_code = alt.product_code_alternative " +
-      "INNER JOIN productInfos' + suffix + ' ON productInfos' + suffix + '.id = prod2.id " +
-      "WHERE prod1.product_code = " + req.params.product_code + " AND (productInfos' + suffix + '.status = 'ACCEPTED' OR productInfos' + suffix + '.status = 'IN_MODIFICATION') AND proposition_date >= DATE(NOW()) - INTERVAL 7 DAY " +
-      "ORDER BY FIELD(productInfos' + suffix + '.status, 'ACCEPTED', 'IN_MODIFICATION'), proposition_date DESC ) " +
-      "as d GROUP BY d.product_name, d.product_code, d.for_votes);",
+    db.query('(SELECT * FROM ' +
+      '(SELECT prod2.product_code, prod2.product_name, alt.for_votes, alt.against_votes, productInfos' + suffix + '.status FROM alternatives' + suffix + ' as alt ' +
+      'INNER JOIN variousDatas' + suffix + ' as prod1 ON prod1.product_code = alt.product_code_target ' +
+      'INNER JOIN variousDatas' + suffix + ' as prod2 ON prod2.product_code = alt.product_code_alternative ' +
+      'INNER JOIN productInfos' + suffix + ' ON productInfos' + suffix + '.id = prod2.id ' +
+      'WHERE prod1.product_code = ' + req.params.product_code + ' AND (productInfos' + suffix + '.status = "ACCEPTED" OR productInfos' + suffix + '.status = "IN_MODIFICATION") ' +
+      'ORDER BY FIELD(productInfos' + suffix + '.status, "ACCEPTED", "IN_MODIFICATION"), for_votes DESC LIMIT 5) ' +
+      'as d GROUP BY d.product_name, d.product_code, d.for_votes) ' +
+      'UNION' +
+      '(SELECT * FROM ' +
+      '(SELECT prod2.product_code, prod2.product_name, alt.for_votes, alt.against_votes, productInfos' + suffix + '.status FROM alternatives' + suffix + ' as alt ' +
+      'INNER JOIN variousDatas' + suffix + ' as prod1 ON prod1.product_code = alt.product_code_target ' +
+      'INNER JOIN variousDatas' + suffix + ' as prod2 ON prod2.product_code = alt.product_code_alternative ' +
+      'INNER JOIN productInfos' + suffix + ' ON productInfos' + suffix + '.id = prod2.id ' +
+      'WHERE prod1.product_code = ' + req.params.product_code + ' AND (productInfos' + suffix + '.status = "ACCEPTED" OR productInfos' + suffix + '.status = "IN_MODIFICATION") AND proposition_date >= DATE(NOW()) - INTERVAL 7 DAY ' +
+      'ORDER BY FIELD(productInfos' + suffix + '.status, "ACCEPTED", "IN_MODIFICATION"), proposition_date DESC ) ' +
+      'as d GROUP BY d.product_name, d.product_code, d.for_votes);',
       (error, results) => {
         if (error) {
           console.log(error);
@@ -308,49 +308,33 @@ function createRouter(db) {
 
   // Gets votable product based on some inputs (displays data on search result in votes page)
   router.get('/votable_products/:inputType/:inputValue/:alphabetical_name/:date_order', async (req, res, next) => {
-    let query = "SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' " +
-      "INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id " +
-      "INNER JOIN labels' + suffix + ' ON productInfos' + suffix + '.id = labels' + suffix + '.id " +
-      "INNER JOIN nutriments' + suffix + ' ON productInfos' + suffix + '.id = nutriments' + suffix + '.id " +
-      "INNER JOIN additives' + suffix + ' ON productInfos' + suffix + '.id = additives' + suffix + '.id " +
-      "INNER JOIN ingredients' + suffix + ' ON productInfos' + suffix + '.id = ingredients' + suffix + '.id " +
-      "WHERE status = 'NEW' OR status = 'IN_MODIFICATION' ";
+    let query = 'SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' ' +
+      'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
+      'INNER JOIN labels' + suffix + ' ON productInfos' + suffix + '.id = labels' + suffix + '.id ' +
+      'INNER JOIN nutriments' + suffix + ' ON productInfos' + suffix + '.id = nutriments' + suffix + '.id ' +
+      'INNER JOIN additives' + suffix + ' ON productInfos' + suffix + '.id = additives' + suffix + '.id ' +
+      'INNER JOIN ingredients' + suffix + ' ON productInfos' + suffix + '.id = ingredients' + suffix + '.id ' +
+      'WHERE status = "NEW" OR status = "IN_MODIFICATION" ';
 
     switch (req.params.inputType) {
       case 'productCode':
-        query += "AND " + req.params.inputType + " LIKE ";
+        query += 'AND ' + req.params.inputType + ' LIKE ';
         break;
       case 'label':
-        query += "AND labels' + suffix + '." + req.params.inputType + " LIKE ";
+        query += 'AND labels' + suffix + '.' + req.params.inputType + ' LIKE ';
         break;
       case 'ingredients':
-        query += "AND ingredients' + suffix + '." + req.params.inputType + " LIKE ";
+        query += 'AND ingredients' + suffix + '.' + req.params.inputType + ' LIKE ';
         break;
       case 'product_type':
-        query += "AND variousDatas' + suffix + '." + req.params.inputType + " LIKE ";
+        query += 'AND variousDatas' + suffix + '.' + req.params.inputType + ' LIKE ';
         break;
       case 'product_name':
-        query += "AND variousDatas' + suffix + '." + req.params.inputType + " LIKE ";
+        query += 'AND variousDatas' + suffix + '.' + req.params.inputType + ' LIKE ';
         break;
     }
 
     query = filters(req, query);
-
-    /*if (req.params.inputValue !== '*') {
-      query += "'%" + req.params.inputValue + "%' ";
-    } else {
-      query += "'%'";
-    }
-
-    if (req.params.alphabetical_name === true) {
-      query += "AND ORDER BY product_name ASC";
-    }
-
-    if (req.params.date_order === true) {
-      query += "AND ORDER BY end_date ASC";
-    }
-
-    query += ';';*/
 
     db.query(query,
       (error, results) => {
@@ -366,14 +350,14 @@ function createRouter(db) {
 
   // Gets all accepted product (displays it in search result in the Home page)
   router.get('/accepted_products/', async (req, res, next) => {
-    db.query("SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' " +
-      "INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id " +
-      "INNER JOIN labels' + suffix + ' ON productInfos' + suffix + '.id = labels' + suffix + '.id " +
-      "INNER JOIN nutriments' + suffix + ' ON productInfos' + suffix + '.id = nutriments' + suffix + '.id " +
-      "INNER JOIN additives' + suffix + ' ON productInfos' + suffix + '.id = additives' + suffix + '.id " +
-      "INNER JOIN ingredients' + suffix + ' ON productInfos' + suffix + '.id = ingredients' + suffix + '.id " +
-      "WHERE (status = 'ACCEPTED' OR status = 'MODIFIED') " +
-      "ORDER BY FIELD(status, 'ACCEPTED', 'MODIFIED'), end_date ASC;",
+    db.query('SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' ' +
+      'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
+      'INNER JOIN labels' + suffix + ' ON productInfos' + suffix + '.id = labels' + suffix + '.id ' +
+      'INNER JOIN nutriments' + suffix + ' ON productInfos' + suffix + '.id = nutriments' + suffix + '.id ' +
+      'INNER JOIN additives' + suffix + ' ON productInfos' + suffix + '.id = additives' + suffix + '.id ' +
+      'INNER JOIN ingredients' + suffix + ' ON productInfos' + suffix + '.id = ingredients' + suffix + '.id ' +
+      'WHERE (status = "ACCEPTED" OR status = "MODIFIED") ' +
+      'ORDER BY FIELD(status, "ACCEPTED", "MODIFIED"), end_date ASC;',
       (error, results) => {
         if (error) {
           console.log(error);
@@ -387,49 +371,33 @@ function createRouter(db) {
 
   // Gets accpeted product based on some inputs (displays data on search result in Home page)
   router.get('/accepted_products/:inputType/:inputValue/:alphabetical_name/:date_order', async (req, res, next) => {
-    let query = "SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' " +
-      "INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id " +
-      "INNER JOIN labels' + suffix + ' ON productInfos' + suffix + '.id = labels' + suffix + '.id " +
-      "INNER JOIN nutriments' + suffix + ' ON productInfos' + suffix + '.id = nutriments' + suffix + '.id " +
-      "INNER JOIN additives' + suffix + ' ON productInfos' + suffix + '.id = additives' + suffix + '.id " +
-      "INNER JOIN ingredients' + suffix + ' ON productInfos' + suffix + '.id = ingredients' + suffix + '.id " +
-      "WHERE (status = 'ACCEPTED' OR status = 'MODIFIED') ";
+    let query = 'SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' ' +
+      'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
+      'INNER JOIN labels' + suffix + ' ON productInfos' + suffix + '.id = labels' + suffix + '.id ' +
+      'INNER JOIN nutriments' + suffix + ' ON productInfos' + suffix + '.id = nutriments' + suffix + '.id ' +
+      'INNER JOIN additives' + suffix + ' ON productInfos' + suffix + '.id = additives' + suffix + '.id ' +
+      'INNER JOIN ingredients' + suffix + ' ON productInfos' + suffix + '.id = ingredients' + suffix + '.id ' +
+      'WHERE (status = "ACCEPTED"OR status = "MODIFIED") ';
 
     switch (req.params.inputType) {
       case 'product_code':
-        query += "AND " + req.params.inputType + " LIKE ";
+        query += 'AND ' + req.params.inputType + ' LIKE ';
         break;
       case 'label':
-        query += "AND labels' + suffix + '." + req.params.inputType + " LIKE ";
+        query += 'AND labels' + suffix + '.' + req.params.inputType + ' LIKE ';
         break;
       case 'ingredients':
-        query += "AND ingredients' + suffix + '." + req.params.inputType + " LIKE ";
+        query += 'AND ingredients' + suffix + '.' + req.params.inputType + ' LIKE ';
         break;
       case 'product_type':
-        query += "AND variousDatas' + suffix + '." + req.params.inputType + " LIKE ";
+        query += 'AND variousDatas' + suffix + '.' + req.params.inputType + ' LIKE ';
         break;
       case 'product_name':
-        query += "AND variousDatas' + suffix + '." + req.params.inputType + " LIKE ";
+        query += 'AND variousDatas' + suffix + '.' + req.params.inputType + ' LIKE ';
         break;
     }
 
     query = filters(req,query);
-
-    /*if (req.params.inputValue !== '*') {
-      query += "'%" + req.params.inputValue + "%' ";
-    } else {
-      query += "'%'";
-    }
-
-    if (req.params.alphabetical_name === true) {
-      query += "AND ORDER BY product_name ASC";
-    }
-
-    if (req.params.date_order === true) {
-      query += "AND ORDER BY end_date ASC";
-    }
-
-    query += ';';*/
 
     db.query(query,
       (error, results) => {
@@ -463,9 +431,9 @@ function createRouter(db) {
 
   // Check if a particular product is already being modified (avoid conflict for modifying a product)
   router.get('/get_in_modification_status/:product_code', async (req, res, next) => {
-    db.query("SELECT * FROM productInfos' + suffix + ' " +
-      "INNER JOIN variousDatas' + suffix + ' ON variousDatas' + suffix + '.id = productInfos' + suffix + '.id " +
-      "WHERE variousDatas' + suffix + '.product_code = '" + req.params.product_code + "'  AND productInfos' + suffix + '.status = 'IN_MODIFICATION';",
+    db.query('SELECT * FROM productInfos' + suffix + ' ' +
+      'INNER JOIN variousDatas' + suffix + ' ON variousDatas' + suffix + '.id = productInfos' + suffix + '.id ' +
+      'WHERE variousDatas' + suffix + '.product_code = "' + req.params.product_code + '"  AND productInfos' + suffix + '.status = "IN_MODIFICATION";',
       (error, results) => {
         if (error) {
           console.log(error);
@@ -478,8 +446,8 @@ function createRouter(db) {
 
   // Gets user data
   router.get('/user/:user_address', async (req, res, next) => {
-    db.query("SELECT * FROM Users' + suffix + ' " +
-      "WHERE address = '" + req.params.user_address + "';",
+    db.query('SELECT * FROM Users' + suffix + ' ' +
+      'WHERE address = "' + req.params.user_address + '";',
       (error, results) => {
         if (error) {
           console.log(error);
@@ -493,13 +461,13 @@ function createRouter(db) {
 
   // Gets proposed product by the current user (displays it in the proposal page)
   router.get('/get_my_proposals/:user_address', async (req, res, next) => {
-    db.query("SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' " +
-      "INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id " +
-      "INNER JOIN labels' + suffix + ' ON productInfos' + suffix + '.id = labels' + suffix + '.id " +
-      "INNER JOIN nutriments' + suffix + ' ON productInfos' + suffix + '.id = nutriments' + suffix + '.id " +
-      "INNER JOIN additives' + suffix + ' ON productInfos' + suffix + '.id = additives' + suffix + '.id " +
-      "INNER JOIN ingredients' + suffix + ' ON productInfos' + suffix + '.id = ingredients' + suffix + '.id " +
-      "WHERE (status = 'NEW' OR status = 'IN_MODIFICATION') AND address_proposer = '" + req.params.user_address + "';",
+    db.query('SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' ' +
+      'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
+      'INNER JOIN labels' + suffix + ' ON productInfos' + suffix + '.id = labels' + suffix + '.id ' +
+      'INNER JOIN nutriments' + suffix + ' ON productInfos' + suffix + '.id = nutriments' + suffix + '.id ' +
+      'INNER JOIN additives' + suffix + ' ON productInfos' + suffix + '.id = additives' + suffix + '.id ' +
+      'INNER JOIN ingredients' + suffix + ' ON productInfos' + suffix + '.id = ingredients' + suffix + '.id ' +
+      'WHERE (status = "NEW" OR status = "IN_MODIFICATION") AND address_proposer = "' + req.params.user_address + '";',
       (error, results) => {
         if (error) {
           console.log(error);
@@ -603,17 +571,17 @@ function createRouter(db) {
 
   function filters(req, query){
     if (req.params.inputValue !== '*') {
-      query += "'%" + req.params.inputValue + "%' ";
+      query += '"%' + req.params.inputValue + '%" ';
     } else {
-      query += "'%'";
+      query += '"%"';
     }
 
     if (req.params.alphabetical_name === true) {
-      query += "AND ORDER BY product_name ASC";
+      query += 'AND ORDER BY product_name ASC';
     }
 
     if (req.params.date_order === true) {
-      query += "AND ORDER BY end_date ASC";
+      query += 'AND ORDER BY end_date ASC';
     }
 
     query += ';';
