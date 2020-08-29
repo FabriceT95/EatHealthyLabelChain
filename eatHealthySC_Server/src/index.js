@@ -38,6 +38,12 @@ function checkParameters() {
 
 checkParameters();
 
+if(program.database !== 'eatHealthy_SC' || program.database !== 'eatHealthy') {
+  console.log('Wrong database name !');
+  process.exit(1);
+}
+
+
 // Starts the connection with mysql
 const connection = mysql.createConnection({
     host : 'localhost',
@@ -49,6 +55,7 @@ const connection = mysql.createConnection({
     database : `${program.database}`
 
 });
+console.log(connection.config.database);
 
 connection.connect();
 
