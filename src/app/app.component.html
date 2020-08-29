@@ -4,9 +4,5 @@
   <app-header (changeDataSource)="onDataSourceChanged($event)" (pageSelected)="onNavigate($event)"></app-header>
 </div>
 <div [className]="'app'">
-
-<!--  <app-content-homepage *ngIf="loadedPage === 'accueil'"></app-content-homepage>-->
-<!--  <app-content-votespage *ngIf="loadedPage === 'votePage'"></app-content-votespage>-->
-<!--  <app-content-my-proposals *ngIf="loadedPage === 'myProposals'"></app-content-my-proposals>-->
   <router-outlet></router-outlet>
 </div>

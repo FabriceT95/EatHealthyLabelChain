@@ -22,43 +22,75 @@ export class UserProfileComponent implements OnInit {
   // subscribes user into the contract then into the DB
   async subscribeUser(user_description) {
     const that = this;
-    this.web3.contract.methods.subscribeUser().send({from: user_description.user_address})
-      .then(() => {
+    if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+      this.web3.contract.methods.subscribeUser().send({from: user_description.user_address})
+        .then(() => {
+          that.server_sc.addUser(user_description).then(() => {
+            alert('Vous êtes bien inscrit à la plateforme ! ');
+            that.setUser(user_description.user_address);
+          });
+        })
+        .on('error', function (error, receipt) {
+          alert('Erreur de la plateforme : ' + error.message);
+        });
+    } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+      console.log('ahahahahahahah')
       that.server_sc.addUser(user_description).then(() => {
         alert('Vous êtes bien inscrit à la plateforme ! ');
         that.setUser(user_description.user_address);
-      });
-    })
-    .on('error', function(error, receipt) {
-      alert('Erreur de la plateforme : ' + error.message);
-    });
+      }).catch(() => alert('Erreur lors de l\'inscription !'));
+    }
   }
 
   // display user datas if he is already subscribed, otherwise it subscribes him
   setUser(address) {
     const user_description = {user_address: address};
-    try {
-      this.web3.contract.methods.addressToUser(address).call().then(async (existing) => {
-        if (existing.isExist === false && !this.singleRequest && !this.web3.isBeingModified) {
-          this.singleRequest = true;
-          this.web3.isBeingModified = true;
-          await this.subscribeUser(user_description);
-        } else {
-          this.server_sc.getUser(user_description).then(async (result: []) => {
-            const uniqueSqlResult = result as any;
-            if (uniqueSqlResult.length === 1) {
-              this.reputationPoints = uniqueSqlResult[0].reputation;
-              this.remainingVotes = uniqueSqlResult[0].token_number;
-              this.singleRequest = false;
-              this.web3.isBeingModified = false;
-            } else {
-              this.errorUserProfile = 'Vous n\'êtes pas inscrit(e) !';
-            }
-          });
-        }
-      });
-    } catch (Error) {
-      this.errorUserProfile = 'Erreur de la plateforme, ré-essayez ulterieurement ';
+    if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+      console.log('hi2')
+      try {
+        this.web3.contract.methods.addressToUser(address).call().then(async (existing) => {
+          if (existing.isExist === false && !this.singleRequest && !this.web3.isBeingModified) {
+            this.singleRequest = true;
+            this.web3.isBeingModified = true;
+            await this.subscribeUser(user_description);
+          } else {
+            this.server_sc.getUser(user_description).then(async (result: []) => {
+              const uniqueSqlResult = result as any;
+              if (uniqueSqlResult.length === 1) {
+                this.reputationPoints = uniqueSqlResult[0].reputation;
+                this.remainingVotes = uniqueSqlResult[0].token_number;
+                this.singleRequest = false;
+                this.web3.isBeingModified = false;
+              } else {
+                this.errorUserProfile = 'Vous n\'êtes pas inscrit(e) !';
+              }
+            });
+          }
+        });
+      } catch (Error) {
+        this.errorUserProfile = 'Erreur de la plateforme, ré-essayez ulterieurement ';
+      }
+    } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+      console.log('hi')
+      if (!this.singleRequest && !this.web3.isBeingModified) {
+        console.log('OOF');
+        this.singleRequest = true;
+        this.web3.isBeingModified = true;
+        this.subscribeUser(user_description);
+      } else {
+        console.log('BORDEL');
+        this.server_sc.getUser(user_description).then(async (result: []) => {
+          const uniqueSqlResult = result as any;
+          if (uniqueSqlResult.length === 1) {
+            this.reputationPoints = uniqueSqlResult[0].reputation;
+            this.remainingVotes = uniqueSqlResult[0].token_number;
+            this.singleRequest = false;
+            this.web3.isBeingModified = false;
+          } else {
+            this.errorUserProfile = 'Vous n\'êtes pas inscrit(e) !';
+          }
+        });
+      }
     }
   }
 
@@ -73,6 +105,15 @@ export class UserProfileComponent implements OnInit {
         (account: any) => {
           try {
             this.walletAddress = account[0];
+            this.setUser(this.walletAddress);
+          } catch (Error) {
+            alert('Refresh la page');
+          }
+        });
+      this.server_sc.changeDataSource.subscribe(
+        () => {
+          try {
+            console.log('coucou')
             this.setUser(this.walletAddress);
           } catch (Error) {
             alert('Refresh la page');

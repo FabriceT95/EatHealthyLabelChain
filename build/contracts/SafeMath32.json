@@ -7254,7 +7254,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.0",
-  "updatedAt": "2020-08-29T12:29:05.568Z",
+  "updatedAt": "2020-08-29T15:01:11.633Z",
   "devdoc": {
     "details": "SafeMath library implemented for uint32",
     "methods": {},

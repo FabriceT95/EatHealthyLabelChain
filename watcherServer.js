@@ -4,7 +4,7 @@ const web3 = new Web3('ws://localhost:7545');
 const Tx = require('ethereumjs-tx').Transaction;
 const fetch = require('node-fetch');
 const schedule = require('node-schedule');
-
+import {environment} from './../../environments/environment';
 // Private key to sign the transaction
 const privateKey = Buffer.from('fef84965c51e2b7fa41be75f70b1d467ca72b898f808e4fb0e07d28be6f3c130', 'hex');
 

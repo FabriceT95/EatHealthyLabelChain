@@ -9,7 +9,9 @@ import {BehaviorSubject, Observable} from 'rxjs';
 export class ServerSCService {
 
   isChecked = true;
-
+  port_SC: string = environment.port_SC;
+  port: string = environment.port;
+  serverUrl = environment.serverIP + ':' + this.port_SC;
   date_order_change = new EventEmitter<any>();
   alphabetical_order_change = new EventEmitter<any>();
   typeSelected_change = new EventEmitter<any>();
@@ -20,132 +22,109 @@ export class ServerSCService {
   typeSelected_change_accepted = new EventEmitter<any>();
   content_vote_page_change_accepted = new EventEmitter<any>();
 
-
-  private alphabetical_order = new BehaviorSubject(false);
-//  currentAlphabeticalOrder = this.alphabetical_order.asObservable();
-  private date_order = new BehaviorSubject(false);
-  // currentDateOrder = this.date_order.asObservable();
-  private alphabetical_order_vote = new BehaviorSubject(false);
-  private date_order_vote = new BehaviorSubject(false);
-  private updateContent = new BehaviorSubject(null);
+  changeDataSource = new EventEmitter();
 
   constructor(private http: HttpClient) {
   }
 
-  changeAlphabeticalOrder(alphabeticalOrder_status) {
-    this.alphabetical_order.next(alphabeticalOrder_status);
-  }
-
-  changeDateOrder(dateOrder_status) {
-    this.date_order.next(dateOrder_status);
-  }
-
-  onChangeAlphabeticalOrder(): Observable<any> {
-    return this.alphabetical_order.asObservable();
-  }
-
-  onChangeDateOrder(): Observable<any> {
-    return this.date_order.asObservable();
-  }
-
   addLabels(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_labels/${event.labels_hash}/${event.labels}`, event);
+    return this.request('POST', `${this.serverUrl}/add_labels/${event.labels_hash}/${event.labels}`, event);
   }
 
   addAdditives(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_additives/${event.additives_hash}/${event.additives}`, event);
+    return this.request('POST', `${this.serverUrl}/add_additives/${event.additives_hash}/${event.additives}`, event);
   }
 
   addIngredients(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_ingredients/${event.ingredients_hash}/${event.ingredients}`, event);
+    return this.request('POST', `${this.serverUrl}/add_ingredients/${event.ingredients_hash}/${event.ingredients}`, event);
   }
 
   addNutriments(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_nutriments/${event.nutriments_hash}/${event.nutriments}`, event);
+    return this.request('POST', `${this.serverUrl}/add_nutriments/${event.nutriments_hash}/${event.nutriments}`, event);
   }
 
   addHashes(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_product_infos/${event.all_hash}/${event.addressProposer}/${event.voteDates[0]}/${event.voteDates[1]}/${event.status}`, event);
+    return this.request('POST', `${this.serverUrl}/add_product_infos/${event.all_hash}/${event.addressProposer}/${event.voteDates[0]}/${event.voteDates[1]}/${event.status}`, event);
   }
 
   addVariousDatas(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_various_data/${event.variousData_hash}/${event.productCode}/${event.product_name}/${event.product_type}/${event.quantity}/${event.packaging}`, event);
+    return this.request('POST', `${this.serverUrl}/add_various_data/${event.variousData_hash}/${event.productCode}/${event.product_name}/${event.product_type}/${event.quantity}/${event.packaging}`, event);
   }
 
   addUser(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_user/${event.user_address}`, event);
+    return this.request('POST', `${this.serverUrl}/add_user/${event.user_address}`, event);
   }
 
   addVote(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_vote/${event.all_hash}/${event.productCode}/${event.user_address}`, event);
+    return this.request('POST', `${this.serverUrl}/add_vote/${event.all_hash}/${event.productCode}/${event.user_address}`, event);
   }
 
   addAlternative(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_alternative/${event.productCode}/${event.productCode_alternative}`, event);
+    return this.request('POST', `${this.serverUrl}/add_alternative/${event.productCode}/${event.productCode_alternative}`, event);
   }
 
   getMyProposals(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/get_my_proposals/${event.user_address}`, event);
+    return this.request('GET', `${this.serverUrl}/get_my_proposals/${event.user_address}`, event);
   }
 
   getAllVotingProducts() {
-    return this.request('GET', `${environment.serverUrl_SC}/votable_products/`);
+    return this.request('GET', `${this.serverUrl}/votable_products/`);
   }
 
   getAllAcceptedProducts() {
-    return this.request('GET', `${environment.serverUrl_SC}/accepted_products/`);
+    return this.request('GET', `${this.serverUrl}/accepted_products/`);
   }
 
   getVotingProducts(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/votable_products/${event.typeSelected}/${event.inputSearch}/${event.alphabetOrder}/${event.dateOrder}`, event);
+    return this.request('GET', `${this.serverUrl}/votable_products/${event.typeSelected}/${event.inputSearch}/${event.alphabetOrder}/${event.dateOrder}`, event);
   }
 
   getAcceptedProducts(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/accepted_products/${event.typeSelected}/${event.inputSearch}/${event.alphabetOrder}/${event.dateOrder}`, event);
+    return this.request('GET', `${this.serverUrl}/accepted_products/${event.typeSelected}/${event.inputSearch}/${event.alphabetOrder}/${event.dateOrder}`, event);
   }
 
   setVerification(event) {
-    return this.request('PUT', `${environment.serverUrl_SC}/verification/${event.productCode}/${event.lastVerificationDate}`, event);
+    return this.request('PUT', `${this.serverUrl}/verification/${event.productCode}/${event.lastVerificationDate}`, event);
   }
 
   getProductAndOlderVersions(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/get_product_and_older_version/${event.productCode}`, event);
+    return this.request('GET', `${this.serverUrl}/get_product_and_older_version/${event.productCode}`, event);
   }
 
   getCheckModificationStatus(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/get_in_modification_status/${event.productCode}`, event);
+    return this.request('GET', `${this.serverUrl}/get_in_modification_status/${event.productCode}`, event);
   }
 
   getProduct(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/get_product/${event.productCode}`, event);
+    return this.request('GET', `${this.serverUrl}/get_product/${event.productCode}`, event);
   }
 
   getAlternatives(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/get_alternatives/${event.productCode}`, event);
+    return this.request('GET', `${this.serverUrl}/get_alternatives/${event.productCode}`, event);
   }
 
   getUser(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/user/${event.user_address}`, event);
+    return this.request('GET', `${this.serverUrl}/user/${event.user_address}`, event);
   }
 
   getAlternatives_voter_for_product(event) {
-    return this.request('GET', `${environment.serverUrl_SC}/get_alternative_voter_for_product/${event.user_address}/${event.productCode}`, event);
+    return this.request('GET', `${this.serverUrl}/get_alternative_voter_for_product/${event.user_address}/${event.productCode}`, event);
   }
 
   addVoteAlternative(event) {
-    return this.request('POST', `${environment.serverUrl_SC}/add_vote_alternative/${event.all_hash}/${event.productCode}/${event.productCode_alternative}/${event.user_address}/${event.opinion}`, event);
+    return this.request('POST', `${this.serverUrl}/add_vote_alternative/${event.all_hash}/${event.productCode}/${event.productCode_alternative}/${event.user_address}/${event.opinion}`, event);
   }
 
   UpdateVote(event) {
-    return this.request('PUT', `${environment.serverUrl_SC}/new_vote/${event.productCode}`, event);
+    return this.request('PUT', `${this.serverUrl}/new_vote/${event.productCode}`, event);
   }
 
   UpdateVoteAlternative(event) {
-    return this.request('PUT', `${environment.serverUrl_SC}/new_vote_alternative/${event.productCode}/${event.productCode_alternative}/${event.opinion}/${event.prev_opinion}`, event);
+    return this.request('PUT', `${this.serverUrl}/new_vote_alternative/${event.productCode}/${event.productCode_alternative}/${event.opinion}/${event.prev_opinion}`, event);
   }
 
   setCorrupted(event) {
-    return this.request('PUT', `${environment.serverUrl_SC}/corrupted/${event.productCode}`, event);
+    return this.request('PUT', `${this.serverUrl}/corrupted/${event.productCode}`, event);
   }
 
 
