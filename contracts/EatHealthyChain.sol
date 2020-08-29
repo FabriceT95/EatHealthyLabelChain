@@ -125,7 +125,7 @@ contract EatHealthyChain {
   constructor() public {
     _owner = msg.sender;
     endVoteResponsible = 0x712EB6c16Ab3694b684B6c74B40A676c6d13621a;
-    addressToUser[_owner] = User(uniqueIdUser, now, 10, 0, true);checkProductIsNew
+    addressToUser[_owner] = User(uniqueIdUser, now, 10, 0, true);
     uniqueIdUser++;
     setupRealLabels();
   }
@@ -232,11 +232,9 @@ contract EatHealthyChain {
   @dev
          User can only vote if he is registered and he has not already voted
          Then adding vote to for and against
-  @param proposerAddress proposer
-         _productCode product targeted for the vote
-         _productCode product targeted for the vote
+  @param _productCode product targeted for the vote
 */
-  function endVote(uint _productCode, address proposerAddress) isResponsible() isProductVotable(_productCode) public {
+  function endVote(uint _productCode) isResponsible() isProductVotable(_productCode) public {
   //  require(productCodeToProposalProduct[_productCode].startDate < productCodeToProposalProduct[_productCode].endDate, "La fin du vote n'est pas depassée !");
     require(productCodeToProposalProduct[_productCode].productProposerAddress != address(0), "Ce produit n'existe pas en proposition");
     if (productCodeToProposalProduct[_productCode].forVotes >= productCodeToProposalProduct[_productCode].againstVotes) {
@@ -342,7 +340,7 @@ contract EatHealthyChain {
     string memory _productName,
     string memory _typeOfProduct,
     uint16 _quantity,
-    string memory _packaging) public view returns (bytes32[6] memory) {
+    string memory _packaging) public pure returns (bytes32[6] memory) {
       bytes32 labels_hash =  keccak256(abi.encode(_labels));
       bytes32 ingredients_hash =  keccak256(abi.encode(_ingredients));
       bytes32 additives_hash =  keccak256(abi.encode(_additives));

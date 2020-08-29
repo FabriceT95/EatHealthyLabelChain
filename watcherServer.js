@@ -129,7 +129,7 @@ worker.init().then(() => {
               gasPrice: '0x1111',
               gasLimit: '0x6691B7',
               to: worker.deployedNetwork.address,
-              data: worker.contract.methods.endVote(productVoteIsEndedArray[i].product_code, productVoteIsEndedArray[i].address_proposer).encodeABI(),
+              data: worker.contract.methods.endVote(productVoteIsEndedArray[i].product_code).encodeABI(),
               from: worker.accounts[7],
               nonce: ''
             };

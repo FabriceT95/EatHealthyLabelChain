@@ -10,8 +10,9 @@ import {ProductService} from '../../../product.service';
   templateUrl: './user-search-result.component.html',
   styleUrls: ['./user-search-result.component.css']
 })
+// Component used in Homepage : Search result component
+// Contains search result items
 export class UserSearchResultComponent implements OnInit {
-  // private AcceptedProduct:  Map <number, [Product, Product[]?]> = new Map <number, [Product, Product[]?]>();
   private AcceptedProduct: { [productCode: number]: [Product, Product[]?] } = {};
   private AcceptedProductArray: [Product, Product[]][] = [];
   private indexAcceptedProductArray = 0;
@@ -21,6 +22,7 @@ export class UserSearchResultComponent implements OnInit {
               private product: ProductService) {
   }
 
+  // On init, display all products with accepted status
   ngOnInit() {
     this.getAllAcceptedProducts();
     this.server_sc.content_vote_page_change_accepted.subscribe(
@@ -31,6 +33,7 @@ export class UserSearchResultComponent implements OnInit {
 
   }
 
+  // Gets all accepted products from the DB and add them properly to the accepted product dictionary
   async getAllAcceptedProducts() {
     const that = this;
     this.server_sc.getAllAcceptedProducts().then((result: []) => {

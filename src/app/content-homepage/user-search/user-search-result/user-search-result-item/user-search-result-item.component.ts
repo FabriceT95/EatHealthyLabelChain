@@ -9,6 +9,8 @@ import {ModalProductDetailsComponent} from '../modal-product-details/modal-produ
   templateUrl: './user-search-result-item.component.html',
   styleUrls: ['./user-search-result-item.component.css']
 })
+// Component used in Homepage : an item of search result component
+// Simple card used for some data displays and opening modify modal (modal-product-details)
 export class UserSearchResultItemComponent implements OnInit {
   @Input() product: [Product, Product[]];
   actualProduct: Product;

@@ -1,50 +1,44 @@
 /*
-Program needed to start the server related to the project
-
+Code needed to start the server related to the project
  */
 
-
-
 const { program } = require('commander');
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const mysql = require('mysql');
+const events = require('./events');
+
+// Getting parameters from command line : all parameters are needed to start the mysql server
+// For security, params are asked to the user
 program
   .option('-u, --user <user>', 'user chosen')
   .option('-pwd, --password <password>', 'password chosen')
   .option('-p, --port <port>', 'port chosen')
   .option('-db, --database <database>', 'database chosen');
-
 program.parse(process.argv);
-console.log(program.port);
-if(!program.port) {
-  console.log('port missing !');
-  process.exit(1);
+
+// Check all parameters needed to start server
+function checkParameters() {
+  if(!program.port) {
+    console.log('port missing !');
+    process.exit(1);
+  }
+
+  if(!program.database) {
+    console.log('database name missing !');
+    process.exit(1);
+  }
+
+  if(!program.user) {
+    console.log('user missing !');
+    process.exit(1);
+  }
 }
 
-if(!program.database) {
-  console.log('database name missing !');
-  process.exit(1);
-}
+checkParameters();
 
-if(!program.user) {
-  console.log('user missing !');
-  process.exit(1);
-}
-
-if(!program.password) {
-  console.log('password missing !');
-  process.exit(1);
-}
-
-console.log('PORT : ' + program.port + ' , USER :' + program.user + ' , DATABASE : ' + program.database + ' , PASSWORD : ' + program.password);
-
-const express = require('express');
-const cors = require('cors');
-
-const bodyParser = require('body-parser');
-
-const mysql = require('mysql');
-
-const events = require('./events');
-
+// Starts the connection with mysql
 const connection = mysql.createConnection({
     host : 'localhost',
 
@@ -70,5 +64,11 @@ const app = express()
 
 app.listen(port, () => {
     console.log(`Express server listening on port ${port}`);
+});
+
+// Close server before exit
+process.on('beforeExit', () => {
+  console.log('Fermeture du serveur');
+  connection.end()
 });
 
