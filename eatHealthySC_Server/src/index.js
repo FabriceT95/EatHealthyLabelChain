@@ -38,7 +38,9 @@ function checkParameters() {
 
 checkParameters();
 
-if(program.database !== 'eatHealthy_SC' || program.database !== 'eatHealthy') {
+
+
+if(!program.database.startsWith('eatHealthy')) {
   console.log('Wrong database name !');
   process.exit(1);
 }
