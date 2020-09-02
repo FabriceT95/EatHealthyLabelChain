@@ -25,6 +25,12 @@ export class UserSearchResultComponent implements OnInit {
   // On init, display all products with accepted status
   ngOnInit() {
     this.getAllAcceptedProducts();
+    this.server_sc.changeDataSource.subscribe( () => {
+      this.AcceptedProduct = {};
+      this.AcceptedProductArray = [];
+      this.indexAcceptedProductArray = 0;
+      this.getAllAcceptedProducts();
+    })
     this.server_sc.content_vote_page_change_accepted.subscribe(
       (ProductAcceptedSearch: [Product, Product[]][] ) => {
         this.AcceptedProductArray = [];

@@ -455,13 +455,13 @@ function createRouter(db) {
   });
   // Gets a particular product and its older versions (the 'accepted' one and 'modified' ones)
   router.get('/get_product_and_older_version/:product_code', async (req, res, next) => {
-    db.query("SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' " +
-      "INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id " +
-      "INNER JOIN labels' + suffix + ' ON productInfos' + suffix + '.id = labels' + suffix + '.id " +
-      "INNER JOIN nutriments' + suffix + ' ON productInfos' + suffix + '.id = nutriments' + suffix + '.id " +
-      "INNER JOIN additives' + suffix + ' ON productInfos' + suffix + '.id = additives' + suffix + '.id " +
-      "INNER JOIN ingredients' + suffix + ' ON productInfos' + suffix + '.id = ingredients' + suffix + '.id " +
-      "WHERE (status = 'ACCEPTED' OR status = 'MODIFIED') AND variousDatas' + suffix + '.product_code = '" + req.params.product_code + "';",
+    db.query('SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' ' +
+      'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
+      'INNER JOIN labels' + suffix + ' ON productInfos' + suffix + '.id = labels' + suffix + '.id ' +
+      'INNER JOIN nutriments' + suffix + ' ON productInfos' + suffix + '.id = nutriments' + suffix + '.id ' +
+      'INNER JOIN additives' + suffix + ' ON productInfos' + suffix + '.id = additives' + suffix + '.id ' +
+      'INNER JOIN ingredients' + suffix + ' ON productInfos' + suffix + '.id = ingredients' + suffix + '.id ' +
+      'WHERE (status = "ACCEPTED" OR status = "MODIFIED") AND variousDatas' + suffix + '.product_code = ' + req.params.product_code + ';',
       (error, results) => {
         if (error) {
           console.log(error);
