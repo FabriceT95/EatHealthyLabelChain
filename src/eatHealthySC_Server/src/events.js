@@ -50,7 +50,7 @@ function createRouter(db) {
   // Adds nutriments and its hash for a product (distinct same hash and nutriments with their id)
   router.post('/add_nutriments/:nutriments_hash/:nutriments', async (req, res, next) => {
     const nutriments = JSON.parse(req.params.nutriments);
-    db.query('INSERT INTO nutriments' + suffix + 'C (nutriments_hash, energy, energy_kcal, proteines, carbohydrates, salt, sugar, fat, saturated_fat, fiber, sodium) ' +
+    db.query('INSERT INTO nutriments' + suffix + ' (nutriments_hash, energy, energy_kcal, proteines, carbohydrates, salt, sugar, fat, saturated_fat, fiber, sodium) ' +
       'VALUES (?,?,?,?,?,?,?,?,?,?,?)',
       [req.params.nutriments_hash,
         nutriments.energy,

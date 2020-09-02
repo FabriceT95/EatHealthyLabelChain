@@ -13,7 +13,7 @@ export class UserProfileComponent implements OnInit {
   walletAddress: any;
   reputationPoints: number = null;
   remainingVotes: number = null;
-  singleRequest = false;
+ // singleRequest = false;
   errorUserProfile = '';
 
   //  Web3Service for accessing the contract, ServerSCService to get database access
@@ -48,18 +48,24 @@ export class UserProfileComponent implements OnInit {
     if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC) && param === 'sc') {
       try {
         this.web3.contract.methods.addressToUser(address).call().then(async (existing) => {
-          if (existing.isExist === false && !this.singleRequest && !this.web3.isBeingModified) {
+          if (existing.isExist === false && !this.web3.isBeingModified) {
+           // this.singleRequest = true;
+            this.web3.isBeingModified = true;
             await this.subscribeUser(user_description, 'sc');
           } else {
+           // this.singleRequest = true;
+            this.web3.isBeingModified = true;
             this.server_sc.getUser(user_description).then(async (result: []) => {
               const uniqueSqlResult = result as any;
               if (uniqueSqlResult.length === 1) {
                 this.reputationPoints = uniqueSqlResult[0].reputation;
                 this.remainingVotes = uniqueSqlResult[0].token_number;
-                this.singleRequest = false;
-                this.web3.isBeingModified = false;
+            //    this.singleRequest = true;
+                this.web3.isBeingModified = true;
               } else {
                 this.errorUserProfile = 'Vous n\'êtes pas inscrit(e) !';
+            //    this.singleRequest = false;
+                this.web3.isBeingModified = false;
               }
             });
           }
@@ -68,7 +74,7 @@ export class UserProfileComponent implements OnInit {
         this.errorUserProfile = 'Erreur de la plateforme, ré-essayez ulterieurement ';
       }
     } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port) && param === 'db') {
-      this.singleRequest = true;
+    //  this.singleRequest = true;
       this.web3.isBeingModified = true;
         this.server_sc.getUser(user_description).then(async (result: []) => {
           const uniqueSqlResult = result as any;
@@ -76,12 +82,12 @@ export class UserProfileComponent implements OnInit {
           if (uniqueSqlResult.length === 1) {
             this.reputationPoints = uniqueSqlResult[0].reputation;
             this.remainingVotes = uniqueSqlResult[0].token_number;
-            this.singleRequest = false;
+         //   this.singleRequest = false;
             this.web3.isBeingModified = false;
           } else {
             this.subscribeUser(user_description, param);
             // this.errorUserProfile = 'Vous n\'êtes pas inscrit(e) !';
-            this.singleRequest = true;
+         //   this.singleRequest = true;
             this.web3.isBeingModified = true;
           }
         });
@@ -91,7 +97,6 @@ export class UserProfileComponent implements OnInit {
 
   // Leaving some time to the web service to be setup then set the user datas
   ngOnInit() {
-    console.log('hey : ' + keccak('keccak256').digest().toString('hex'));
     setTimeout(() => {
       this.walletAddress = this.web3.accounts[0];
       this.setUser(this.walletAddress, 'sc');

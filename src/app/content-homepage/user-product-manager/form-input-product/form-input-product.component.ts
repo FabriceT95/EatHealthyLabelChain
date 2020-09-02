@@ -81,7 +81,7 @@ export class FormInputProductComponent implements OnInit {
     //   console.log(product);
   }
 
-  async addProductInDatabase(productName, proteines, glucide, salt, sugars, energy, energy_kcal, fiber,
+  async addProduct(productName, proteines, glucide, salt, sugars, energy, energy_kcal, fiber,
                              fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels, additifs) {
     const newProduct = new Product(
       '',
@@ -114,7 +114,7 @@ export class FormInputProductComponent implements OnInit {
       ''
     );
     // Si Mysql Server is ON
-    if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+    if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
       const labels_hash = keccak('keccak256').update(newProduct.labels).digest().toString('hex');
       const ingredients_hash = keccak('keccak256').update(newProduct.ingredients).digest().toString('hex');
       const additives_hash = keccak('keccak256').update(newProduct.additifs).digest().toString('hex');
@@ -142,7 +142,7 @@ export class FormInputProductComponent implements OnInit {
           [Date.now() / 1000, Date.now() / 1000 + 300]
         );
       }, 500);
-    } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+    } else if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
       const that = this;
       this.web3.contract.methods.addProductToProposal(
         newProduct.code,
