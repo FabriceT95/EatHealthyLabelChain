@@ -6,7 +6,7 @@ import {Product} from '../../../../shared/product.model';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {ServerSCService} from '../../../../server-sc.service';
-
+import keccak from 'keccak';
 interface Alternative {
   product_name: string;
   product_code_alternative: number;
@@ -66,12 +66,17 @@ export class ModalProductDetailsComponent implements OnInit {
 
   // Check if product has been verify by a user the last 7 days
   ngOnInit() {
-    const lastVerifDate = new Date(this.product.lastVerification);
-    this.product.lastVerification = lastVerifDate.setDate(lastVerifDate.getDate() + 7);
-    this.verifiedProduct = new Date(this.product.lastVerification).getTime() > Date.now();
-    // console.log('Date de validité jusqu"au : ' + new Date(this.product.lastVerification).getTime());
-    // console.log('Date du jour : ' + Date.now());
-    // console.log('vérification établie : ' + this.verifiedProduct);
+    if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+
+      const lastVerifDate = new Date(this.product.lastVerification);
+      this.product.lastVerification = lastVerifDate.setDate(lastVerifDate.getDate() + 7);
+      this.verifiedProduct = new Date(this.product.lastVerification).getTime() > Date.now();
+      // console.log('Date de validité jusqu"au : ' + new Date(this.product.lastVerification).getTime());
+      // console.log('Date du jour : ' + Date.now());
+      // console.log('vérification établie : ' + this.verifiedProduct);
+    } else {
+      this.verifiedProduct = true;
+    }
     this.getAlternatives();
     this.checkAlreadyBeingModified();
 
@@ -227,7 +232,7 @@ export class ModalProductDetailsComponent implements OnInit {
       ).call({from: this.web3.accounts[0]});
       this.compareHashes(product_hashes_contrat, product_hashes_DB);
     } catch (Error) {
-      alert('Serveur inaccessible');
+      alert('Serveur inaccessible : ré-essayez plus tard !');
     }
   }
 
@@ -333,7 +338,7 @@ export class ModalProductDetailsComponent implements OnInit {
   }
 
   // Sends product modified by user into the contract and DB then it will be voted by users
-  modifyProduct() {
+  async modifyProduct() {
     this.checkAlreadyBeingModified();
     if (this.isAlreadyBeingModified === false) {
       const that = this;
@@ -341,47 +346,96 @@ export class ModalProductDetailsComponent implements OnInit {
       this.modifiedProduct.nutriments = JSON.parse(json, (key, val) => (
         typeof val !== 'object' && val !== null ? String(val) : val
       ));
-      this.web3.contract.methods.addProductToProposal(
-        this.modifiedProduct.code,
-        this.modifiedProduct.labels,
-        this.modifiedProduct.ingredients,
-        this.modifiedProduct.additifs,
-        this.modifiedProduct.nutriments,
-        this.modifiedProduct.product_name,
-        this.modifiedProduct.generic_name,
-        this.modifiedProduct.quantity,
-        this.modifiedProduct.packaging
-      )
-        .send({from: this.web3.accounts[0]})
-        .on('receipt', function (receipt) {
-          that.addLabel_SC(receipt.events.TriggerAddProduct.returnValues.hashes[0], that.modifiedProduct.labels.join(','));
-          that.addIngredients(receipt.events.TriggerAddProduct.returnValues.hashes[1], that.modifiedProduct.ingredients.join(','));
-          that.addAdditives(receipt.events.TriggerAddProduct.returnValues.hashes[2], that.modifiedProduct.additifs.join(','));
-          that.addNutriments(receipt.events.TriggerAddProduct.returnValues.hashes[3], JSON.stringify(that.modifiedProduct.nutriments));
-          that.addVariousDatas(
-            receipt.events.TriggerAddProduct.returnValues.hashes[4],
-            that.modifiedProduct.code,
-            that.modifiedProduct.product_name,
-            that.modifiedProduct.generic_name,
-            that.modifiedProduct.quantity,
-            that.modifiedProduct.packaging
-          );
+      if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+        try {
+        /*  const product_hashes_DB = await this.web3.contract.methods.verifyCompliance(
+            this.modifiedProduct.code,
+            this.modifiedProduct.labels,
+            this.modifiedProduct.ingredients,
+            this.modifiedProduct.additifs,
+            this.modifiedProduct.nutriments,
+            this.modifiedProduct.product_name,
+            this.modifiedProduct.generic_name,
+            this.modifiedProduct.quantity,
+            this.modifiedProduct.packaging
+          ).call({from: this.web3.accounts[0]});*/
+          const labels_hash = keccak('keccak256').update(this.modifiedProduct.labels).digest().toString('hex');
+          const ingredients_hash = keccak('keccak256').update(this.modifiedProduct.ingredients).digest().toString('hex');
+          const additives_hash = keccak('keccak256').update(this.modifiedProduct.additifs).digest().toString('hex');
+          const nutriments_hash = keccak('keccak256').update(this.modifiedProduct.nutriments).digest().toString('hex');
+          const variousDatas_hash = keccak('keccak256').update(this.modifiedProduct.code,
+            this.modifiedProduct.product_name,
+            this.modifiedProduct.generic_name,
+            this.modifiedProduct.quantity,
+            this.modifiedProduct.packaging).digest().toString('hex');
+          const all_hash = keccak(labels_hash,
+            ingredients_hash,
+            additives_hash,
+            nutriments_hash,
+            variousDatas_hash).digest().toString('hex');
+          console.log('Hash variousDatas : ' + variousDatas_hash);
+          this.addLabel(labels_hash, this.modifiedProduct.labels.join(','));
+          this.addIngredients(ingredients_hash, this.modifiedProduct.ingredients.join(','));
+          this.addAdditives(additives_hash, this.modifiedProduct.additifs.join(','));
+          this.addNutriments(nutriments_hash, JSON.stringify(this.modifiedProduct.nutriments));
+          this.addVariousDatas(variousDatas_hash, this.modifiedProduct.code,
+            this.modifiedProduct.product_name,
+            this.modifiedProduct.generic_name,
+            this.modifiedProduct.quantity,
+            this.modifiedProduct.packaging);
           setTimeout(() => {
-            that.addHashes(
-              receipt.events.TriggerAddProduct.returnValues.hashes[5],
-              receipt.events.TriggerAddProduct.returnValues.proposerProduct,
-              receipt.events.TriggerAddProduct.returnValues.voteDates
+            this.addHashes(
+              all_hash,
+              this.web3.accounts[0],
+              [Date.now() / 1000, Date.now() / 1000 + 300]
             );
           }, 500);
-          that.onNoClick();
-          alert('Le produit suivant a été placé dans la liste d\'attente : '
-            + that.modifiedProduct.code +
-            ' - ' +
-            that.modifiedProduct.product_name);
-        })
-        .on('error', function(error, receipt) {
-          alert('Erreur lors de la modification : ré-essayer ulterieurement');
-        });
+        } catch (error) {
+          alert('Erreur lors de la modification du produit : ' + error.message + ' \n Merci de bien vouloir ré-essayer plus tard.');
+        }
+      } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+        this.web3.contract.methods.addProductToProposal(
+          this.modifiedProduct.code,
+          this.modifiedProduct.labels,
+          this.modifiedProduct.ingredients,
+          this.modifiedProduct.additifs,
+          this.modifiedProduct.nutriments,
+          this.modifiedProduct.product_name,
+          this.modifiedProduct.generic_name,
+          this.modifiedProduct.quantity,
+          this.modifiedProduct.packaging
+        )
+          .send({from: this.web3.accounts[0]})
+          .on('receipt', function (receipt) {
+            that.addLabel(receipt.events.TriggerAddProduct.returnValues.hashes[0], that.modifiedProduct.labels.join(','));
+            that.addIngredients(receipt.events.TriggerAddProduct.returnValues.hashes[1], that.modifiedProduct.ingredients.join(','));
+            that.addAdditives(receipt.events.TriggerAddProduct.returnValues.hashes[2], that.modifiedProduct.additifs.join(','));
+            that.addNutriments(receipt.events.TriggerAddProduct.returnValues.hashes[3], JSON.stringify(that.modifiedProduct.nutriments));
+            that.addVariousDatas(
+              receipt.events.TriggerAddProduct.returnValues.hashes[4],
+              that.modifiedProduct.code,
+              that.modifiedProduct.product_name,
+              that.modifiedProduct.generic_name,
+              that.modifiedProduct.quantity,
+              that.modifiedProduct.packaging
+            );
+            setTimeout(() => {
+              that.addHashes(
+                receipt.events.TriggerAddProduct.returnValues.hashes[5],
+                receipt.events.TriggerAddProduct.returnValues.proposerProduct,
+                receipt.events.TriggerAddProduct.returnValues.voteDates
+              );
+            }, 500);
+            that.onNoClick();
+            alert('Le produit suivant a été placé dans la liste d\'attente : '
+              + that.modifiedProduct.code +
+              ' - ' +
+              that.modifiedProduct.product_name);
+          })
+          .on('error', function (error, receipt) {
+            alert('Erreur lors de la modification : ré-essayer ulterieurement');
+          });
+      }
     } else {
       alert('Vous ne pouvez pas faire ça, le produit est déjà en cours de vote');
     }
@@ -403,7 +457,7 @@ export class ModalProductDetailsComponent implements OnInit {
   }
 
   // Sends data and hash of these data to DB
-  addLabel_SC(labels_hash, labels) {
+  addLabel(labels_hash, labels) {
     const insertLabels = {labels_hash: labels_hash, labels: labels};
     this.server_sc.addLabels(insertLabels).then((result) => {
       console.log('Les labels et leur hash ont bien été ajouté à la BDD : ', result);

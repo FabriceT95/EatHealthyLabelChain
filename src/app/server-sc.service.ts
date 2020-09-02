@@ -11,7 +11,7 @@ export class ServerSCService {
   isChecked = true;
   port_SC: string = environment.port_SC;
   port: string = environment.port;
-  serverUrl = environment.serverIP + ':' + this.port_SC;
+  serverUrl = environment.serverIP.valueOf() + ':' + this.port_SC;
   date_order_change = new EventEmitter<any>();
   alphabetical_order_change = new EventEmitter<any>();
   typeSelected_change = new EventEmitter<any>();
@@ -109,6 +109,18 @@ export class ServerSCService {
 
   getAlternatives_voter_for_product(event) {
     return this.request('GET', `${this.serverUrl}/get_alternative_voter_for_product/${event.user_address}/${event.productCode}`, event);
+  }
+
+  get_voter_for_product(event) {
+    return this.request('GET', `${this.serverUrl}/get_voter_for_product/${event.user_address}/${event.productCode}`, event);
+  }
+
+  get_product_proposer_new_modify(event) {
+    return this.request('GET', `${this.serverUrl}/get_product_proposer_new_modify/${event.productCode}`, event);
+  }
+
+  get_dates_new_modify(event) {
+    return this.request('GET', `${this.serverUrl}/get_dates/${event.productCode}`, event);
   }
 
   addVoteAlternative(event) {

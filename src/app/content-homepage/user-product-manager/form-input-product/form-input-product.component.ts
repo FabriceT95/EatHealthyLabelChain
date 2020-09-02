@@ -8,6 +8,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Product} from '../../../shared/product.model';
 import {ServerSCService} from '../../../server-sc.service';
 import {ProductService} from '../../../product.service';
+import keccak from 'keccak';
 
 
 @Component({
@@ -20,7 +21,6 @@ export class FormInputProductComponent implements OnInit {
 
   constructor(
     private web3: Web3Service,
-    private server: ServerService,
     private server_sc: ServerSCService,
     private product: ProductService,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
@@ -114,26 +114,36 @@ export class FormInputProductComponent implements OnInit {
       ''
     );
     // Si Mysql Server is ON
-    if (this.server.isChecked && !this.server_sc.isChecked) {
-      // newProduct.nutriments = JSON.stringify(newProduct.nutriments);
-      // this.server.createProduct(newProduct).then((result) => {
-      //   console.log('Votre produit a été ajouté : ', result);
-      // });
-    } else if (!this.server.isChecked && this.server_sc.isChecked) {
-      const that = this;
-     /* this.web3.contract.methods.addProductToProposal(
-        newProduct.code,
-        newProduct.labels,
-        newProduct.ingredients,
-        newProduct.additifs,
-        newProduct.nutriments,
+    if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+      const labels_hash = keccak('keccak256').update(newProduct.labels).digest().toString('hex');
+      const ingredients_hash = keccak('keccak256').update(newProduct.ingredients).digest().toString('hex');
+      const additives_hash = keccak('keccak256').update(newProduct.additifs).digest().toString('hex');
+      const nutriments_hash = keccak('keccak256').update(newProduct.nutriments).digest().toString('hex');
+      const variousDatas_hash = keccak('keccak256').update(newProduct.code,
         newProduct.product_name,
         newProduct.generic_name,
         newProduct.quantity,
-        newProduct.packaging
-      ).estimateGas({from: this.web3.accounts[0]}).then(function (gasAmount) {
-        console.log('LE PRIX  : ' + gasAmount);
-      });*/
+        newProduct.packaging).digest().toString('hex');
+      const all_hash = keccak(labels_hash,
+        ingredients_hash,
+        additives_hash,
+        nutriments_hash,
+        variousDatas_hash).digest().toString('hex');
+      console.log('variousdatas hash : ' + variousDatas_hash);
+      this.addLabel(labels_hash, newProduct.labels.join(','));
+      this.addIngredients(ingredients_hash, newProduct.ingredients.join(','));
+      this.addAdditives(additives_hash, newProduct.additifs.join(','));
+      this.addNutriments(nutriments_hash, JSON.stringify(newProduct.nutriments));
+      this.addVariousDatas(variousDatas_hash, newProduct.code, newProduct.product_name, newProduct.generic_name, newProduct.quantity, newProduct.packaging);
+      setTimeout(() => {
+        this.addHashes(
+          all_hash,
+          this.web3.accounts[0],
+          [Date.now() / 1000, Date.now() / 1000 + 300]
+        );
+      }, 500);
+    } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+      const that = this;
       this.web3.contract.methods.addProductToProposal(
         newProduct.code,
         newProduct.labels,
@@ -147,7 +157,7 @@ export class FormInputProductComponent implements OnInit {
       )
         .send({from: this.web3.accounts[0]})
         .on('receipt', function (receipt) {
-          that.addLabel_SC(receipt.events.TriggerAddProduct.returnValues.hashes[0], newProduct.labels.join(','));
+          that.addLabel(receipt.events.TriggerAddProduct.returnValues.hashes[0], newProduct.labels.join(','));
           that.addIngredients(receipt.events.TriggerAddProduct.returnValues.hashes[1], newProduct.ingredients.join(','));
           that.addAdditives(receipt.events.TriggerAddProduct.returnValues.hashes[2], newProduct.additifs.join(','));
           that.addNutriments(receipt.events.TriggerAddProduct.returnValues.hashes[3], JSON.stringify(newProduct.nutriments));
@@ -167,19 +177,11 @@ export class FormInputProductComponent implements OnInit {
             );
           }, 500);
           that.onNoClick();
-          //  alert('Le produit suivant a été placé dans la liste d\'attente : ' + newProduct.code + ' - ' + newProduct.product_name);
+          alert('Le produit suivant a été placé dans la liste d\'attente : ' + newProduct.code + ' - ' + newProduct.product_name);
         })
       .on('error', function(error, receipt) {
         alert('Erreur lors de l\'ajout de votre produit : ' + error.message + ' \n Merci de bien vouloir ré-essayer plus tard.');
       });
-      /*   this.web3.contract.events.TriggerAddProduct({
-           fromBlock: await this.web3.web3.eth.getBlockNumber()
-         },
-           function(error, event) {
-            console.log(event.returnValues);
-            console.log(event.returnValues.hashes[0]);
-         });*/
-
     }
   }
 
@@ -197,7 +199,7 @@ export class FormInputProductComponent implements OnInit {
     });
   }
 
-  addLabel_SC(labels_hash, labels) {
+  addLabel(labels_hash, labels) {
     const insertLabels = {labels_hash: labels_hash, labels: labels};
     this.server_sc.addLabels(insertLabels).then((result) => {
       console.log('Les labels et leur hash ont bien été ajouté à la BDD : ', result);
@@ -236,56 +238,4 @@ export class FormInputProductComponent implements OnInit {
       console.log('Les hashes ont bien été ajouté à la BDD : ', result);
     });
   }
-
-
-  addUserInDatabase(username, wallet) {
-    const newUser = {username: username.value, wallet: wallet.value};
-    this.server.createUser(newUser).then((result) => {
-      console.log('Cet utilisateur a été ajouté : ', result);
-    });
-  }
-
-
-  getProductFromDatabase(code) {
-    const product = {code: code.value};
-    this.server.getProduct(product).then((result) => {
-      console.log('Retour de la requête GET PRODUCT : ', result);
-    });
-  }
-
-  getUserFromDatabase(username) {
-    const user = {username: username.value};
-    this.server.getUser(user).then((result) => {
-      console.log('Retour de la requête GET USER : ', result);
-    });
-  }
-
-  updateUserFromDatabase(wallet, new_wallet, new_username) {
-    const updateUser = {new_username: new_username.value, new_wallet: new_wallet.value, wallet: wallet.value};
-    this.server.updateUser(updateUser).then((result) => {
-      console.log('Retour de la requête UPDATE USER : ', result);
-    });
-  }
-
-  updateProductFromDatabase(code, name) {
-    const updateProduct = {code: code.value, name: name.value};
-    this.server.updateProduct(updateProduct).then((result) => {
-      console.log('Retour de la requête UPDATE PRODUCT : ', result);
-    });
-  }
-
-  deleteUserFromDatabase(wallet) {
-    const deleteUser = {wallet: wallet.value};
-    this.server.deleteUser(deleteUser).then((result) => {
-      console.log('Retour de la requête DELETE USER : ', result);
-    });
-  }
-
-  deleteProductFromDatabase(code) {
-    const deleteProduct = {code: code.value};
-    this.server.deleteProduct(deleteProduct).then((result) => {
-      console.log('Retour de la requête DELETE PRODUCT : ', result);
-    });
-  }
-
 }

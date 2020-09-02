@@ -2,6 +2,7 @@ import {EventEmitter, Inject, InjectionToken, OnInit} from '@angular/core';
 import Web3 from 'web3';
 import EatHealthyChain from './../../../build/contracts/EatHealthyChain.json';
 
+// Sets up the web3 provider
 export const WEB3 = new InjectionToken<Web3>('web3', {
   providedIn: 'root',
   factory: () => {
@@ -14,6 +15,7 @@ export const WEB3 = new InjectionToken<Web3>('web3', {
   }
 });
 
+// Web3 service which will be called
 export class Web3Service {
   accountChanged = new EventEmitter<any>();
   newVote = new EventEmitter<any>();
@@ -50,10 +52,8 @@ export class Web3Service {
       that.getContract().then(async function (result) {
         that.contract = result;
         // Define functions which are needed to be launched on load just after getContract is setup
-        // that.getMyRole();
         console.log('GetContract in Web3Service : ' + that.contract);
         const labelizedProductCode = [1234567891234, 5555555555555];
-        const lengthEachProductLabels = 2;
         for (const element of labelizedProductCode) {
           const arrayOneProductLabels = [];
           let iterationOverProductLabels = 0;

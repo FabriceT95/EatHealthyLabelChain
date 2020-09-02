@@ -238,6 +238,22 @@ function createRouter(db) {
 
   });
 
+  //
+  router.get('/get_voter_for_product/:user_address/:product_code', async (req, res, next) => {
+    db.query('SELECT * FROM Voters' + suffix + ' ' +
+      'INNER JOIN productInfos' + suffix + ' ON Voters' + suffix + '.all_hash = productInfos' + suffix + '.all_hash ' +
+      'WHERE product_code = ' + req.params.product_code + ' AND address =  "' + req.params.user_address + '" AND type = "Product" AND (productInfos.status = "NEW" OR productInfos.status = "IN_MODIFICATION";',
+      (error, results) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({status: 'error', error: error});
+        } else {
+          res.status(200).json(results);
+        }
+      })
+
+  });
+
   // Gets all alternatives which has been voted the current day (used in a separated server to update the contract)
   router.get('/get_voted_alternatives/', async (req, res, next) => {
     db.query('SELECT ' +
@@ -272,8 +288,37 @@ function createRouter(db) {
           res.status(200).json(results);
         }
       })
-
   });
+
+  //
+  router.get('/get_product_proposer_new_modify/:product_code', async (req, res, next) => {
+    db.query('SELECT * FROM variousDatas' + suffix + ' ' +
+      'INNER JOIN productInfos' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
+      'WHERE (status = "NEW" OR status = "IN_MODIFICATION") AND product_code = ' + req.params.product_code + '; ',
+      (error, results) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({status: 'error', error: error});
+        } else {
+          res.status(200).json(results);
+        }
+      })
+  });
+
+  //
+  router.get('/get_dates/:product_code', async (req, res, next) => {
+    db.query('SELECT * FROM variousDatas' + suffix + ' ' +
+      'WHERE (status = "NEW" OR status = "IN_MODIFICATION") AND product_code = ' + req.params.product_code + '; ',
+      (error, results) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({status: 'error', error: error});
+        } else {
+          res.status(200).json(results);
+        }
+      })
+  });
+
   // Gets all alternatives of a product split in two categories : top alternatives and new alternatives (newest, less than 7 days)
   router.get('/get_alternatives/:product_code', async (req, res, next) => {
     db.query('(SELECT * FROM ' +

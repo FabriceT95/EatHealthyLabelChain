@@ -31,7 +31,6 @@ export class ContentMyProposalsComponent implements OnInit {
     const user_description = {
       user_address: this.web3.accounts[0]
     };
-
     this.server_sc.getMyProposals(user_description).then((result: Product[]) => {
       this.UserProductsProposal = [];
       for (let i = 0; i < result.length; i++) {

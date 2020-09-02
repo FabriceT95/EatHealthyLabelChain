@@ -25,10 +25,7 @@ export class HeaderComponent implements OnInit {
     console.log('Source data : ' + SourceData._checked);
     this.server_sc.isChecked = !SourceData._checked;
     this.server.isChecked = SourceData._checked;
-    console.log('web3 : ' + this.server_sc.isChecked);
     this.server_sc.serverUrl = environment.serverIP + ':' + (this.server_sc.isChecked ? this.server_sc.port_SC : this.server_sc.port);
-    console.log('IP ET PORT CALL : ' + this.server_sc.serverUrl);
-    console.log('server mysql : ' + this.server.isChecked);
     this.server_sc.changeDataSource.emit();
   }
 }

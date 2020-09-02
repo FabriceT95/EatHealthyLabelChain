@@ -9,7 +9,7 @@ export class ServerService {
   constructor(private http: HttpClient) {
   }
 
-  getUser(event) {
+ /* getUser(event) {
     return this.request('GET', `${environment.serverUrl}/user/${event.username}/`, event);
   }
 
@@ -39,7 +39,7 @@ export class ServerService {
 
   deleteUser(event) {
     return this.request('DELETE', `${environment.serverUrl}/delete_user/${event.wallet}`, event);
-  }
+  }*/
 
   private async request(method: string, url: string, data?: any) {
     const result = this.http.request(method, url, {

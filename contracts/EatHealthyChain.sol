@@ -4,6 +4,17 @@ pragma experimental ABIEncoderV2;
 
 contract EatHealthyChain {
 
+  // Basic Alternative definition
+  // It sets for and against votes for a product code alternative to the product code defined
+  struct Alternative {
+    uint64 productCode;
+    uint64 productCodeAlternative;
+    uint16 forVotes;
+    uint16 againstVotes;
+    bool isVotedToday;
+    uint propositionDate;
+  }
+
   // Basic Product definition containing values about the product itself
   // but also about consensus
   struct Product {
@@ -16,17 +27,6 @@ contract EatHealthyChain {
     uint endDate;
     bool isVotable;
     mapping(uint => Alternative) alternatives;
-  }
-
-  // Basic Alternative definition
-  // It sets for and against votes for a product code alternative to the product code defined
-  struct Alternative {
-    uint64 productCode;
-    uint64 productCodeAlternative;
-    uint16 forVotes;
-    uint16 againstVotes;
-    bool isVotedToday;
-    uint propositionDate;
   }
 
   // Hashes structure
@@ -118,7 +118,7 @@ contract EatHealthyChain {
   event TriggerAddProduct(bytes32[6] hashes, address proposerProduct, uint[2] voteDates);
 
   // Event triggering product hashes
-  event TriggerVerifyCompliance(bytes32[6] hashes);
+  // event TriggerVerifyCompliance(bytes32[6] hashes);
 
   // Constructor setting the owner, the vote closer and alternatives setup
   // Owner is automatically set as user
@@ -403,8 +403,8 @@ contract EatHealthyChain {
   Simply add objects into mapping
   */
   function setupRealLabels() internal {
-    productCodeToRealLabels[1234567891234].push(Label(uniqueRealLabelId,'', now + 10 days));
-    productCodeToRealLabels[1234567891234].push(Label(uniqueRealLabelId,'', now + 10 days));
+    productCodeToRealLabels[1234567891234].push(Label(uniqueRealLabelId,'Label Rouge', now + 10 days));
+    productCodeToRealLabels[1234567891234].push(Label(uniqueRealLabelId,'AOC', now + 10 days));
     trueLabelizedProductCode.push(1234567891234);
     uniqueRealLabelId++;
     productCodeToRealLabels[5555555555555].push(Label(uniqueRealLabelId,'', now + 8 days));

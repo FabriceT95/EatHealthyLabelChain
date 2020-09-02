@@ -2,7 +2,6 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
-
 import {AppComponent} from './app.component';
 import {CommonModule} from '@angular/common';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -42,7 +41,6 @@ import {UserProposalItemComponent} from './content-my-proposals/user-proposal-it
 import {UserSearchResultItemComponent} from './content-homepage/user-search/user-search-result/user-search-result-item/user-search-result-item.component';
 import {ModalProductDetailsComponent} from './content-homepage/user-search/user-search-result/modal-product-details/modal-product-details.component';
 import {MatChipsModule} from '@angular/material/chips';
-import {MatFormFieldControl} from '@angular/material/form-field';
 import {UserSearchVoteFilterComponent} from './content-votespage/user-search-vote/user-search-vote-filter/user-search-vote-filter.component';
 import {UserSearchVoteInputComponent} from './content-votespage/user-search-vote/user-search-vote-input/user-search-vote-input.component';
 import {MatSelectModule} from '@angular/material/select';
