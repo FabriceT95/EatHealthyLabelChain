@@ -8,6 +8,7 @@ export const WEB3 = new InjectionToken<Web3>('web3', {
   factory: () => {
     try {
       const provider = ('ethereum' in window) ? window['ethereum'] : Web3.givenProvider;
+      console.log('LE PROVIDER : ' + JSON.stringify(provider));
       return new Web3(provider);
     } catch (err) {
       throw new Error('Non-Ethereum browser detected. You should consider trying Mist or MetaMask!');
@@ -52,7 +53,7 @@ export class Web3Service {
       that.getContract().then(async function (result) {
         that.contract = result;
         // Define functions which are needed to be launched on load just after getContract is setup
-        console.log('GetContract in Web3Service : ' + that.contract);
+     //   console.log('GetContract in Web3Service : ' + JSON.stringify(that.contract));
         const labelizedProductCode = [1234567891234, 5555555555555];
         for (const element of labelizedProductCode) {
           const arrayOneProductLabels = [];
@@ -104,8 +105,8 @@ export class Web3Service {
   public getContract() {
     const web3Provider = this.web3;
     const that = this;
-    console.log('Datatest ABI in getContrat() : ' + EatHealthyChain.abi);
-    console.log('DeployedNetwork address in getContrat() : ' + that.deployedNetwork);
+  //  console.log('EatHealthy ABI in getContrat() : ' + JSON.stringify(EatHealthyChain.abi));
+  //  console.log('DeployedNetwork address in getContrat() : ' + JSON.stringify(that.deployedNetwork.address));
     return new Promise(function (resolve, reject) {
       resolve(new web3Provider.eth.Contract(EatHealthyChain.abi, that.deployedNetwork.address));
     });

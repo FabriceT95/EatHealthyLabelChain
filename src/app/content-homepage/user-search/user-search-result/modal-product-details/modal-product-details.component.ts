@@ -67,10 +67,9 @@ export class ModalProductDetailsComponent implements OnInit {
   // Check if product has been verify by a user the last 7 days
   ngOnInit() {
     if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
-
       const lastVerifDate = new Date(this.product.lastVerification);
-      this.product.lastVerification = lastVerifDate.setDate(lastVerifDate.getDate() + 7);
-      this.verifiedProduct = new Date(this.product.lastVerification).getTime() > Date.now();
+     // this.product.lastVerification = lastVerifDate.setDate(lastVerifDate.getDate() + 7);
+      this.verifiedProduct = new Date( lastVerifDate.setDate(lastVerifDate.getDate() + 7)).getTime() > Date.now();
       // console.log('Date de validité jusqu"au : ' + new Date(this.product.lastVerification).getTime());
       // console.log('Date du jour : ' + Date.now());
       // console.log('vérification établie : ' + this.verifiedProduct);
@@ -164,10 +163,13 @@ export class ModalProductDetailsComponent implements OnInit {
   }
 
   // Allow the user to vote for an alternative
-  voteAlternative(product_code_alternative, opinion) {
+  voteAlternative(product_code_alternative, opinion, tendance) {
+    console.log('les alternatives : ' + JSON.stringify(this.alternatives));
     console.log(product_code_alternative);
-    console.log('cette alternative : ' + this.alternatives[product_code_alternative]);
-    const previous_opinion = this.alternatives[product_code_alternative].opinion;
+    console.log('cette alternative : ' +  this.topAlternatives[product_code_alternative]);
+    const previous_opinion = tendance === 'top' ?
+      this.topAlternatives[product_code_alternative].opinion :
+      this.freshAlternatives[product_code_alternative].opinion;
     const product_vote_object = {
       productCode : this.product.code,
       user_address : this.web3.accounts[0],
@@ -330,11 +332,18 @@ export class ModalProductDetailsComponent implements OnInit {
   // Allows user to enable inputs which are initially disabled
   activateFields() {
     this.readOnly = !this.readOnly;
+    this.modifiedProduct = JSON.parse(JSON.stringify(this.product));
+    this.compareObjects();
+    console.log(this.modifiedProduct);
+    console.log(this.product);
   }
 
   // Compare product initially opened and modified product by user
   compareObjects() {
     this.sameObject = JSON.stringify(this.product) === JSON.stringify(this.modifiedProduct);
+    console.log(JSON.stringify(this.product));
+    console.log(JSON.stringify(this.modifiedProduct));
+    console.log('Meme objet ?  : ' + this.sameObject);
   }
 
   // Sends product modified by user into the contract and DB then it will be voted by users
@@ -346,7 +355,7 @@ export class ModalProductDetailsComponent implements OnInit {
       this.modifiedProduct.nutriments = JSON.parse(json, (key, val) => (
         typeof val !== 'object' && val !== null ? String(val) : val
       ));
-      if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+      if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
         try {
         /*  const product_hashes_DB = await this.web3.contract.methods.verifyCompliance(
             this.modifiedProduct.code,
@@ -393,7 +402,7 @@ export class ModalProductDetailsComponent implements OnInit {
         } catch (error) {
           alert('Erreur lors de la modification du produit : ' + error.message + ' \n Merci de bien vouloir ré-essayer plus tard.');
         }
-      } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+      } else if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
         this.web3.contract.methods.addProductToProposal(
           this.modifiedProduct.code,
           this.modifiedProduct.labels,

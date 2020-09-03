@@ -8,7 +8,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 })
 export class ServerSCService {
 
-  isChecked = true;
+  isChecked = false;
   port_SC: string = environment.port_SC;
   port: string = environment.port;
   serverUrl = environment.serverIP.valueOf() + ':' + this.port_SC;
@@ -96,7 +96,7 @@ export class ServerSCService {
   }
 
   getProduct(event) {
-    return this.request('GET', `${this.serverUrl}/get_product/${event.productCode}`, event);
+    return this.request('GET', `${this.serverUrl}/get_product_accepted/${event.productCode}`, event);
   }
 
   getAlternatives(event) {

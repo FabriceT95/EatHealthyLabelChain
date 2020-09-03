@@ -276,10 +276,25 @@ function createRouter(db) {
   });
 
   // Gets a single accepted product (mainly used to check existence)
-  router.get('/get_product/:product_code', async (req, res, next) => {
+  router.get('/get_product_accepted/:product_code', async (req, res, next) => {
     db.query('SELECT * FROM variousDatas' + suffix + ' ' +
       'INNER JOIN productInfos' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
       'WHERE status = "ACCEPTED" AND product_code = ' + req.params.product_code + '; ',
+      (error, results) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({status: 'error', error: error});
+        } else {
+          res.status(200).json(results);
+        }
+      })
+  });
+
+  // Gets a single accepted product (mainly used to check existence)
+  router.get('/get_product/:product_code', async (req, res, next) => {
+    db.query('SELECT * FROM variousDatas' + suffix + ' ' +
+      'INNER JOIN productInfos' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
+      'WHERE status <> "CORRUPTED" AND product_code = ' + req.params.product_code + '; ',
       (error, results) => {
         if (error) {
           console.log(error);

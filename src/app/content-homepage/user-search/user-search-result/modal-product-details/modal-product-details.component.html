@@ -19,7 +19,7 @@
         </ng-template>
       </h2>
       <mat-divider></mat-divider>
-      <form (ngSubmit)="modifyProduct()">
+      <form (ngSubmit)="modifyProduct()" (change)="compareObjects()">
         <div class="col-sm-4" style="word-break: break-all;">
           <div class="row" style="margin:5%">
             <ul style="list-style-type:none;">
@@ -96,7 +96,7 @@
               </div>
 
               <mat-form-field>
-                <mat-chip-list #chipList aria-label="Fruit selection">
+                <mat-chip-list #chipList>
                   <mat-chip (removed)="remove(label,1)" *ngFor="let label of modifiedProduct.labels"
                             [removable]="!readOnly" [selectable]="selectable">
                     {{label}}
@@ -114,6 +114,7 @@
                          placeholder="Nouveaux labels...">
                 </mat-chip-list>
               </mat-form-field>
+              <h4 style="text-align: center">Section Additifs</h4>
               <div *ngIf="olderVersions.length > 0">
                 <mat-accordion>
                   <mat-expansion-panel (closed)="panelOpenState_additifs = false"
@@ -130,7 +131,7 @@
                 </mat-accordion>
               </div>
               <mat-form-field>
-                <mat-chip-list #chipList aria-label="Fruit selection">
+                <mat-chip-list #chipList>
                   <mat-chip (removed)="remove(additif,2)" *ngFor="let additif of modifiedProduct.additifs"
                             [removable]="!readOnly" [selectable]="selectable">
                     {{additif}}
@@ -197,58 +198,48 @@
               </div>
               <mat-form-field>
                 <mat-label>Energie :</mat-label>
-                <input [(ngModel)]="product.nutriments.energy" [readonly]="readOnly" matInput
-                       name="energy" value="{{ product.nutriments.energy }}">
-                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="product.nutriments[0]"  name="energy">-->
+                <input [(ngModel)]="modifiedProduct.nutriments.energy" [readonly]="readOnly" matInput type="number"
+                       name="energy">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Energie (en kcal) :</mat-label>
-                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[1]" value="{{ product.nutriments[1] }}" name="energy_kcal">-->
-                <input [(ngModel)]="modifiedProduct.nutriments.energy_kcal" [readonly]="readOnly" matInput
+                <input [(ngModel)]="modifiedProduct.nutriments.energy_kcal" [readonly]="readOnly" matInput type="number"
                        name="energy_kcal">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Protéines :</mat-label>
-                <!--        <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[2]" value="{{ product.nutriments[2] }}" name="proteines">-->
-                <input [(ngModel)]="modifiedProduct.nutriments.proteines" [readonly]="readOnly" matInput
+              <input [(ngModel)]="modifiedProduct.nutriments.proteines" [readonly]="readOnly" matInput type="number" step="0.1"
                        name="proteines">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Glucides :</mat-label>
-                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[3]" value="{{ product.nutriments[3] }}" name="glucides">-->
-                <input [(ngModel)]="modifiedProduct.nutriments.carbohydrates" [readonly]="readOnly" matInput
+                <input [(ngModel)]="modifiedProduct.nutriments.carbohydrates" [readonly]="readOnly" matInput type="number"
                        name="glucides">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Sel :</mat-label>
-                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[4]" value="{{ product.nutriments[4] }}" name="sel">-->
-                <input [(ngModel)]="modifiedProduct.nutriments.salt" [readonly]="readOnly" matInput name="sel">
+                <input [(ngModel)]="modifiedProduct.nutriments.salt" [readonly]="readOnly" matInput name="sel" type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Sucre :</mat-label>
-                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[5]" value="{{ product.nutriments[5] }}" name="sucre">-->
-                <input [(ngModel)]="modifiedProduct.nutriments.sugar" [readonly]="readOnly" matInput name="sucre">
+               <input [(ngModel)]="modifiedProduct.nutriments.sugar" [readonly]="readOnly" matInput name="sucre" type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Graisses :</mat-label>
-                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[6]" value="{{ product.nutriments[6] }}" name="graisses">-->
-                <input [(ngModel)]="modifiedProduct.nutriments.fat" [readonly]="readOnly" matInput name="graisses">
+                <input [(ngModel)]="modifiedProduct.nutriments.fat" [readonly]="readOnly" matInput name="graisses" type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Dont matières grasses :</mat-label>
-                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[7]" value="{{ product.nutriments[7] }}" name="mat_grasse">-->
-                <input [(ngModel)]="modifiedProduct.nutriments.saturated_fat" [readonly]="readOnly" matInput
+               <input [(ngModel)]="modifiedProduct.nutriments.saturated_fat" [readonly]="readOnly" matInput type="number"
                        name="mat_grasse">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Fibre :</mat-label>
-                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[8]" value="{{ product.nutriments[8] }}" name="fibre">-->
-                <input [(ngModel)]="modifiedProduct.nutriments.fiber" [readonly]="readOnly" matInput name="fibre">
+             <input [(ngModel)]="modifiedProduct.nutriments.fiber" [readonly]="readOnly" matInput name="fibre" type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Sodium :</mat-label>
-                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.nutriments[9]" value="{{ product.nutriments[9] }}" name="sodium" >-->
-                <input [(ngModel)]="modifiedProduct.nutriments.sodium" [readonly]="readOnly" matInput name="sodium">
+               <input [(ngModel)]="modifiedProduct.nutriments.sodium" [readonly]="readOnly" matInput name="sodium" type="number">
               </mat-form-field>
             </div>
             <div class="col-sm-5">
@@ -314,7 +305,7 @@
               <mat-form-field>
                 <mat-label>Quantité :</mat-label>
                 <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.quantity" value="{{ product.quantity }}">-->
-                <input [(ngModel)]="modifiedProduct.quantity" [readonly]="readOnly" matInput name="quantity">
+                <input [(ngModel)]="modifiedProduct.quantity" [readonly]="readOnly" matInput name="quantity" type="number">
               </mat-form-field>
 
             </div>
@@ -372,13 +363,13 @@
   box-shadow: 10px 0 10px -3px #fff;
  position: relative;
  z-index: 10; border: 1px solid;border-radius: 5px; padding:5px; flex:0.3; display:flex; justify-content: space-around; align-items: center">
-                    <button (click)="voteAlternative(alternative.value.product_code_alternative,false)"
+                    <button (click)="voteAlternative(alternative.value.product_code_alternative,false, 'top')"
                             [disabled]="alternative.value.opinion == -1"
                             class="modal-product-details_alternativeAgainstBtn" type="button">
                       <mat-icon style="vertical-align: middle">remove</mat-icon>
                     </button>
                     <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>
-                    <button (click)="voteAlternative(alternative.value.product_code_alternative,true)" [disabled]="alternative.value.opinion == 1"
+                    <button (click)="voteAlternative(alternative.value.product_code_alternative,true, 'top')" [disabled]="alternative.value.opinion == 1"
                             class="modal-product-details_alternativeForBtn" type="button">
                       <mat-icon style="vertical-align: middle">add</mat-icon>
                     </button>
@@ -399,13 +390,13 @@
   box-shadow: 10px 0 10px -3px #fff;
  position: relative;
  z-index: 10; border: 1px solid;border-radius: 5px; padding:5px; flex:0.3; display:flex; justify-content: space-around; align-items: center">
-                    <button (click)="voteAlternative(alternative.value.product_code_alternative,false)"
+                    <button (click)="voteAlternative(alternative.value.product_code_alternative,false, 'fresh')"
                             [disabled]="alternative.value.opinion == -1"
                             class="modal-product-details_alternativeAgainstBtn" type="button">
                       <mat-icon style="vertical-align: middle">remove</mat-icon>
                     </button>
                     <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>
-                    <button (click)="voteAlternative(alternative.value.product_code_alternative,true)" [disabled]="alternative.value.opinion == 1"
+                    <button (click)="voteAlternative(alternative.value.product_code_alternative,true, 'fresh')" [disabled]="alternative.value.opinion == 1"
                             class="modal-product-details_alternativeForBtn" type="button">
                       <mat-icon style="vertical-align: middle">add</mat-icon>
                     </button>

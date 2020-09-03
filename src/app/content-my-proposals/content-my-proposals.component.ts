@@ -11,6 +11,7 @@ import {ProductService} from '../product.service';
 })
 export class ContentMyProposalsComponent implements OnInit {
   UserProductsProposal: Product[] = [];
+  emptyProposal = 'Vous n\'avez rien proposé !';
 
   constructor(private web3: Web3Service,
               private server_sc: ServerSCService,

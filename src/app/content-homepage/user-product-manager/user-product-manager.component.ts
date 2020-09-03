@@ -55,11 +55,13 @@ export class UserProductManagerComponent implements OnInit {
     const barcodeValue = input_product_code.value.trim();
     try {
       if (Number(barcodeValue) && barcodeValue.length === 13) {
-        const isNewProduct = await this.web3.contract.methods.checkProductIsNew(barcodeValue).call();
-        if (isNewProduct) {
-          this.div_inputAddProductRef.nativeElement.style.display = 'block';
-        } else {
-          this.div_inputUpdateProductRef.nativeElement.style.display = 'block';
+        if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+          const isNewProduct = await this.web3.contract.methods.checkProductIsNew(barcodeValue).call();
+          this.displayButtons(isNewProduct);
+        } else if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+
+       //   const isNewProduct =
+       //   this.displayButtons(isNewProduct);
         }
       } else {
         this.div_inputAddProductRef.nativeElement.style.display = 'none';
@@ -67,6 +69,14 @@ export class UserProductManagerComponent implements OnInit {
       }
     } catch (Error) {
       alert('Service inaccessible ');
+    }
+  }
+
+  displayButtons(isNewProduct) {
+    if (isNewProduct) {
+      this.div_inputAddProductRef.nativeElement.style.display = 'block';
+    } else {
+      this.div_inputUpdateProductRef.nativeElement.style.display = 'block';
     }
   }
 

@@ -13,7 +13,7 @@ export class UserProposalItemComponent implements OnInit {
   timeLeft: string;
   getTimeLeftInterval;
 
-  constructor(private web3: Web3Service) {
+  constructor() {
   }
 
   async ngOnInit() {
@@ -24,7 +24,10 @@ export class UserProposalItemComponent implements OnInit {
   }
   async getTimeLeft() {
     this.timeLeft = this.dhm(new Date(this.product.endDate).getTime() - Date.now());
-    if (this.product.endDate * 1000 - Date.now() < 0) {
+    console.log('timeleft : ' + this.timeLeft);
+    console.log(new Date(this.product.endDate).getTime());
+    console.log(Date.now());
+    if (new Date(this.product.endDate).getTime() - Date.now() < 0) {
       this.timeLeft = 'Fin du vote en cours...';
     }
   }

@@ -86,10 +86,6 @@ contract EatHealthyChain {
   // Default product id increasing each time we add a product code with real labels
   uint32 private uniqueRealLabelId;
 
-
-  // Address needed to end votes and manage alternative update into the contract
-  address internal endVoteResponsible;
-
   // Accessing to a User structure by his address
   mapping(address => User) public addressToUser;
 
@@ -124,7 +120,6 @@ contract EatHealthyChain {
   // Owner is automatically set as user
   constructor() public {
     _owner = msg.sender;
-    endVoteResponsible = 0x712EB6c16Ab3694b684B6c74B40A676c6d13621a;
     addressToUser[_owner] = User(uniqueIdUser, now, 10, 0, true);
     uniqueIdUser++;
     setupRealLabels();
@@ -150,7 +145,7 @@ contract EatHealthyChain {
 
   // Checks if the user is the responsible for ending a vote or set alternatives
   modifier isResponsible() {
-    require(msg.sender == endVoteResponsible, 'Vous n\'êtes pas le responsable');
+    require(msg.sender == _owner, 'Vous n\'êtes pas le responsable');
     _;
   }
 

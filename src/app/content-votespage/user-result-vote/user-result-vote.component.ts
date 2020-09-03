@@ -13,6 +13,7 @@ import {ProductService} from '../../product.service';
 })
 export class UserResultVoteComponent implements OnInit {
   ProductsVoting: Product[] = [];
+  emptyVotingArray = 'Il n\'y a aucun produit, retentez plus tard !';
 
   constructor(private web3: Web3Service,
               private server: ServerService,
@@ -35,6 +36,11 @@ export class UserResultVoteComponent implements OnInit {
       (ProductVoteSearch: Product[]) => {
         this.ProductsVoting = ProductVoteSearch;
       });
+
+    this.server_sc.changeDataSource.subscribe( () => {
+      this.ProductsVoting = [];
+      this.getAllVotingProducts();
+    })
 
   }
 

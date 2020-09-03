@@ -23,18 +23,19 @@ export class UserProfileComponent implements OnInit {
   // subscribes user into the contract then into the DB
   async subscribeUser(user_description, param) {
     const that = this;
-    if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+    console.log('heyahahahah : ' + this.server_sc.isChecked);
+    if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
       this.web3.contract.methods.subscribeUser().send({from: user_description.user_address})
         .then(() => {
           that.server_sc.addUser(user_description).then(() => {
             alert('Vous êtes bien inscrit à la plateforme ! ');
             that.setUser(user_description.user_address, param);
           });
-        })
-        .on('error', function (error, receipt) {
-          alert('Erreur de la plateforme : ' + error.message);
         });
-    } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+     /*   .on('error', function (error, receipt) {
+          alert('Erreur de la plateforme : ' + error.message);
+        });*/
+    } else if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
       that.server_sc.addUser(user_description).then(() => {
         alert('Vous êtes bien inscrit à la plateforme ! ');
         that.setUser(user_description.user_address, param);
@@ -45,7 +46,7 @@ export class UserProfileComponent implements OnInit {
   // display user datas if he is already subscribed, otherwise it subscribes him
   async setUser(address, param) {
     const user_description = {user_address: address};
-    if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC) && param === 'sc') {
+    if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC) && param === 'sc') {
       try {
         this.web3.contract.methods.addressToUser(address).call().then(async (existing) => {
           if (existing.isExist === false && !this.web3.isBeingModified) {
@@ -73,7 +74,7 @@ export class UserProfileComponent implements OnInit {
       } catch (Error) {
         this.errorUserProfile = 'Erreur de la plateforme, ré-essayez ulterieurement ';
       }
-    } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port) && param === 'db') {
+    } else if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port) && param === 'db') {
     //  this.singleRequest = true;
       this.web3.isBeingModified = true;
         this.server_sc.getUser(user_description).then(async (result: []) => {
@@ -99,6 +100,7 @@ export class UserProfileComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       this.walletAddress = this.web3.accounts[0];
+      console.log('LE CONTRACT  : ' + JSON.stringify(this.web3.contract.methods));
       this.setUser(this.walletAddress, 'sc');
     }, 500);
     setTimeout(() => {
