@@ -1,5 +1,7 @@
 const express = require('express');
-
+const IPFS = require('ipfs-api');
+const fs = require('fs');
+const ipfs = new IPFS({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 // Gathering all routes queries to the DB
 function createRouter(db) {
   let suffix = '_SC';
@@ -8,6 +10,33 @@ function createRouter(db) {
   }
 
   const router = express.Router();
+
+  ////////////////////////////////////////////////////// IPFS REQUESTS ////////////////////////////////////////////////////////////////
+  router.post('/addfile/:file_path', async (req, res, next) => {
+    let testFile = fs.readFileSync(req.params.file_path);
+    let testBuffer = new Buffer(testFile);
+    ipfs.files.add(testBuffer, function (err, file) {
+      if (err) {
+        console.log(err);
+      }
+      console.log(file)
+    })
+  });
+
+  //Getting the uploaded file via hash code.
+  router.get('/getfile/:hash_code', function(req, res) {
+
+    //This hash is returned hash of addFile router.
+    const validCID = req.params.hash_code;
+
+    ipfs.files.get(validCID, function (err, files) {
+      files.forEach((file) => {
+        console.log(file.path);
+        console.log(file.content.toString('utf8'))
+      })
+    })
+
+  })
 
   ////////////////////////////////////////////////////// POST QUERIES /////////////////////////////////////////////////////////////////
 

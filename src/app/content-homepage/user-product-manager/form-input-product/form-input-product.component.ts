@@ -1,14 +1,15 @@
-import {Component, ElementRef, EventEmitter, Inject, OnInit, Optional, Output} from '@angular/core';
+import {Component, ElementRef, Inject, OnInit, Optional, ViewChild} from '@angular/core';
 // import Quagga from 'quagga/dist/quagga.js';
 import javascriptBarcodeReader from 'javascript-barcode-reader';
-import {AppComponent} from '../../../app.component';
-import {ServerService} from '../../../server.service';
 import {Web3Service} from '../../../util/web3.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Product} from '../../../shared/product.model';
 import {ServerSCService} from '../../../server-sc.service';
 import {ProductService} from '../../../product.service';
+import {IpfsService} from '../../../ipfs.service';
 import keccak from 'keccak';
+
+
 
 
 @Component({
@@ -22,11 +23,13 @@ export class FormInputProductComponent implements OnInit {
   constructor(
     private web3: Web3Service,
     private server_sc: ServerSCService,
+    private ipfs: IpfsService,
     private product: ProductService,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<FormInputProductComponent>
   ) {
     this.codebarreProduct = data.codebarreValue;
+    // console.log(ipfs);
   }
 
   ngOnInit() {
@@ -34,6 +37,16 @@ export class FormInputProductComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  testUpload(fileInputEvent: any) {
+    console.log(fileInputEvent.target.files);
+    // this.ipfs.addFile(fileInputEvent.target.files[0]);
+     const aie = {file_path: fileInputEvent.target.files[0]}
+     this.server_sc.addFile(aie).then(() => {
+       console.log('success');
+     });
+
   }
 
 

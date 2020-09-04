@@ -110,6 +110,11 @@
           <input #additifs_inputText matInput placeholder="Eg : e310" type="text">
         </mat-form-field>
       </div>
+      <div class="col-sm-6">
+        <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="testUpload($event)" accept=".png"/>
+        <button mat-flat-button color="primary" type="button" (click)="csvInput.click()">Choose Spreadsheet File (CSV)</button>
+        <span *ngIf="imageToUpload">COUCOU</span>
+      </div>
 
     </div>
 

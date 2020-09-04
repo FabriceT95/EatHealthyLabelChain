@@ -1,4 +1,4 @@
-import {EventEmitter, Inject, InjectionToken, OnInit} from '@angular/core';
+import {EventEmitter, Inject, InjectionToken } from '@angular/core';
 import Web3 from 'web3';
 import EatHealthyChain from './../../../build/contracts/EatHealthyChain.json';
 

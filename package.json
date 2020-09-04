@@ -27,6 +27,8 @@
     "@openzeppelin/contracts": "^3.1.0",
     "@openzeppelin/test-helpers": "^0.5.6",
     "@truffle/contract": "^4.0.33",
+    "angular-material-fileupload": "^2.0.0",
+    "async": "^3.2.0",
     "body-parser": "^1.19.0",
     "bootstrap": "^3.4.1",
     "commander": "^6.1.0",
@@ -35,6 +37,7 @@
     "ethereumjs-tx": "^2.1.2",
     "ethers": "^4.0.37",
     "express": "^4.17.1",
+    "ipfs": "^0.50.1",
     "javascript-barcode-reader": "^0.6.8",
     "keccak": "^3.0.1",
     "mysql": "^2.18.1",
@@ -46,9 +49,12 @@
     "truffle-hdwallet-provider": "^1.0.17",
     "tslib": "^1.10.0",
     "web3": "1.2.1",
-    "zone.js": "0.9.1"
+    "zone.js": "0.9.1",
+    "ipfs-http-client": "latest"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "^10.0.0",
+    "@angular-builders/dev-server": "^7.3.1",
     "@angular-devkit/build-angular": "^0.803.5",
     "@angular-devkit/core": "8.3.5",
     "@angular/cli": "^8.3.5",
@@ -58,6 +64,7 @@
     "@types/jasminewd2": "^2.0.6",
     "@types/node": "^12.7.5",
     "codelyzer": "^5.1.1",
+    "ipfs-api": "^26.1.2",
     "jasmine-core": "^3.5.0",
     "jasmine-spec-reporter": "^4.2.1",
     "karma": "^4.3.0",

@@ -27,6 +27,13 @@ export class ServerSCService {
   constructor(private http: HttpClient) {
   }
 
+  addFile(event) {
+    return this.request('POST', `${this.serverUrl}/addfile/${event.file_path}/`, event);
+  }
+  getFile(event) {
+    return this.request('GET', `${this.serverUrl}/getfile/${event.hash_code}/`, event);
+  }
+
   addLabels(event) {
     return this.request('POST', `${this.serverUrl}/add_labels/${event.labels_hash}/${event.labels}`, event);
   }

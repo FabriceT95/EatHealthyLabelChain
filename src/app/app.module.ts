@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {NgModule, APP_INITIALIZER } from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {AppComponent} from './app.component';
@@ -47,6 +47,9 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {AppRoutingModule} from './app-routing.module';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatFileUploadModule } from 'angular-material-fileupload';
+import {IpfsService} from './ipfs.service';
+// import { IPFS, initIPFS } from './ipfs';
 
 @NgModule({
   declarations: [
@@ -95,9 +98,15 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     MatSelectModule,
     MatExpansionModule,
     AppRoutingModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatFileUploadModule
   ],
-  providers: [Web3Service, ServerService, AppComponent],
+  providers: [Web3Service, ServerService, AppComponent, IpfsService /* {
+    provide: APP_INITIALIZER,
+    useFactory: initIPFS,
+    multi: true,
+    deps: [IPFS]
+  }*/ ],
   bootstrap: [AppComponent],
   entryComponents: [
     UserFormVoteComponent,
