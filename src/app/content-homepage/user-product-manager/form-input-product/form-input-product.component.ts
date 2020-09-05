@@ -6,7 +6,6 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Product} from '../../../shared/product.model';
 import {ServerSCService} from '../../../server-sc.service';
 import {ProductService} from '../../../product.service';
-import {IpfsService} from '../../../ipfs.service';
 import keccak from 'keccak';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {FileUploader} from 'ng2-file-upload';
@@ -21,16 +20,15 @@ import {FileUploader} from 'ng2-file-upload';
 })
 export class FormInputProductComponent implements OnInit {
   codebarreProduct: number;
-  uploader: FileUploader = new FileUploader({url: this.server_sc.serverUrl + '/addfile'});
-  attachmentList: any = [];
-  /*myForm = new FormGroup({
-    file: new FormControl('', [Validators.required])
-  });*/
+  uploader: FileUploader = new FileUploader({url: this.server_sc.serverUrl + '/addfile',
+    headers: [
+      {name : 'Access-Control-Allow-Methods', value: 'POST, GET, PATCH, DELETE, OPTIONS'},
+      {name: 'Access-Control-Allow-Origin' , value: 'http://192.168.42.219:8090'}]});
+  attachmentList: any = {};
 
   constructor(
     private web3: Web3Service,
     private server_sc: ServerSCService,
-    private ipfs: IpfsService,
     private product: ProductService,
     private http: HttpClient,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
@@ -38,7 +36,11 @@ export class FormInputProductComponent implements OnInit {
   ) {
     this.codebarreProduct = data.codebarreValue;
     this.uploader.onCompleteItem = (item: any, response: any, status: any, header: any) => {
-      this.attachmentList.push(JSON.parse(response));
+      this.attachmentList = JSON.parse(response);
+      console.log(this.attachmentList);
+    };
+    this.uploader.onAfterAddingFile = (file) => {
+      file.withCredentials = false;
     };
   }
 
@@ -56,51 +58,6 @@ export class FormInputProductComponent implements OnInit {
    this.http.post(`${this.server_sc.serverUrl}/addfile/${fd}/`, fd)
      .subscribe(res => { console.log(res); });
 */
-  }
-
-
-  testQuaggaReading(codebarreInput) {
-    const vi = codebarreInput.value;
-    console.log(vi);
-    const fileName = vi.split('\\')[-1];
-    console.log('filename : ' + fileName);
-    const path = 'C:/Users/Fabrice/Downloads/ean_codebarre.svg';
-    console.log(path);
-
-    // javascriptBarcodeReader({
-    //   /* Image file Path || {data: Uint8ClampedArray, width, height} || HTML5 Canvas ImageData */
-    //   image: path,
-    //   barcode: 'ean',
-    //   barcodeType: 'industrial',
-    //   options: {
-    //     useAdaptiveThreshold: true,
-    //     singlePass: true
-    //   }
-    // })
-    //   .then(code => {
-    //     console.log(code);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
-  }
-
-  async readBarreCodeInputText(codebarreInputText) {
-    /*  const barcodeValue = codebarreInputText.value;
-      if (Number(barcodeValue) && barcodeValue.length === 13) {
-        await this.web3.contract.methods.addProductToProposal(barcodeValue, 'ABAJOUR', 5 , [0]).send({from: this.web3.accounts[0]});
-        this.web3.contract.events.TriggerAddProduct({
-          fromBlock: await this.web3.web3.eth.getBlockNumber()
-        }, function(error, event) { console.log(event.returnValues.idProduct); });
-      }*/
-
-
-  }
-
-  async getProducts() {
-    const barcodeValue = 1234567891234;
-    // const product = await this.web3.contract.methods.getProduct(barcodeValue).call();
-    //   console.log(product);
   }
 
   async addProduct(productName, proteines, glucide, salt, sugars, energy, energy_kcal, fiber,
@@ -131,9 +88,7 @@ export class FormInputProductComponent implements OnInit {
       0,
       {},
       null,
-      null,
-      1,
-      ''
+      null
     );
     // Si Mysql Server is ON
     if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
@@ -156,7 +111,7 @@ export class FormInputProductComponent implements OnInit {
       this.addIngredients(ingredients_hash, newProduct.ingredients.join(','));
       this.addAdditives(additives_hash, newProduct.additifs.join(','));
       this.addNutriments(nutriments_hash, JSON.stringify(newProduct.nutriments));
-      this.addVariousDatas(variousDatas_hash, newProduct.code, newProduct.product_name, newProduct.generic_name, newProduct.quantity, newProduct.packaging);
+      this.addVariousDatas(variousDatas_hash, newProduct.code, newProduct.product_name, newProduct.generic_name, newProduct.quantity, newProduct.packaging, '');
       setTimeout(() => {
         this.addHashes(
           all_hash,
@@ -165,6 +120,12 @@ export class FormInputProductComponent implements OnInit {
         );
       }, 500);
     } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+      const hash_ipfs = this.attachmentList[0].hashIPFS;
+      if (!hash_ipfs) {
+        alert('Veuillez insérer une image des composants de votre produit');
+        return;
+      }
+      newProduct.IPFS_hash = hash_ipfs;
       const that = this;
       this.web3.contract.methods.addProductToProposal(
         newProduct.code,
@@ -175,7 +136,8 @@ export class FormInputProductComponent implements OnInit {
         newProduct.product_name,
         newProduct.generic_name,
         newProduct.quantity,
-        newProduct.packaging
+        newProduct.packaging,
+        newProduct.IPFS_hash
       )
         .send({from: this.web3.accounts[0]})
         .on('receipt', function (receipt) {
@@ -189,7 +151,8 @@ export class FormInputProductComponent implements OnInit {
             newProduct.product_name,
             newProduct.generic_name,
             newProduct.quantity,
-            newProduct.packaging
+            newProduct.packaging,
+            newProduct.IPFS_hash
           );
           setTimeout(() => {
             that.addHashes(
@@ -207,14 +170,15 @@ export class FormInputProductComponent implements OnInit {
     }
   }
 
-  addVariousDatas(variousData_hash, productCode, product_name, product_type, quantity, packaging) {
+  addVariousDatas(variousData_hash, productCode, product_name, product_type, quantity, packaging, IPFS_hash) {
     const insertVariousDatas = {
       variousData_hash: variousData_hash,
       productCode: productCode,
       product_name: product_name,
       product_type: product_type,
       quantity: quantity,
-      packaging: packaging
+      packaging: packaging,
+      IPFS_hash: IPFS_hash
     };
     this.server_sc.addVariousDatas(insertVariousDatas).then((result) => {
       console.log('Les infos diverses et leur hash ont bien été ajouté à la BDD : ', result);

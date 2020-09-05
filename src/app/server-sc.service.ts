@@ -55,7 +55,7 @@ export class ServerSCService {
   }
 
   addVariousDatas(event) {
-    return this.request('POST', `${this.serverUrl}/add_various_data/${event.variousData_hash}/${event.productCode}/${event.product_name}/${event.product_type}/${event.quantity}/${event.packaging}`, event);
+    return this.request('POST', `${this.serverUrl}/add_various_data/${event.variousData_hash}/${event.productCode}/${event.product_name}/${event.product_type}/${event.quantity}/${event.packaging}/${event.IPFS_hash}`, event);
   }
 
   addUser(event) {

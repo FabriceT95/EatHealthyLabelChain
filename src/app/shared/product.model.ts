@@ -21,23 +21,19 @@ export class Product {
     public packaging: string,
     public labels: string[],
     public additifs: string[],
-    // public voteDates: string[],
-    // public totalVotes: number = 0,
     public forVotes: number = 0,
     public againstVotes: number = 0,
     public alreadyVoted: {},
     public startDate: number = 0,
-    //  public startDate: Date,
     public endDate: number = 0,
-    //  public endDate: Date,
-    public status: number,
-    public all_hash: string,
+    public all_hash = '',
     public labels_hash = '',
     public ingredients_hash = '',
     public additives_hash = '',
     public nutriments_hash = '',
     public variousDatas_hash = '',
-    public lastVerification: number = 0
+    public lastVerification: number = 0,
+    public IPFS_hash = ''
   ) {
   }
 }

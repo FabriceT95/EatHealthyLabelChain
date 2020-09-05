@@ -43,7 +43,8 @@ export class ProductService {
       element.additives_hash,
       element.nutriments_hash,
       element.variousDatas_hash,
-      element.lastVerificationDate
+      element.lastVerificationDate,
+      element.IPFS_hash
     );
   }
 }

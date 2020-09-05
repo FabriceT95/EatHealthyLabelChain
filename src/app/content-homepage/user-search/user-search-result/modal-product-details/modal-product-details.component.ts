@@ -26,6 +26,7 @@ export class ModalProductDetailsComponent implements OnInit {
   public product: Product;
   public modifiedProduct: Product;
   public olderVersions: Product[];
+  public productImage;
   public alternatives: { [productCode: number]: Alternative } = {};
   public topAlternatives: { [productCode: number]: Alternative } = {};
   public freshAlternatives: { [productCode: number]: Alternative } = {};
@@ -68,16 +69,16 @@ export class ModalProductDetailsComponent implements OnInit {
   ngOnInit() {
     if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
       const lastVerifDate = new Date(this.product.lastVerification);
-     // this.product.lastVerification = lastVerifDate.setDate(lastVerifDate.getDate() + 7);
-      this.verifiedProduct = new Date( lastVerifDate.setDate(lastVerifDate.getDate() + 7)).getTime() > Date.now();
-      // console.log('Date de validité jusqu"au : ' + new Date(this.product.lastVerification).getTime());
-      // console.log('Date du jour : ' + Date.now());
-      // console.log('vérification établie : ' + this.verifiedProduct);
+      this.verifiedProduct = new Date(lastVerifDate.setDate(lastVerifDate.getDate() + 7)).getTime() > Date.now();
     } else {
       this.verifiedProduct = true;
     }
     this.getAlternatives();
     this.checkAlreadyBeingModified();
+    this.server_sc.getFile({file: this.product.IPFS_hash}).then((result: {}) => {
+      console.log(result);
+      // this.productImage = btoa(result['file']['content']['data']);
+    });
 
 
   }
@@ -357,17 +358,6 @@ export class ModalProductDetailsComponent implements OnInit {
       ));
       if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
         try {
-        /*  const product_hashes_DB = await this.web3.contract.methods.verifyCompliance(
-            this.modifiedProduct.code,
-            this.modifiedProduct.labels,
-            this.modifiedProduct.ingredients,
-            this.modifiedProduct.additifs,
-            this.modifiedProduct.nutriments,
-            this.modifiedProduct.product_name,
-            this.modifiedProduct.generic_name,
-            this.modifiedProduct.quantity,
-            this.modifiedProduct.packaging
-          ).call({from: this.web3.accounts[0]});*/
           const labels_hash = keccak('keccak256').update(this.modifiedProduct.labels).digest().toString('hex');
           const ingredients_hash = keccak('keccak256').update(this.modifiedProduct.ingredients).digest().toString('hex');
           const additives_hash = keccak('keccak256').update(this.modifiedProduct.additifs).digest().toString('hex');

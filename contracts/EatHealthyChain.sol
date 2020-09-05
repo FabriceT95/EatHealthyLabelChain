@@ -26,6 +26,7 @@ contract EatHealthyChain {
     uint startDate;
     uint endDate;
     bool isVotable;
+    string hash_ipfs;
     mapping(uint => Alternative) alternatives;
   }
 
@@ -44,8 +45,8 @@ contract EatHealthyChain {
   // Supposed to be real labels given by growers
   struct Label {
     uint id;
-    string label_name;
     uint expiration_date;
+    string label_name;
   }
 
   // Basic Nutriment structure needed for the Product structure
@@ -67,10 +68,10 @@ contract EatHealthyChain {
   // In particular, token date, token number and reputation
   // needed for the consensus
   struct User {
-    uint32 userId;
-    uint lastTimeTokenGiven;
     int16 tokenNumber;
     int16 reputation;
+    uint32 userId;
+    uint lastTimeTokenGiven;
     bool isExist;
   }
 
@@ -112,9 +113,6 @@ contract EatHealthyChain {
 
   // Event triggering product hashes, product proposer address and start/end vote dates when a new product is proposed
   event TriggerAddProduct(bytes32[6] hashes, address proposerProduct, uint[2] voteDates);
-
-  // Event triggering product hashes
-  // event TriggerVerifyCompliance(bytes32[6] hashes);
 
   // Constructor setting the owner, the vote closer and alternatives setup
   // Owner is automatically set as user
@@ -175,24 +173,25 @@ contract EatHealthyChain {
     string memory _productName,
     string memory _typeOfProduct,
     uint16 _quantity,
-    string memory _packaging
+    string memory _packaging,
+    string memory _hash_ipfs
   ) checkLengthGS1(_productCode) onlyUsers() isNotProposed(_productCode) public {
     Product memory _product;
     Hashes memory _hashes;
     _product.productId = uniqueProductId;
     _product.productCode = _productCode;
     _product.productProposerAddress = msg.sender;
+    _product.hash_ipfs = _hash_ipfs;
     _hashes.labels_hash = keccak256(abi.encode(_labels));
     _hashes.ingredients_hash = keccak256(abi.encode(_ingredients));
     _hashes.additives_hash = keccak256(abi.encode(_additives));
     _hashes.nutriments_hash = keccak256(abi.encode(_nutriments));
-    _hashes.variousData_hash = keccak256(abi.encodePacked(_productCode, _productName, _typeOfProduct, _quantity, _packaging));
+    _hashes.variousData_hash = keccak256(abi.encodePacked(_productCode, _productName, _typeOfProduct, _quantity, _packaging, _hash_ipfs));
     _hashes.all_hash = keccak256(abi.encodePacked(_hashes.labels_hash, _hashes.ingredients_hash, _hashes.additives_hash, _hashes.nutriments_hash, _hashes.variousData_hash));
     _product.isVotable = true;
     _product.startDate = now;
     _product.endDate = now + 5 minutes;
     productCodeToProposalProduct[_productCode] = _product;
-    // addressToProducts[msg.sender][_productCode] = _product;
     productCodeToProposalHashes[_productCode] = _hashes;
     uniqueProductId++;
     // addressToUser[msg.sender].tokenNumber--;
@@ -210,7 +209,6 @@ contract EatHealthyChain {
   function vote(bool _opinion, uint _productCode) isProductVotable(_productCode) public {
     require(productCodeToProposalProduct[_productCode].productProposerAddress != msg.sender, "Vous ne pouvez pas voter pour votre propre proposition");
     require(addressToUser[msg.sender].tokenNumber > 0, "Vous n'avez pas assez de token");
-  //  require(productCodeToProposalProduct[_productCode].startDate < productCodeToProposalProduct[_productCode].endDate, "Le vote de ce produit est clos");
     require(alreadyVoted[_productCode][productCodeToProposalProduct[_productCode].productId][msg.sender][0] == false, "Vous avez déjà voté");
     alreadyVoted[_productCode][productCodeToProposalProduct[_productCode].productId][msg.sender][0] = true;
     if (_opinion == true) {
@@ -230,8 +228,7 @@ contract EatHealthyChain {
   @param _productCode product targeted for the vote
 */
   function endVote(uint _productCode) isResponsible() isProductVotable(_productCode) public {
-  //  require(productCodeToProposalProduct[_productCode].startDate < productCodeToProposalProduct[_productCode].endDate, "La fin du vote n'est pas depassée !");
-    require(productCodeToProposalProduct[_productCode].productProposerAddress != address(0), "Ce produit n'existe pas en proposition");
+   require(productCodeToProposalProduct[_productCode].productProposerAddress != address(0), "Ce produit n'existe pas en proposition");
     if (productCodeToProposalProduct[_productCode].forVotes >= productCodeToProposalProduct[_productCode].againstVotes) {
       acceptedProduct(_productCode);
     } else {
@@ -281,7 +278,6 @@ contract EatHealthyChain {
       deleteProductFromProposal(_productCode);
     } else {
       productCodeToProposalProduct[_productCode].isVotable = false;
-      //  addressToProducts[proposerAddress][_productCode].isVotable = false;
     }
   }
 
@@ -295,7 +291,6 @@ contract EatHealthyChain {
   */
   function acceptedProduct(uint _productCode) internal {
     productCodeToProposalProduct[_productCode].isVotable = false;
-    //  addressToProducts[proposerAddress][_productCode].isVotable = false;
     productCodeToProduct[_productCode] = productCodeToProposalProduct[_productCode];
     productCodeToHashes[_productCode] = productCodeToProposalHashes[_productCode];
     deleteProductFromProposal(_productCode);
@@ -335,12 +330,13 @@ contract EatHealthyChain {
     string memory _productName,
     string memory _typeOfProduct,
     uint16 _quantity,
-    string memory _packaging) public pure returns (bytes32[6] memory) {
+    string memory _packaging,
+    string memory _hash_ipfs) public pure returns (bytes32[6] memory) {
       bytes32 labels_hash =  keccak256(abi.encode(_labels));
       bytes32 ingredients_hash =  keccak256(abi.encode(_ingredients));
       bytes32 additives_hash =  keccak256(abi.encode(_additives));
       bytes32 nutriments_hash =  keccak256(abi.encode(_nutriments));
-      bytes32 variousDatas_hash = keccak256(abi.encodePacked(_productCode, _productName, _typeOfProduct, _quantity, _packaging));
+      bytes32 variousDatas_hash = keccak256(abi.encodePacked(_productCode, _productName, _typeOfProduct, _quantity, _packaging, _hash_ipfs));
 
       return [keccak256(abi.encodePacked(labels_hash, ingredients_hash, additives_hash, nutriments_hash, variousDatas_hash)),
       labels_hash,

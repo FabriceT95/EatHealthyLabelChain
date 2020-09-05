@@ -10,6 +10,7 @@ function createRouter(db) {
     suffix = '';
   }
 
+
   const router = express.Router();
 
   const store = multer.diskStorage({
@@ -39,13 +40,12 @@ function createRouter(db) {
     const validCID = req.params.hash_code;
 
     ipfs.files.get(validCID, function (err, files) {
-      files.forEach((file) => {
-        console.log(file.path);
-        console.log(file.content.toString('utf8'))
-      })
+        console.log(files[0].path);
+        console.log(files[0].content.toString('utf8'))
+      return res.status(200).json({hash:files[0].path, content:files[0].content});
     })
 
-  })
+  });
 
   ////////////////////////////////////////////////////// POST QUERIES /////////////////////////////////////////////////////////////////
 
@@ -112,10 +112,10 @@ function createRouter(db) {
   });
 
   // Adds various data and its hash for a product (distinct same hash and various data with their id)
-  router.post('/add_various_data/:variousDatas_hash/:product_code/:product_name/:product_type/:quantity/:packaging', async (req, res, next) => {
-    db.query('INSERT INTO variousDatas' + suffix + ' (variousDatas_hash, product_code, product_name, product_type, quantity, packaging) ' +
-      'VALUES (?,?,?,?,?,?)',
-      [req.params.variousDatas_hash, req.params.product_code, req.params.product_name, req.params.product_type, req.params.quantity, req.params.packaging],
+  router.post('/add_various_data/:variousDatas_hash/:product_code/:product_name/:product_type/:quantity/:packaging/:ipfs_hash', async (req, res, next) => {
+    db.query('INSERT INTO variousDatas' + suffix + ' (variousDatas_hash, product_code, product_name, product_type, quantity, packaging, ipfs_hash) ' +
+      'VALUES (?,?,?,?,?,?,?)',
+      [req.params.variousDatas_hash, req.params.product_code, req.params.product_name, req.params.product_type, req.params.quantity, req.params.packaging, req.params.ipfs_hash],
       (error) => {
         if (error) {
           console.log(error);

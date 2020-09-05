@@ -48,9 +48,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {AppRoutingModule} from './app-routing.module';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatFileUploadModule } from 'angular-material-fileupload';
-import {IpfsService} from './ipfs.service';
 import {FileUploadModule} from 'ng2-file-upload';
-// import { IPFS, initIPFS } from './ipfs';
 
 @NgModule({
   declarations: [
@@ -103,12 +101,7 @@ import {FileUploadModule} from 'ng2-file-upload';
     MatFileUploadModule,
     FileUploadModule
   ],
-  providers: [Web3Service, ServerService, AppComponent, IpfsService /* {
-    provide: APP_INITIALIZER,
-    useFactory: initIPFS,
-    multi: true,
-    deps: [IPFS]
-  }*/ ],
+  providers: [Web3Service, ServerService, AppComponent],
   bootstrap: [AppComponent],
   entryComponents: [
     UserFormVoteComponent,

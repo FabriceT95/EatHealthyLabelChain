@@ -113,7 +113,7 @@
       <div class="col-sm-6">
         <h4>Upload Section</h4>
         <div id="fileSelector">
-          <input #csvInput hidden="true" type="file"  (change)="testUpload($event)" accept=".png" multiple ng2FileSelect [uploader]="uploader"/>
+          <input #csvInput hidden="true" type="file"  (change)="testUpload($event)" accept=".png"  ng2FileSelect [uploader]="uploader"/>
 <!--          <button mat-flat-button color="primary" type="button" (click)="csvInput.click()">Choose Spreadsheet File (CSV)</button>-->
         </div>
         <div>
@@ -132,7 +132,7 @@
 
           </div>
         </div>
-<!--
+
       </div>
 
     </div>
