@@ -2,6 +2,7 @@ const express = require('express');
 const IPFS = require('ipfs-api');
 const fs = require('fs');
 const ipfs = new IPFS({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+const multer = require('multer');
 // Gathering all routes queries to the DB
 function createRouter(db) {
   let suffix = '_SC';
@@ -11,15 +12,23 @@ function createRouter(db) {
 
   const router = express.Router();
 
+  const store = multer.diskStorage({
+    destination:function(req,file,cb){
+      cb(null, './uploads');
+    },
+    filename:function(req,file,cb){
+      cb(null, Date.now()+'.'+file.originalname);
+    }
+  });
+  const upload = multer({storage:store}).single('file');
+
   ////////////////////////////////////////////////////// IPFS REQUESTS ////////////////////////////////////////////////////////////////
-  router.post('/addfile/:file', async (req, res, next) => {
-   // let testFile = fs.readFileSync(req.params.file_path);
-    let testBuffer = new Buffer(req.params.file);
-    ipfs.files.add(testBuffer, function (err, file) {
-      if (err) {
-        console.log(err);
+  router.post('/addfile', async (req, res, next) => {
+    upload(req,res, function(err){
+      if(err){
+        return res.status(501).json({error:err})
       }
-      console.log(file)
+      res.json({originalname: req.file.originalname, uploadname:req.file.filename});
     })
   });
 

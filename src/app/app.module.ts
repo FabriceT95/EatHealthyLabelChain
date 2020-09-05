@@ -49,6 +49,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatFileUploadModule } from 'angular-material-fileupload';
 import {IpfsService} from './ipfs.service';
+import {FileUploadModule} from 'ng2-file-upload';
 // import { IPFS, initIPFS } from './ipfs';
 
 @NgModule({
@@ -99,7 +100,8 @@ import {IpfsService} from './ipfs.service';
     MatExpansionModule,
     AppRoutingModule,
     MatProgressSpinnerModule,
-    MatFileUploadModule
+    MatFileUploadModule,
+    FileUploadModule
   ],
   providers: [Web3Service, ServerService, AppComponent, IpfsService /* {
     provide: APP_INITIALIZER,

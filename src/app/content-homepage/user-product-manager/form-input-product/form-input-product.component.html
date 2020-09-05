@@ -111,9 +111,28 @@
         </mat-form-field>
       </div>
       <div class="col-sm-6">
-        <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="testUpload($event)" accept=".png"/>
-        <button mat-flat-button color="primary" type="button" (click)="csvInput.click()">Choose Spreadsheet File (CSV)</button>
-        <span *ngIf="imageToUpload">COUCOU</span>
+        <h4>Upload Section</h4>
+        <div id="fileSelector">
+          <input #csvInput hidden="true" type="file"  (change)="testUpload($event)" accept=".png" multiple ng2FileSelect [uploader]="uploader"/>
+<!--          <button mat-flat-button color="primary" type="button" (click)="csvInput.click()">Choose Spreadsheet File (CSV)</button>-->
+        </div>
+        <div>
+          <div class="row uploadList" *ngFor="let item of uploader.queue">
+            <div class="col-sm-4">{{item.file.name}}</div>
+            <div class="col-sm-4">
+              <div class="progress">
+                <div class="progress-bar bg-success" [ngStyle]="{'width':item.progress+'%'}">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <button type="button" class="btn btn-dark" (click)="item.upload()">Upload</button>
+              <button type="button" class="btn btn-danger" (click)="item.remove()">Cancel</button>
+            </div>
+
+          </div>
+        </div>
+<!--
       </div>
 
     </div>

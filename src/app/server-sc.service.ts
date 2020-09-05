@@ -1,5 +1,5 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../environments/environment';
 import {BehaviorSubject, Observable} from 'rxjs';
 
@@ -27,8 +27,8 @@ export class ServerSCService {
   constructor(private http: HttpClient) {
   }
 
-  addFile(event) {
-    return this.request('POST', `${this.serverUrl}/addfile/${event.file}/`, event);
+  addFile(event, headers) {
+    return this.request('POST', `${this.serverUrl}/addfile/${event.file}/`, event, headers);
   }
   getFile(event) {
     return this.request('GET', `${this.serverUrl}/getfile/${event.hash_code}/`, event);
@@ -147,11 +147,12 @@ export class ServerSCService {
   }
 
 
-  private async request(method: string, url: string, data?: any) {
+  private async request(method: string, url: string, data?: any, headers?: any) {
     const result = this.http.request(method, url, {
       body: data,
       responseType: 'json',
       observe: 'body',
+      headers: headers
     });
     return new Promise((resolve, reject) => {
       result.subscribe(resolve, reject);

@@ -8,7 +8,8 @@ import {ServerSCService} from '../../../server-sc.service';
 import {ProductService} from '../../../product.service';
 import {IpfsService} from '../../../ipfs.service';
 import keccak from 'keccak';
-import {FormControl, Validators} from '@angular/forms';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {FileUploader} from 'ng2-file-upload';
 
 
 
@@ -20,17 +21,25 @@ import {FormControl, Validators} from '@angular/forms';
 })
 export class FormInputProductComponent implements OnInit {
   codebarreProduct: number;
+  uploader: FileUploader = new FileUploader({url: this.server_sc.serverUrl + '/addfile'});
+  attachmentList: any = [];
+  /*myForm = new FormGroup({
+    file: new FormControl('', [Validators.required])
+  });*/
 
   constructor(
     private web3: Web3Service,
     private server_sc: ServerSCService,
     private ipfs: IpfsService,
     private product: ProductService,
+    private http: HttpClient,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<FormInputProductComponent>
   ) {
     this.codebarreProduct = data.codebarreValue;
-    // console.log(ipfs);
+    this.uploader.onCompleteItem = (item: any, response: any, status: any, header: any) => {
+      this.attachmentList.push(JSON.parse(response));
+    };
   }
 
   ngOnInit() {
@@ -41,16 +50,12 @@ export class FormInputProductComponent implements OnInit {
   }
 
   testUpload(fileInputEvent: any) {
-    const myForm = new FormControl('', [Validators.required]);
-    myForm.patchValue(fileInputEvent.target.files[0]);
-    const formData = new FormData();
-    formData.append('file', myForm.value);
-    // this.ipfs.addFile(fileInputEvent.target.files[0]);
-    // const aie = {file_path: fileInputEvent.target.files[0]}
-     this.server_sc.addFile(formData).then(() => {
-       console.log('success');
-     });
-
+  /*  this.selectedFile = <File>fileInputEvent.target.files[0];
+   const fd = new FormData();
+   fd.append('image', this.selectedFile, this.selectedFile.name);
+   this.http.post(`${this.server_sc.serverUrl}/addfile/${fd}/`, fd)
+     .subscribe(res => { console.log(res); });
+*/
   }
 
 
