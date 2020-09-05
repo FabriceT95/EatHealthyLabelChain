@@ -8,6 +8,7 @@ import {ServerSCService} from '../../../server-sc.service';
 import {ProductService} from '../../../product.service';
 import {IpfsService} from '../../../ipfs.service';
 import keccak from 'keccak';
+import {FormControl, Validators} from '@angular/forms';
 
 
 
@@ -40,10 +41,13 @@ export class FormInputProductComponent implements OnInit {
   }
 
   testUpload(fileInputEvent: any) {
-    console.log(fileInputEvent.target.files);
+    const myForm = new FormControl('', [Validators.required]);
+    myForm.patchValue(fileInputEvent.target.files[0]);
+    const formData = new FormData();
+    formData.append('file', myForm.value);
     // this.ipfs.addFile(fileInputEvent.target.files[0]);
-     const aie = {file_path: fileInputEvent.target.files[0]}
-     this.server_sc.addFile(aie).then(() => {
+    // const aie = {file_path: fileInputEvent.target.files[0]}
+     this.server_sc.addFile(formData).then(() => {
        console.log('success');
      });
 

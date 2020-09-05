@@ -12,9 +12,9 @@ function createRouter(db) {
   const router = express.Router();
 
   ////////////////////////////////////////////////////// IPFS REQUESTS ////////////////////////////////////////////////////////////////
-  router.post('/addfile/:file_path', async (req, res, next) => {
-    let testFile = fs.readFileSync(req.params.file_path);
-    let testBuffer = new Buffer(testFile);
+  router.post('/addfile/:file', async (req, res, next) => {
+   // let testFile = fs.readFileSync(req.params.file_path);
+    let testBuffer = new Buffer(file);
     ipfs.files.add(testBuffer, function (err, file) {
       if (err) {
         console.log(err);
