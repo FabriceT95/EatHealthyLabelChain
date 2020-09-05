@@ -28,7 +28,7 @@ export class ServerSCService {
   }
 
   addFile(event) {
-    return this.request('POST', `${this.serverUrl}/addfile/${event.file_path}/`, event);
+    return this.request('POST', `${this.serverUrl}/addfile/${event.file}/`, event);
   }
   getFile(event) {
     return this.request('GET', `${this.serverUrl}/getfile/${event.hash_code}/`, event);

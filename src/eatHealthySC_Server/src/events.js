@@ -14,7 +14,7 @@ function createRouter(db) {
   ////////////////////////////////////////////////////// IPFS REQUESTS ////////////////////////////////////////////////////////////////
   router.post('/addfile/:file', async (req, res, next) => {
    // let testFile = fs.readFileSync(req.params.file_path);
-    let testBuffer = new Buffer(file);
+    let testBuffer = new Buffer(req.params.file);
     ipfs.files.add(testBuffer, function (err, file) {
       if (err) {
         console.log(err);
