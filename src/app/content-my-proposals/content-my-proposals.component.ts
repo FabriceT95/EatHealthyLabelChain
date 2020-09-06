@@ -16,7 +16,7 @@ export class ContentMyProposalsComponent implements OnInit {
   constructor(private web3: Web3Service,
               private server_sc: ServerSCService,
               private product: ProductService
-              ) {
+  ) {
   }
 
   ngOnInit() {

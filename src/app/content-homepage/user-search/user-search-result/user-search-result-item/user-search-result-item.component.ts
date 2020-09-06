@@ -16,12 +16,14 @@ export class UserSearchResultItemComponent implements OnInit {
   actualProduct: Product;
   olderVersions: Product[] = [];
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog) {
+  }
 
   ngOnInit() {
     this.actualProduct = this.product[0];
     this.olderVersions = this.product[1];
   }
+
   openDialog(): void {
     const dialogRef = this.dialog.open(ModalProductDetailsComponent, {
       width: '50%',

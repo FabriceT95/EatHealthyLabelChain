@@ -16,7 +16,7 @@ export class Product {
       sodium: 0
     },
     public ingredients: string[],
-    public quantity: string,
+    public quantity: number,
     public generic_name: string,
     public packaging: string,
     public labels: string[],

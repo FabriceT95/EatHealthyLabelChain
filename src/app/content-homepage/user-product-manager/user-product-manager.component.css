@@ -15,17 +15,17 @@
 }*/
 
 .user-profile-manager {
-  height:100%;
-  padding:0;
-  display:flex;
+  height: 100%;
+  padding: 0;
+  display: flex;
   flex-direction: column;
-  border-radius:20px;
+  border-radius: 20px;
   box-shadow: -1px 4px 20px -6px rgba(0, 0, 0, 0.7);
 }
 
-::ng-deep .user-profile-manager__header  {
+::ng-deep .user-profile-manager__header {
   background-color: #20bf55;
-  background-image :linear-gradient(315deg, #20bf55 20%, #01baef 74%);
+  background-image: linear-gradient(315deg, #20bf55 20%, #01baef 74%);
   justify-content: center;
   color: white;
   border-top-left-radius: 20px;
@@ -33,10 +33,11 @@
 }
 
 .user-profile-manager__title {
-  margin:15px;
+  margin: 15px;
 }
+
 .user-profile-manager__content {
-  height:100%;
+  height: 100%;
   background-color: #d2d8d6;
   background-image: linear-gradient(315deg, #d2d8d6 0%, #dce8e0 74%);
   border-bottom-left-radius: 20px;
@@ -44,18 +45,18 @@
 
 }
 
-::ng-deep .mat-card-content{
-  padding:5px !important;
+::ng-deep .mat-card-content {
+  padding: 5px !important;
 }
 
 .user-profile-manager__buttonAdd {
   background-color: #3bb78f;
   background-image: linear-gradient(315deg, #3bb78f 0%, #0bab64 74%);
-  color:#fff;
+  color: #fff;
 }
 
 .user-profile-manager__buttonModify {
-  background-color : #20bf55;
-  background-image : linear-gradient(315deg, #20bf55 0%, #01baef 74%);
+  background-color: #20bf55;
+  background-image: linear-gradient(315deg, #20bf55 0%, #01baef 74%);
 
 }

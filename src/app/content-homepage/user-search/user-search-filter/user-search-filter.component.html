@@ -8,7 +8,7 @@
   <mat-label>Favorite food</mat-label>
   <mat-select (selectionChange)="TriggerTypeSelected()" [(ngModel)]="typeSelected">
     <mat-option *ngFor="let category of categories" [value]="category.value">
-            {{category.viewValue}}
+      {{category.viewValue}}
     </mat-option>
   </mat-select>
 </mat-form-field>

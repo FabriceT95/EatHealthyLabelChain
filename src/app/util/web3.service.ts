@@ -1,4 +1,4 @@
-import {EventEmitter, Inject, InjectionToken } from '@angular/core';
+import {EventEmitter, Inject, InjectionToken} from '@angular/core';
 import Web3 from 'web3';
 import EatHealthyChain from './../../../build/contracts/EatHealthyChain.json';
 
@@ -52,15 +52,15 @@ export class Web3Service {
       that.getContract().then(async function (result) {
         that.contract = result;
         // Define functions which are needed to be launched on load just after getContract is setup
-     //   console.log('GetContract in Web3Service : ' + JSON.stringify(that.contract));
+        //   console.log('GetContract in Web3Service : ' + JSON.stringify(that.contract));
         const labelizedProductCode = [1234567891234, 5555555555555];
         for (const element of labelizedProductCode) {
           const arrayOneProductLabels = [];
           let iterationOverProductLabels = 0;
           const LabelObject = {
-            uniqueRealLabelId: 0 ,
+            uniqueRealLabelId: 0,
             label_name: '',
-            expiration_date : 0
+            expiration_date: 0
           };
           while (true) {
             try {
@@ -71,12 +71,12 @@ export class Web3Service {
               arrayOneProductLabels.push(LabelObject);
               iterationOverProductLabels++;
             } catch (e) {
-                break;
-              }
+              break;
+            }
           }
           that.realLabelizedProductArray[element] = arrayOneProductLabels;
           console.log('aiee : ' + JSON.stringify(that.realLabelizedProductArray));
-       }
+        }
       });
     }, 500);
   }
@@ -104,8 +104,8 @@ export class Web3Service {
   public getContract() {
     const web3Provider = this.web3;
     const that = this;
-  //  console.log('EatHealthy ABI in getContrat() : ' + JSON.stringify(EatHealthyChain.abi));
-  //  console.log('DeployedNetwork address in getContrat() : ' + JSON.stringify(that.deployedNetwork.address));
+    //  console.log('EatHealthy ABI in getContrat() : ' + JSON.stringify(EatHealthyChain.abi));
+    //  console.log('DeployedNetwork address in getContrat() : ' + JSON.stringify(that.deployedNetwork.address));
     return new Promise(function (resolve, reject) {
       resolve(new web3Provider.eth.Contract(EatHealthyChain.abi, that.deployedNetwork.address));
     });

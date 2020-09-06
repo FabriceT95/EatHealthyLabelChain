@@ -26,7 +26,7 @@ contract EatHealthyChain {
     uint startDate;
     uint endDate;
     bool isVotable;
-    string hash_ipfs;
+    string hash_IPFS;
     mapping(uint => Alternative) alternatives;
   }
 
@@ -108,6 +108,9 @@ contract EatHealthyChain {
   // Accessing to real labels defined by growers (they are actually fake in this contract)
   mapping(uint => Label[]) public productCodeToRealLabels;
 
+  // Accessing to the image IPFS given by user for a product
+  mapping(uint => string) public productCodeToHashIPFS;
+
   // mapping(address => mapping(uint => Product)) addressToProducts;
   uint[] private trueLabelizedProductCode;
 
@@ -118,7 +121,7 @@ contract EatHealthyChain {
   // Owner is automatically set as user
   constructor() public {
     _owner = msg.sender;
-    addressToUser[_owner] = User(uniqueIdUser, now, 10, 0, true);
+    addressToUser[_owner] = User(10, 0, uniqueIdUser, now, true);
     uniqueIdUser++;
     setupRealLabels();
   }
@@ -166,36 +169,35 @@ contract EatHealthyChain {
   */
   function addProductToProposal(
     uint64 _productCode,
+    uint16 _quantity,
     string[] memory _labels,
     string[] memory _ingredients,
     string[] memory _additives,
     Nutriment memory _nutriments,
     string memory _productName,
     string memory _typeOfProduct,
-    uint16 _quantity,
     string memory _packaging,
     string memory _hash_ipfs
   ) checkLengthGS1(_productCode) onlyUsers() isNotProposed(_productCode) public {
-    Product memory _product;
+    //  Product memory _product;
     Hashes memory _hashes;
-    _product.productId = uniqueProductId;
-    _product.productCode = _productCode;
-    _product.productProposerAddress = msg.sender;
-    _product.hash_ipfs = _hash_ipfs;
+    //    _product.productId = uniqueProductId;
+    //    _product.productCode = _productCode;
+    //    _product.productProposerAddress = msg.sender;
+    //    _product.isVotable = true;
+    //    _product.startDate = now;
+    //    _product.endDate = now + 5 minutes;
     _hashes.labels_hash = keccak256(abi.encode(_labels));
     _hashes.ingredients_hash = keccak256(abi.encode(_ingredients));
     _hashes.additives_hash = keccak256(abi.encode(_additives));
     _hashes.nutriments_hash = keccak256(abi.encode(_nutriments));
     _hashes.variousData_hash = keccak256(abi.encodePacked(_productCode, _productName, _typeOfProduct, _quantity, _packaging, _hash_ipfs));
     _hashes.all_hash = keccak256(abi.encodePacked(_hashes.labels_hash, _hashes.ingredients_hash, _hashes.additives_hash, _hashes.nutriments_hash, _hashes.variousData_hash));
-    _product.isVotable = true;
-    _product.startDate = now;
-    _product.endDate = now + 5 minutes;
-    productCodeToProposalProduct[_productCode] = _product;
+    productCodeToProposalProduct[_productCode] = Product(msg.sender, 0, 0, uniqueProductId, _productCode, now, now + 5 minutes, true, _hash_ipfs);
     productCodeToProposalHashes[_productCode] = _hashes;
     uniqueProductId++;
     // addressToUser[msg.sender].tokenNumber--;
-    emit TriggerAddProduct([_hashes.labels_hash, _hashes.ingredients_hash, _hashes.additives_hash, _hashes.nutriments_hash, _hashes.variousData_hash, _hashes.all_hash], msg.sender, [_product.startDate, _product.endDate]);
+    emit TriggerAddProduct([_hashes.labels_hash, _hashes.ingredients_hash, _hashes.additives_hash, _hashes.nutriments_hash, _hashes.variousData_hash, _hashes.all_hash], msg.sender, [now, now + 5 minutes]);
   }
 
   /**
@@ -228,7 +230,7 @@ contract EatHealthyChain {
   @param _productCode product targeted for the vote
 */
   function endVote(uint _productCode) isResponsible() isProductVotable(_productCode) public {
-   require(productCodeToProposalProduct[_productCode].productProposerAddress != address(0), "Ce produit n'existe pas en proposition");
+    require(productCodeToProposalProduct[_productCode].productProposerAddress != address(0), "Ce produit n'existe pas en proposition");
     if (productCodeToProposalProduct[_productCode].forVotes >= productCodeToProposalProduct[_productCode].againstVotes) {
       acceptedProduct(_productCode);
     } else {
@@ -306,7 +308,7 @@ contract EatHealthyChain {
   @params _alternativeVotes list of Alternatives object
   */
   function manageAlternatives(Alternative[] memory _alternativeVotes) isResponsible() public {
-    for(uint i = 0; i < _alternativeVotes.length; i++) {
+    for (uint i = 0; i < _alternativeVotes.length; i++) {
       productCodeToProduct[_alternativeVotes[i].productCode].alternatives[_alternativeVotes[i].productCodeAlternative] = _alternativeVotes[i];
     }
   }
@@ -332,18 +334,18 @@ contract EatHealthyChain {
     uint16 _quantity,
     string memory _packaging,
     string memory _hash_ipfs) public pure returns (bytes32[6] memory) {
-      bytes32 labels_hash =  keccak256(abi.encode(_labels));
-      bytes32 ingredients_hash =  keccak256(abi.encode(_ingredients));
-      bytes32 additives_hash =  keccak256(abi.encode(_additives));
-      bytes32 nutriments_hash =  keccak256(abi.encode(_nutriments));
-      bytes32 variousDatas_hash = keccak256(abi.encodePacked(_productCode, _productName, _typeOfProduct, _quantity, _packaging, _hash_ipfscheckProductIsNew));
+    bytes32 labels_hash = keccak256(abi.encode(_labels));
+    bytes32 ingredients_hash = keccak256(abi.encode(_ingredients));
+    bytes32 additives_hash = keccak256(abi.encode(_additives));
+    bytes32 nutriments_hash = keccak256(abi.encode(_nutriments));
+    bytes32 variousDatas_hash = keccak256(abi.encodePacked(_productCode, _productName, _typeOfProduct, _quantity, _packaging, _hash_ipfs));
 
-      return [keccak256(abi.encodePacked(labels_hash, ingredients_hash, additives_hash, nutriments_hash, variousDatas_hash)),
-      labels_hash,
-      ingredients_hash,
-      additives_hash,
-      nutriments_hash,
-      variousDatas_hash
+    return [keccak256(abi.encodePacked(labels_hash, ingredients_hash, additives_hash, nutriments_hash, variousDatas_hash)),
+    labels_hash,
+    ingredients_hash,
+    additives_hash,
+    nutriments_hash,
+    variousDatas_hash
     ];
   }
 
@@ -354,7 +356,7 @@ contract EatHealthyChain {
   @params _productCode product code hashes which needs to be returned
   @returns hashes of the product code given
   */
-  function getProductHashes(uint _productCode) public view  returns (bytes32[6] memory){
+  function getProductHashes(uint _productCode) public view returns (bytes32[6] memory){
     return [productCodeToHashes[_productCode].all_hash,
     productCodeToHashes[_productCode].labels_hash,
     productCodeToHashes[_productCode].ingredients_hash,
@@ -394,14 +396,13 @@ contract EatHealthyChain {
   Simply add objects into mapping
   */
   function setupRealLabels() internal {
-    productCodeToRealLabels[1234567891234].push(Label(uniqueRealLabelId,'Label Rouge', now + 10 days));
-    productCodeToRealLabels[1234567891234].push(Label(uniqueRealLabelId,'AOC', now + 10 days));
+    productCodeToRealLabels[1234567891234].push(Label(uniqueRealLabelId, now + 10 days, 'Label Rouge'));
+    productCodeToRealLabels[1234567891234].push(Label(uniqueRealLabelId, now + 10 days, 'AOC'));
     trueLabelizedProductCode.push(1234567891234);
     uniqueRealLabelId++;
-    productCodeToRealLabels[5555555555555].push(Label(uniqueRealLabelId,'', now + 8 days));
-    productCodeToRealLabels[5555555555555].push(Label(uniqueRealLabelId,'', now + 8 days));
+    productCodeToRealLabels[5555555555555].push(Label(uniqueRealLabelId, now + 8 days, ''));
+    productCodeToRealLabels[5555555555555].push(Label(uniqueRealLabelId, now + 8 days, ''));
     trueLabelizedProductCode.push(5555555555555);
     uniqueRealLabelId++;
   }
-
 }

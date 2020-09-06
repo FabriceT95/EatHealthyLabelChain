@@ -1,5 +1,5 @@
-const { BN, ether } = require('@openzeppelin/test-helpers');
-const { expect } = require('chai');
+const {BN, ether} = require('@openzeppelin/test-helpers');
+const {expect} = require('chai');
 const EatHealthyChain = artifacts.require('./EatHealthyChain.sol');
 
 contract('EatHealthyChain', function (accounts) {
@@ -32,12 +32,12 @@ contract('EatHealthyChain', function (accounts) {
   const opinion = true;
 
   const alternative_object = {
-    productCode : 1234567891234,
-    productCodeAlternative : 5555555555555,
-    forVotes : 5,
-    againstVotes:10,
-    isVotedToday : true,
-    propositionDate : 1585800857
+    productCode: 1234567891234,
+    productCodeAlternative: 5555555555555,
+    forVotes: 5,
+    againstVotes: 10,
+    isVotedToday: true,
+    propositionDate: 1585800857
 
   };
   beforeEach(async function () {
@@ -47,7 +47,7 @@ contract('EatHealthyChain', function (accounts) {
     await this.EatHealthyChainInstance.subscribeUser({from: proposer});
     let addressToUser = await this.EatHealthyChainInstance.addressToUser.call(proposer);
     expect(Number(addressToUser.userId)).to.equal(Number(1));
-    expect(Math.floor(Number(addressToUser.lastTimeTokenGiven)/10)).to.equal(Math.floor((Date.now() / 1000)/10));
+    expect(Math.floor(Number(addressToUser.lastTimeTokenGiven) / 10)).to.equal(Math.floor((Date.now() / 1000) / 10));
     expect(Number(addressToUser.tokenNumber)).to.equal(5);
     expect(Number(addressToUser.reputation)).to.equal(50);
     expect(addressToUser.isExist).to.equal(true);
@@ -74,7 +74,7 @@ contract('EatHealthyChain', function (accounts) {
     expect(Number(productCodeToProposalProduct.productId)).to.equal(0);
     expect(Number(productCodeToProposalProduct.isVotable)).to.equal(1);
     expect(Number(productCodeToProposalProduct.productCode)).to.equal(product.product_code);
-    expect(Number(productCodeToProposalProduct.startDate)).to.equal(Math.floor((Date.now()/1000)));
+    expect(Number(productCodeToProposalProduct.startDate)).to.equal(Math.floor((Date.now() / 1000)));
 
     expect(Math.floor(Number(productCodeToProposalProduct.endDate))).to.equal(Math.floor((Date.now() / 1000) + 300));
 
@@ -186,8 +186,7 @@ contract('EatHealthyChain', function (accounts) {
 
     let productCodeToProductAfterAlternatives = await this.EatHealthyChainInstance.productCodeToProduct.call(product.product_code);
     console.log(productCodeToProductAfterAlternatives);
-   // expect(Number(productCodeToProductAfterAlternatives.alternatives[alternative_object.productCode].productCodeAlternative)).to.equal(alternative_object.productCode);
-
+    // expect(Number(productCodeToProductAfterAlternatives.alternatives[alternative_object.productCode].productCodeAlternative)).to.equal(alternative_object.productCode);
 
 
   });

@@ -1,6 +1,6 @@
 const express = require('express');
-const IPFS = require('ipfs-api');
 const fs = require('fs');
+const IPFS = require('ipfs-api');
 const ipfs = new IPFS({host: 'ipfs.infura.io', port: 5001, protocol: 'https'});
 const multer = require('multer');
 const path = require('path');
@@ -12,7 +12,10 @@ function createRouter(db) {
     suffix = '';
   }
 
+  // Setup the router
   const router = express.Router();
+
+  // Storage for image upload
   const store = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, './uploads');
@@ -20,14 +23,20 @@ function createRouter(db) {
       cb(null, file.originalname);
     }
   });
+
+  // Upload function
   const upload = multer({storage: store}).single('file');
+
+
 ////////////////////////////////////////////////////// IPFS REQUESTS ////////////////////////////////////////////////////////////////
+
+  // Adds a file into IPFS and removing the uploaded image to avoid storage issue
   router.post('/addfile', async (req, res, next) => {
     upload(req, res, function (err) {
       if (err) {
         return res.status(501).json({error: err})
       }
-      let testFile = fs.readFileSync('./uploads/' + req.file.originalname)
+      let testFile = fs.readFileSync('./uploads/' + req.file.originalname);
       let testBUffer = new Buffer.from(testFile);
       ipfs.files.add(testBUffer, function (err, file) {
         if (err) console.log(err);
@@ -43,46 +52,55 @@ function createRouter(db) {
       });
     })
   });
-//Getting the uploaded file via hash code.
+
+  //Getting the uploaded file via hash code.
   router.get('/getfile/:hash_code', function (req, res) {
-//This hash is returned hash of addFile router.
+    //This hash is returned hash of addFile router.
     const validCID = req.params.hash_code;
     ipfs.files.get(validCID, function (err, files) {
       return res.status(200).json({hash: files[0].path, content: files[0].content});
     })
   });
+
 ////////////////////////////////////////////////////// POST QUERIES /////////////////////////////////////////////////////////////////
-// Adds a new user passing his wallet address
+
+  // Adds a new user passing his wallet address
   router.post('/add_user/:user_address', async (req, res, next) => {
     insertFunction('INSERT INTO Users' + suffix + ' (address) ' +
       'VALUES ("' + req.params.user_address + '")', res);
   });
-// Registers user as voter for a product : avoids to let him vote twice or more
+
+  // Registers user as voter for a product : avoids to let him vote twice or more
   router.post('/add_vote/:all_hash/:product_code/:user_address', async (req, res, next) => {
     insertFunction('INSERT INTO Voters' + suffix + ' (product_code, address, all_hash, type) ' +
       'VALUES (' + req.params.product_code + ',"' + req.params.user_address + '","' + req.params.all_hash + '", "Product")', res);
   });
-// Registers user as voter for an alternative : avoids to let him vote twice or more
+
+  // Registers user as voter for an alternative : avoids to let him vote twice or more
   router.post('/add_vote_alternative/:all_hash/:product_code/:product_code_alternative/:user_address/:opinion', async (req, res, next) => {
     insertFunction('INSERT INTO Voters' + suffix + ' (product_code, address, all_hash, product_code_alternative, opinion, type) ' +
       'VALUES (' + req.params.product_code + ',"' + req.params.user_address + '","' + req.params.all_hash + '",' + req.params.product_code_alternative + ',' + req.params.opinion + ', "Alternative")', res);
   });
-// Adds labels and its hash for a product (distinct same hash and labels with their id)
+
+  // Adds labels and its hash for a product (distinct same hash and labels with their id)
   router.post('/add_labels/:labels_hash/:labels', async (req, res, next) => {
     insertFunction('INSERT INTO labels' + suffix + ' (labels_hash, labels)' +
       ' VALUES ("' + req.params.labels_hash + '","' + req.params.labels + '")', res);
   });
-// Adds additives and its hash for a product (distinct same hash and additives with their id)
+
+  // Adds additives and its hash for a product (distinct same hash and additives with their id)
   router.post('/add_additives/:additives_hash/:additives', async (req, res, next) => {
     insertFunction('INSERT INTO additives' + suffix + ' (additives_hash, additives) ' +
       'VALUES ("' + req.params.additives_hash + '","' + req.params.additives + '")', res);
   });
-// Adds ingredients and its hash for a product (distinct same hash and ingredients with their id)
+
+  // Adds ingredients and its hash for a product (distinct same hash and ingredients with their id)
   router.post('/add_ingredients/:ingredients_hash/:ingredients', async (req, res, next) => {
     insertFunction('INSERT INTO ingredients' + suffix + ' (ingredients_hash, ingredients) ' +
       'VALUES ("' + req.params.ingredients_hash + '","' + req.params.ingredients + '")', res);
   });
-// Adds nutriments and its hash for a product (distinct same hash and nutriments with their id)
+
+  // Adds nutriments and its hash for a product (distinct same hash and nutriments with their id)
   router.post('/add_nutriments/:nutriments_hash/:nutriments', async (req, res, next) => {
     const nutriments = JSON.parse(req.params.nutriments);
     db.query('INSERT INTO nutriments' + suffix + ' (nutriments_hash, energy, energy_kcal, proteines, carbohydrates, salt, sugar, fat, saturated_fat, fiber, sodium) ' +
@@ -96,7 +114,8 @@ function createRouter(db) {
         }
       })
   });
-// Adds various data and its hash for a product (distinct same hash and various data with their id)
+
+  // Adds various data and its hash for a product (distinct same hash and various data with their id)
   router.post('/add_various_data/:variousDatas_hash/:product_code/:product_name/:product_type/:quantity/:packaging/:ipfs_hash', async (req, res, next) => {
       db.query('INSERT INTO variousDatas' + suffix + ' (variousDatas_hash, product_code, product_name, product_type, quantity, packaging, ipfs_hash) ' +
         'VALUES (?,?,?,?,?,?,?)',
@@ -109,10 +128,10 @@ function createRouter(db) {
           }
         })
     }
-  )
-  ;
-// Adds product info and its hash for a product (distinct same hash and product info with their id)
-// Has the hash of all hash with useful data (dates, proposer address and status) mainly used to compare with Smart contract
+  );
+
+  // Adds product info and its hash for a product (distinct same hash and product info with their id)
+  // Has the hash of all hash with useful data (dates, proposer address and status) mainly used to compare with Smart contract
   router.post('/add_product_infos/:all_hash/:address_proposer/:start_date/:end_date/:status', async (req, res, next) => {
     db.query('INSERT INTO productInfos' + suffix + ' (all_hash, address_proposer, start_date, end_date, status) ' +
       'VALUES (?,?,FROM_UNIXTIME(?),FROM_UNIXTIME(?),?)',
@@ -124,8 +143,9 @@ function createRouter(db) {
           res.status(200).json({status: 'ok'});
         }
       })
-  })
-  ; // Add a new product alternative : only needs the product target code and the product code alternative proposed
+  });
+
+  // Add a new product alternative : only needs the product target code and the product code alternative proposed
   router.post('/add_alternative/:product_code_target/:product_code_alternative', async (req, res, next) => {
     db.query('INSERT INTO alternatives' + suffix + ' (product_code_target, product_code_alternative) ' +
       'VALUES (?,?)',
@@ -138,12 +158,12 @@ function createRouter(db) {
           console.log('ALTERNATIVE AJOUTEE');
         }
       })
-  })
-  ;
+  });
+
 
 ////////////////////////////////////////////////////// PUT QUERIES /////////////////////////////////////////////////////////////////
 
-// Add a new product alternative : only needs the product target code and the product code alternative proposed
+  // Add a new product alternative : only needs the product target code and the product code alternative proposed
   router.put('/new_vote/:product_code/:opinion', async (req, res, next) => {
     let query;
     if (Boolean(req.params.opinion) === true) {
@@ -155,6 +175,7 @@ function createRouter(db) {
     }
     insertFunction(query, res);
   });
+
   // Add a new product alternative vote : update will depend on the opinion and the previous opinion
   router.put('/new_vote_alternative/:product_code/:product_code_alternative/:opinion/:prev_opinion', async (req, res, next) => {
       const query = 'UPDATE alternatives' + suffix + ' ' +
@@ -164,9 +185,9 @@ function createRouter(db) {
         'WHERE product_code_target = ' + req.params.product_code + ' AND product_code_alternative = ' + req.params.product_code_alternative + ';';
       insertFunction(query, res);
     }
-  )
-  ;
-// End a vote by passing the product code, votes and set the last verification date to the end vote date sets in the contract
+  );
+
+  // End a vote by passing the product code, votes and set the last verification date to the end vote date sets in the contract
   router.put('/end_vote/:product_code/:for_votes/:against_votes/:lastVerificationDate', async (req, res, next) => {
     const query = 'UPDATE productInfos' + suffix + ' ' + 'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
       'SET productInfos' + suffix + '.status = IF(' + req.params.for_votes + ' >= ' + req.params.against_votes + ', "ACCEPTED", "REFUSED"), ' +
@@ -174,13 +195,15 @@ function createRouter(db) {
       'WHERE variousDatas' + suffix + '.product_code = ' + req.params.product_code + ' AND (productInfos' + suffix + '.status = "NEW" OR productInfos' + suffix + '.status = "IN_MODIFICATION");';
     insertFunction(query, res);
   });
-// Sets up the verification date (users decides to verify a product and if everything is alright (no difference between contract and DB)
-// product is verified for one week
+
+  // Sets up the verification date (users decides to verify a product and if everything is alright (no difference between contract and DB)
+  // product is verified for one week
   router.put('/verification/:product_code/:lastVerificationDate', async (req, res, next) => {
     const query = 'UPDATE productInfos' + suffix + ' ' + 'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' + 'SET lastVerificationDate = FROM_UNIXTIME(' + req.params.lastVerificationDate + ') ' + 'WHERE variousDatas' + suffix + '.product_code = ' + req.params.product_code + ' AND productInfos' + suffix + '.status = "ACCEPTED";';
     insertFunction(query, res);
   });
-// Otherwise , it sets the product as corrupted (difference between contract and DB)
+
+  // Otherwise , it sets the product as corrupted (difference between contract and DB)
   router.put('/corrupted/:product_code', async (req, res, next) => {
     const query = 'UPDATE productInfos' + suffix + ' ' +
       'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
@@ -188,8 +211,9 @@ function createRouter(db) {
       'WHERE variousDatas' + suffix + '.product_code = ' + req.params.product_code + ';';
     insertFunction(query, res);
   });
-// Triggers when a product is modified and this modification is accepted by the community :
-// older version is set as 'modified' and the new one is set as 'accepted'
+
+  // Triggers when a product is modified and this modification is accepted by the community :
+  // older version is set as 'modified' and the new one is set as 'accepted'
   router.put('/accepted_to_modified/:product_code', async (req, res, next) => {
     const query = 'UPDATE productInfos' + suffix + ' ' +
       'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
@@ -197,8 +221,9 @@ function createRouter(db) {
       'WHERE variousDatas' + suffix + '.product_code = ' + req.params.product_code + ' AND productInfos' + suffix + '.status = "ACCEPTED";';
     insertFunction(query, res);
   });
-// Triggers when a product is modified and this modification is accepted by the community :
-// older version is set as 'modified' and the new one is set as 'accepted'
+
+  // Triggers when a product is modified and this modification is accepted by the community :
+  // older version is set as 'modified' and the new one is set as 'accepted'
   router.put('/new_day_alternative_votes/', async (req, res, next) => {
     const query = 'UPDATE alternatives' + suffix + ' ' +
       'SET new_votes_today = false';
@@ -207,7 +232,8 @@ function createRouter(db) {
 
 
 ////////////////////////////////////////////////////// GET QUERIES /////////////////////////////////////////////////////////////////
-// Gets all products which are being modified or totally new
+
+  // Gets all products which are being modified or totally new
   router.get('/votable_products/', async (req, res, next) => {
     db.query('SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' ' +
       'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
@@ -224,9 +250,9 @@ function createRouter(db) {
           res.status(200).json(results);
         }
       })
-  })
-  ;
-// Gets all alternatives voted for a given product
+  });
+
+  // Gets all alternatives voted for a given product
   router.get('/get_alternative_voter_for_product/:user_address/:product_code', async (req, res, next) => {
     db.query('SELECT * FROM Voters' + suffix + ' ' +
       'WHERE product_code = ' + req.params.product_code + ' AND address = "' + req.params.user_address + '" AND type = "Alternative";',
@@ -238,8 +264,9 @@ function createRouter(db) {
           res.status(200).json(results);
         }
       })
-  })
-  ;
+  });
+
+  // Checking if the voter is the product proposer
   router.get('/get_voter_for_product/:user_address/:product_code', async (req, res, next) => {
     db.query('SELECT * FROM Voters' + suffix + ' ' +
       'INNER JOIN productInfos' + suffix + ' ON Voters' + suffix + '.all_hash = productInfos' + suffix + '.all_hash ' +
@@ -252,9 +279,9 @@ function createRouter(db) {
           res.status(200).json(results);
         }
       })
-  })
-  ;
-// Gets all alternatives which has been voted the current day (used in a separated server to update the contract)
+  });
+
+  // Gets all alternatives which has been voted the current day (used in a separated server to update the contract)
   router.get('/get_voted_alternatives/', async (req, res, next) => {
     db.query('SELECT ' +
       'product_code_target as productCode, ' +
@@ -272,9 +299,9 @@ function createRouter(db) {
           res.status(200).json(results);
         }
       })
-  })
-  ;
-// Gets a single accepted product (mainly used to check existence)
+  });
+
+  // Gets a single accepted product (mainly used to check existence)
   router.get('/get_product_accepted/:product_code', async (req, res, next) => {
     db.query('SELECT * FROM variousDatas' + suffix + ' ' +
       'INNER JOIN productInfos' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
@@ -288,7 +315,8 @@ function createRouter(db) {
         }
       })
   });
-// Gets a single accepted product (mainly used to check existence)
+
+  // Gets a single accepted product (mainly used to check existence)
   router.get('/get_product/:product_code', async (req, res, next) => {
     db.query('SELECT * FROM variousDatas' + suffix + ' ' +
       'INNER JOIN productInfos' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
@@ -302,6 +330,7 @@ function createRouter(db) {
         }
       })
   });
+
   router.get('/get_product_proposer_new_modify/:product_code', async (req, res, next) => {
     db.query('SELECT * FROM variousDatas' + suffix + ' ' +
       'INNER JOIN productInfos' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
@@ -315,6 +344,8 @@ function createRouter(db) {
         }
       })
   });
+
+  // Gets start and end dates for a product
   router.get('/get_dates/:product_code', async (req, res, next) => {
     db.query('SELECT * FROM variousDatas' + suffix + ' ' +
       'WHERE (status = "NEW" OR status = "IN_MODIFICATION") AND product_code = ' + req.params.product_code + '; ',
@@ -327,7 +358,8 @@ function createRouter(db) {
         }
       })
   });
-// Gets all alternatives of a product split in two categories : top alternatives and new alternatives (newest, less than 7 days)
+
+  // Gets all alternatives of a product split in two categories : top alternatives and new alternatives (newest, less than 7 days)
   router.get('/get_alternatives/:product_code', async (req, res, next) => {
     db.query('(SELECT * FROM ' +
       '(SELECT prod2.product_code, prod2.product_name, alt.for_votes, alt.against_votes, productInfos' + suffix + '.status FROM alternatives' + suffix + ' as alt ' +
@@ -354,9 +386,9 @@ function createRouter(db) {
           res.status(200).json(results);
         }
       })
-  })
-  ;
-// Gets votable product based on some inputs (displays data on search result in votes page)
+  });
+
+  // Gets votable product based on some inputs (displays data on search result in votes page)
   router.get('/votable_products/:inputType/:inputValue/:alphabetical_name/:date_order', async (req, res, next) => {
     let query = 'SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' ' +
       'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
@@ -391,9 +423,9 @@ function createRouter(db) {
         res.status(200).json(results);
       }
     })
-  })
-  ;
-// Gets all accepted product (displays it in search result in the Home page)
+  });
+
+  // Gets all accepted product (displays it in search result in the Home page)
   router.get('/accepted_products/', async (req, res, next) => {
     db.query('SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' ' +
       'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
@@ -410,9 +442,9 @@ function createRouter(db) {
           res.status(200).json(results);
         }
       })
-  })
-  ;
-// Gets accpeted product based on some inputs (displays data on search result in Home page)
+  });
+
+  // Gets accpeted product based on some inputs (displays data on search result in Home page)
   router.get('/accepted_products/:inputType/:inputValue/:alphabetical_name/:date_order', async (req, res, next) => {
     let query = 'SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' ' +
       'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
@@ -447,8 +479,9 @@ function createRouter(db) {
         res.status(200).json(results);
       }
     })
-  })
-  ; // Gets a particular product and its older versions (the 'accepted' one and 'modified' ones)
+  });
+
+  // Gets a particular product and its older versions (the 'accepted' one and 'modified' ones)
   router.get('/get_product_and_older_version/:product_code', async (req, res, next) => {
     db.query('SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' ' +
       'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
@@ -466,7 +499,8 @@ function createRouter(db) {
         }
       })
   });
-// Check if a particular product is already being modified (avoid conflict for modifying a product)
+
+  // Check if a particular product is already being modified (avoid conflict for modifying a product)
   router.get('/get_in_modification_status/:product_code', async (req, res, next) => {
     db.query('SELECT * FROM productInfos' + suffix + ' ' +
       'INNER JOIN variousDatas' + suffix + ' ON variousDatas' + suffix + '.id = productInfos' + suffix + '.id ' +
@@ -480,7 +514,8 @@ function createRouter(db) {
         }
       })
   });
-// Gets user data
+
+  // Gets user data
   router.get('/user/:user_address', async (req, res, next) => {
     db.query('SELECT * FROM Users' + suffix + ' ' + 'WHERE address = "' + req.params.user_address + '";',
       (error, results) => {
@@ -491,9 +526,9 @@ function createRouter(db) {
           res.status(200).json(results);
         }
       })
-  })
-  ;
-// Gets proposed product by the current user (displays it in the proposal page)
+  });
+
+  // Gets proposed product by the current user (displays it in the proposal page)
   router.get('/get_my_proposals/:user_address', async (req, res, next) => {
     db.query('SELECT *, UNIX_TIMESTAMP(start_date) as start_date_timestamp, UNIX_TIMESTAMP(end_date) as end_date_timestamp FROM productInfos' + suffix + ' ' +
       'INNER JOIN variousDatas' + suffix + ' ON productInfos' + suffix + '.id = variousDatas' + suffix + '.id ' +
@@ -510,8 +545,7 @@ function createRouter(db) {
           res.status(200).json(results);
         }
       })
-  })
-  ;
+  });
 
 ////////////////////////////////////////////////////// DELETE QUERIES ///////////////////////////////////////////////////////////////// /////////////////////////////////////////////////// ONLY FOR DEV PURPOSE //////////////////////////////////////////////////////////////
   router.delete('/delete_users' + suffix + '', async (req, res, next) => {

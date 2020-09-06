@@ -2,7 +2,7 @@
 Code needed to start the server related to the project
  */
 
-const { program } = require('commander');
+const {program} = require('commander');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -20,17 +20,17 @@ program.parse(process.argv);
 
 // Check all parameters needed to start server
 function checkParameters() {
-  if(!program.port) {
+  if (!program.port) {
     console.log('port missing !');
     process.exit(1);
   }
 
-  if(!program.database) {
+  if (!program.database) {
     console.log('database name missing !');
     process.exit(1);
   }
 
-  if(!program.user) {
+  if (!program.user) {
     console.log('user missing !');
     process.exit(1);
   }
@@ -39,8 +39,7 @@ function checkParameters() {
 checkParameters();
 
 
-
-if(!program.database.startsWith('eatHealthy')) {
+if (!program.database.startsWith('eatHealthy')) {
   console.log('Wrong database name !');
   process.exit(1);
 }
@@ -48,13 +47,13 @@ if(!program.database.startsWith('eatHealthy')) {
 
 // Starts the connection with mysql
 const connection = mysql.createConnection({
-    host : 'localhost',
+  host: 'localhost',
 
-    user : `${program.user}`,
+  user: `${program.user}`,
 
-    password:`${program.password}`,
+  password: `${program.password}`,
 
-    database : `${program.database}`
+  database: `${program.database}`
 
 });
 console.log(connection.config.database);
@@ -65,13 +64,13 @@ const port = process.env.PORT || `${program.port}`;
 
 const app = express()
 
-    .use(cors())
+  .use(cors())
 
-    .use(bodyParser.json())
+  .use(bodyParser.json())
 
-    .use(events(connection));
+  .use(events(connection));
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header("Access-Control-Allow-Methods", "POST, GET, PATCH, DELETE, OPTIONS");
@@ -79,7 +78,7 @@ app.use(function(req, res, next) {
 });
 
 app.listen(port, () => {
-    console.log(`Express server listening on port ${port}`);
+  console.log(`Express server listening on port ${port}`);
 });
 
 // Close server before exit

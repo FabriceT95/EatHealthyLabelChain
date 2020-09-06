@@ -17,12 +17,13 @@ export class UserSearchInputComponent implements OnInit {
   input = '';
   ProductsAccepted: { [productCode: number]: [Product?, Product[]?] } = {};
   AcceptedProductArray: [Product, Product[]][] = [];
-  private indexAcceptedProductArray = 0;
   subscriptionDate: Subscription;
   subscriptionAlphabet: Subscription;
   subscriptionTypeSelected: Subscription;
+  private indexAcceptedProductArray = 0;
 
   // ServerSCService to get database access, ProductService creating a product object
+
   // Set up event catchers (Date order, alphabetical order, input search type)
   constructor(private server_sc: ServerSCService, private product: ProductService) {
     this.subscriptionDate = this.server_sc.date_order_change_accepted
@@ -102,12 +103,12 @@ export class UserSearchInputComponent implements OnInit {
           that.ProductsAccepted[singleProduct.code] = [singleProduct, []];
         }
         if (uniqueSqlResult.status === 'ACCEPTED') {
-            that.ProductsAccepted[singleProduct.code][0] = singleProduct;
+          that.ProductsAccepted[singleProduct.code][0] = singleProduct;
         } else {
           that.ProductsAccepted[singleProduct.code][1].push(singleProduct);
         }
       }
-     for (const key in that.ProductsAccepted) {
+      for (const key in that.ProductsAccepted) {
         if (that.ProductsAccepted[key][0] !== null) {
           that.AcceptedProductArray[that.indexAcceptedProductArray] = [that.ProductsAccepted[key][0], []];
           if (that.ProductsAccepted[key][1][0] !== null) {

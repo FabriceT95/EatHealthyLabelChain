@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  serverIP : 'http://192.168.42.219',
+  serverIP: 'http://192.168.42.219',
   // Centos_MySQL Virtual Machine IP
   port: '8080',
   port_SC: '8090'

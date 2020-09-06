@@ -19,7 +19,7 @@
         </ng-template>
       </h2>
       <mat-divider></mat-divider>
-      <form (ngSubmit)="modifyProduct()" (change)="compareObjects()">
+      <form (change)="compareObjects()" (ngSubmit)="modifyProduct()">
         <div class="col-sm-4" style="word-break: break-all;">
           <div class="row" style="margin:5%">
             <ul style="list-style-type:none;">
@@ -57,7 +57,7 @@
               <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ product.againstVotes}}</strong></li>
             </ul>
           </div>
-          <img *ngIf="imageProduct" width="340px" height="200px" alt="" src="data:image/png;base64,{{imageProduct}}" />
+          <img *ngIf="imageProduct" alt="" height="200px" src="data:image/png;base64,{{imageProduct}}" width="340px"/>
           <div *ngIf="!isAlreadyBeingModified; else warning">
             <mat-checkbox (change)="activateFields()">
               CGU
@@ -97,20 +97,20 @@
               </div>
 
               <mat-form-field>
-                <mat-chip-list #chipList>
+                <mat-chip-list #chipList_labels aria-label="Fruit selection">
                   <mat-chip (removed)="remove(label,1)" *ngFor="let label of modifiedProduct.labels"
                             [removable]="!readOnly" [selectable]="selectable">
                     {{label}}
-<!--                    <span *ngFor="let realLabels of web3.realLabelizedProductArray[product.code]">-->
-<!--                      <span *ngIf="">-->
+<!--                                        <span *ngFor="let realLabels of web3.realLabelizedProductArray[product.code]">-->
+<!--                                          <span *ngIf="">-->
 
-<!--                      </span>-->
-<!--                    </span>-->
+<!--                                          </span>-->
+<!--                                        </span>-->
                     <mat-icon *ngIf="!readOnly" matChipRemove>cancel</mat-icon>
                   </mat-chip>
                   <input (matChipInputTokenEnd)="add($event,1)" *ngIf="!readOnly"
                          [matChipInputAddOnBlur]="addOnBlur"
-                         [matChipInputFor]="chipList"
+                         [matChipInputFor]="chipList_labels"
                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                          placeholder="Nouveaux labels...">
                 </mat-chip-list>
@@ -132,7 +132,7 @@
                 </mat-accordion>
               </div>
               <mat-form-field>
-                <mat-chip-list #chipList>
+                <mat-chip-list #chipList_additifs aria-label="Fruit selection">
                   <mat-chip (removed)="remove(additif,2)" *ngFor="let additif of modifiedProduct.additifs"
                             [removable]="!readOnly" [selectable]="selectable">
                     {{additif}}
@@ -140,7 +140,7 @@
                   </mat-chip>
                   <input (matChipInputTokenEnd)="add($event,2)" *ngIf="!readOnly"
                          [matChipInputAddOnBlur]="addOnBlur"
-                         [matChipInputFor]="chipList"
+                         [matChipInputFor]="chipList_additifs"
                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                          placeholder="Nouveaux additifs...">
                 </mat-chip-list>
@@ -164,7 +164,7 @@
                 </mat-accordion>
               </div>
               <mat-form-field>
-                <mat-chip-list #chipList aria-label="Fruit selection">
+                <mat-chip-list #chipList_ingredients aria-label="Fruit selection">
                   <mat-chip (removed)="remove(ingredient,3)" *ngFor="let ingredient of modifiedProduct.ingredients"
                             [removable]="!readOnly" [selectable]="selectable">
                     {{ingredient}}
@@ -172,7 +172,7 @@
                   </mat-chip>
                   <input (matChipInputTokenEnd)="add($event,3)" *ngIf="!readOnly"
                          [matChipInputAddOnBlur]="addOnBlur"
-                         [matChipInputFor]="chipList"
+                         [matChipInputFor]="chipList_ingredients"
                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                          placeholder="Nouveau Ingrédients...">
                 </mat-chip-list>
@@ -199,48 +199,56 @@
               </div>
               <mat-form-field>
                 <mat-label>Energie :</mat-label>
-                <input [(ngModel)]="modifiedProduct.nutriments.energy" [readonly]="readOnly" matInput type="number"
-                       name="energy">
+                <input [(ngModel)]="modifiedProduct.nutriments.energy" [readonly]="readOnly" matInput name="energy"
+                       type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Energie (en kcal) :</mat-label>
-                <input [(ngModel)]="modifiedProduct.nutriments.energy_kcal" [readonly]="readOnly" matInput type="number"
-                       name="energy_kcal">
+                <input [(ngModel)]="modifiedProduct.nutriments.energy_kcal" [readonly]="readOnly" matInput name="energy_kcal"
+                       type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Protéines :</mat-label>
-              <input [(ngModel)]="modifiedProduct.nutriments.proteines" [readonly]="readOnly" matInput type="number" step="0.1"
-                       name="proteines">
+                <input [(ngModel)]="modifiedProduct.nutriments.proteines" [readonly]="readOnly" matInput name="proteines"
+                       step="0.1"
+                       type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Glucides :</mat-label>
-                <input [(ngModel)]="modifiedProduct.nutriments.carbohydrates" [readonly]="readOnly" matInput type="number"
-                       name="glucides">
+                <input [(ngModel)]="modifiedProduct.nutriments.carbohydrates" [readonly]="readOnly" matInput
+                       name="glucides"
+                       type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Sel :</mat-label>
-                <input [(ngModel)]="modifiedProduct.nutriments.salt" [readonly]="readOnly" matInput name="sel" type="number">
+                <input [(ngModel)]="modifiedProduct.nutriments.salt" [readonly]="readOnly" matInput name="sel"
+                       type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Sucre :</mat-label>
-               <input [(ngModel)]="modifiedProduct.nutriments.sugar" [readonly]="readOnly" matInput name="sucre" type="number">
+                <input [(ngModel)]="modifiedProduct.nutriments.sugar" [readonly]="readOnly" matInput name="sucre"
+                       type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Graisses :</mat-label>
-                <input [(ngModel)]="modifiedProduct.nutriments.fat" [readonly]="readOnly" matInput name="graisses" type="number">
+                <input [(ngModel)]="modifiedProduct.nutriments.fat" [readonly]="readOnly" matInput name="graisses"
+                       type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Dont matières grasses :</mat-label>
-               <input [(ngModel)]="modifiedProduct.nutriments.saturated_fat" [readonly]="readOnly" matInput type="number"
-                       name="mat_grasse">
+                <input [(ngModel)]="modifiedProduct.nutriments.saturated_fat" [readonly]="readOnly" matInput
+                       name="mat_grasse"
+                       type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Fibre :</mat-label>
-             <input [(ngModel)]="modifiedProduct.nutriments.fiber" [readonly]="readOnly" matInput name="fibre" type="number">
+                <input [(ngModel)]="modifiedProduct.nutriments.fiber" [readonly]="readOnly" matInput name="fibre"
+                       type="number">
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Sodium :</mat-label>
-               <input [(ngModel)]="modifiedProduct.nutriments.sodium" [readonly]="readOnly" matInput name="sodium" type="number">
+                <input [(ngModel)]="modifiedProduct.nutriments.sodium" [readonly]="readOnly" matInput name="sodium"
+                       type="number">
               </mat-form-field>
             </div>
             <div class="col-sm-5">
@@ -262,8 +270,7 @@
               </div>
               <mat-form-field>
                 <mat-label>Type de produit :</mat-label>
-                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.generic_name" value="{{ product.generic_name }}">-->
-                <input [(ngModel)]="modifiedProduct.generic_name" [readonly]="readOnly" matInput name="generic_name">
+               <input [(ngModel)]="modifiedProduct.generic_name" [readonly]="readOnly" matInput name="generic_name">
               </mat-form-field>
 
               <div *ngIf="olderVersions.length > 0">
@@ -283,8 +290,7 @@
               </div>
               <mat-form-field>
                 <mat-label>Emballage :</mat-label>
-                <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.packaging" value="{{ product.packaging }}">-->
-                <input [(ngModel)]="modifiedProduct.packaging" [readonly]="readOnly" matInput name="packaging">
+               <input [(ngModel)]="modifiedProduct.packaging" [readonly]="readOnly" matInput name="packaging">
               </mat-form-field>
 
               <div *ngIf="olderVersions.length > 0">
@@ -306,7 +312,8 @@
               <mat-form-field>
                 <mat-label>Quantité :</mat-label>
                 <!--          <input [readonly]="readOnly" matInput [(ngModel)]="modifiedProduct.quantity" value="{{ product.quantity }}">-->
-                <input [(ngModel)]="modifiedProduct.quantity" [readonly]="readOnly" matInput name="quantity" type="number">
+                <input [(ngModel)]="modifiedProduct.quantity" [readonly]="readOnly" matInput name="quantity"
+                       type="number">
               </mat-form-field>
 
             </div>
@@ -370,7 +377,8 @@
                       <mat-icon style="vertical-align: middle">remove</mat-icon>
                     </button>
                     <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>
-                    <button (click)="voteAlternative(alternative.value.product_code_alternative,true, 'top')" [disabled]="alternative.value.opinion == 1"
+                    <button (click)="voteAlternative(alternative.value.product_code_alternative,true, 'top')"
+                            [disabled]="alternative.value.opinion == 1"
                             class="modal-product-details_alternativeForBtn" type="button">
                       <mat-icon style="vertical-align: middle">add</mat-icon>
                     </button>
@@ -397,7 +405,8 @@
                       <mat-icon style="vertical-align: middle">remove</mat-icon>
                     </button>
                     <span>{{ alternative.value.for_votes - alternative.value.against_votes }}</span>
-                    <button (click)="voteAlternative(alternative.value.product_code_alternative,true, 'fresh')" [disabled]="alternative.value.opinion == 1"
+                    <button (click)="voteAlternative(alternative.value.product_code_alternative,true, 'fresh')"
+                            [disabled]="alternative.value.opinion == 1"
                             class="modal-product-details_alternativeForBtn" type="button">
                       <mat-icon style="vertical-align: middle">add</mat-icon>
                     </button>

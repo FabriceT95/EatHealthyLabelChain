@@ -22,6 +22,7 @@ export class UserProposalItemComponent implements OnInit {
       this.getTimeLeft();
     }, 60000);
   }
+
   async getTimeLeft() {
     this.timeLeft = this.dhm(new Date(this.product.endDate).getTime() - Date.now());
     console.log('timeleft : ' + this.timeLeft);

@@ -70,6 +70,7 @@ export class ServerSCService {
   getMyProposals(event) {
     return this.request('GET', `${this.serverUrl}/get_my_proposals/${event.user_address}`, event);
   }
+
   getSingleProduct(event) {
     return this.request('GET', `${this.serverUrl}/get_product/${event.productCode}`, event);
   }

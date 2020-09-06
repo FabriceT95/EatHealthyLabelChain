@@ -110,26 +110,26 @@
           <input #additifs_inputText matInput placeholder="Eg : e310" type="text">
         </mat-form-field>
       </div>
-      <div *ngIf="!server_sc.isChecked" class="col-sm-6">
+      <div *ngIf="server_sc.serverUrl.endsWith(server_sc.port_SC)" class="col-sm-6">
         <h4>Upload Section</h4>
         <div id="fileSelector">
-          <input #csvInput hidden="true" type="file"  accept=".png"  ng2FileSelect [uploader]="uploader"/>
-<!--          <button mat-flat-button color="primary" type="button" (click)="csvInput.click()">Choose Spreadsheet File (CSV)</button>-->
+          <input #csvInput [uploader]="uploader" accept=".png" hidden="true" ng2FileSelect type="file"/>
+          <!--          <button mat-flat-button color="primary" type="button" (click)="csvInput.click()">Choose Spreadsheet File (CSV)</button>-->
         </div>
         <div>
-          <div class="row uploadList" *ngFor="let item of uploader.queue">
+          <div *ngFor="let item of uploader.queue" class="row uploadList">
             <div class="col-sm-4">{{item.file.name}}</div>
             <div class="col-sm-4">
               <div class="progress">
-                <div class="progress-bar bg-success" [ngStyle]="{'width':item.progress+'%'}">
+                <div [ngStyle]="{'width':item.progress+'%'}" class="progress-bar bg-success">
                 </div>
               </div>
             </div>
             <div class="col-sm-4">
-              <button type="button" class="btn btn-dark" (click)="item.upload()">Upload</button>
-              <button type="button" class="btn btn-danger" (click)="item.remove()">Cancel</button>
+              <button (click)="item.upload()" class="btn btn-dark" type="button">Upload</button>
+              <button (click)="item.remove()" class="btn btn-danger" type="button">Cancel</button>
             </div>
-            <img *ngIf="imageProduct" width="340px" height="200px" alt="" src="data:image/png;base64,{{imageProduct}}" />
+            <img *ngIf="imageProduct" alt="" height="200px" src="data:image/png;base64,{{imageProduct}}" width="340px"/>
           </div>
         </div>
 

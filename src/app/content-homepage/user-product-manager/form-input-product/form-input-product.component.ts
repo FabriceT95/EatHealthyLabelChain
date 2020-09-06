@@ -11,9 +11,6 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {FileUploader} from 'ng2-file-upload';
 
 
-
-
-
 @Component({
   selector: 'app-form-input-product',
   templateUrl: './form-input-product.component.html',
@@ -21,10 +18,12 @@ import {FileUploader} from 'ng2-file-upload';
 })
 export class FormInputProductComponent implements OnInit {
   codebarreProduct: number;
-  uploader: FileUploader = new FileUploader({url: this.server_sc.serverUrl + '/addfile',
+  uploader: FileUploader = new FileUploader({
+    url: this.server_sc.serverUrl + '/addfile',
     headers: [
-      {name : 'Access-Control-Allow-Methods', value: 'POST, GET, PATCH, DELETE, OPTIONS'},
-      {name: 'Access-Control-Allow-Origin' , value:  this.server_sc.serverUrl}]});
+      {name: 'Access-Control-Allow-Methods', value: 'POST, GET, PATCH, DELETE, OPTIONS'},
+      {name: 'Access-Control-Allow-Origin', value: this.server_sc.serverUrl}]
+  });
   attachmentList: any = {};
   imageProduct: string;
 
@@ -64,16 +63,16 @@ export class FormInputProductComponent implements OnInit {
   }
 
   testUpload(fileInputEvent: any) {
-  /*  this.selectedFile = <File>fileInputEvent.target.files[0];
-   const fd = new FormData();
-   fd.append('image', this.selectedFile, this.selectedFile.name);
-   this.http.post(`${this.server_sc.serverUrl}/addfile/${fd}/`, fd)
-     .subscribe(res => { console.log(res); });
-*/
+    /*  this.selectedFile = <File>fileInputEvent.target.files[0];
+     const fd = new FormData();
+     fd.append('image', this.selectedFile, this.selectedFile.name);
+     this.http.post(`${this.server_sc.serverUrl}/addfile/${fd}/`, fd)
+       .subscribe(res => { console.log(res); });
+  */
   }
 
   async addProduct(productName, proteines, glucide, salt, sugars, energy, energy_kcal, fiber,
-                             fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels, additifs) {
+                   fat, saturated_fat, sodium, ingredients, quantity, typeOfProduct, packaging, labels, additifs) {
     const newProduct = new Product(
       '',
       this.codebarreProduct,
@@ -141,13 +140,13 @@ export class FormInputProductComponent implements OnInit {
       newProduct.IPFS_hash = hash_ipfs;
       this.web3.contract.methods.addProductToProposal(
         newProduct.code,
+        newProduct.quantity,
         newProduct.labels,
         newProduct.ingredients,
         newProduct.additifs,
         newProduct.nutriments,
         newProduct.product_name,
         newProduct.generic_name,
-        newProduct.quantity,
         newProduct.packaging,
         newProduct.IPFS_hash
       )
@@ -176,9 +175,9 @@ export class FormInputProductComponent implements OnInit {
           that.onNoClick();
           alert('Le produit suivant a été placé dans la liste d\'attente : ' + newProduct.code + ' - ' + newProduct.product_name);
         })
-      .on('error', function(error, receipt) {
-        alert('Erreur lors de l\'ajout de votre produit : ' + error.message + ' \n Merci de bien vouloir ré-essayer plus tard.');
-      });
+        .on('error', function (error, receipt) {
+          alert('Erreur lors de l\'ajout de votre produit : ' + error.message + ' \n Merci de bien vouloir ré-essayer plus tard.');
+        });
     }
   }
 

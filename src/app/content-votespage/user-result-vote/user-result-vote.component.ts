@@ -37,10 +37,10 @@ export class UserResultVoteComponent implements OnInit {
         this.ProductsVoting = ProductVoteSearch;
       });
 
-    this.server_sc.changeDataSource.subscribe( () => {
+    this.server_sc.changeDataSource.subscribe(() => {
       this.ProductsVoting = [];
       this.getAllVotingProducts();
-    })
+    });
 
   }
 

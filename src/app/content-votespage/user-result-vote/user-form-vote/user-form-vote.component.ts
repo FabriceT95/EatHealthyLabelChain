@@ -16,6 +16,7 @@ export class UserFormVoteComponent implements OnInit {
   public isProductProposer: boolean;
   public alreadyVoted: boolean;
   public isDateVotable: boolean;
+  public imageProduct: any;
   private voter: any;
 
   constructor(private web3: Web3Service,
@@ -28,47 +29,52 @@ export class UserFormVoteComponent implements OnInit {
 
   ngOnInit() {
     this.voter = this.web3.accounts[0];
-    this.server_sc.changeDataSource.subscribe(() => {
-     if (this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
-       const getVoterForProduct_object = {
-         user_address: this.web3.accounts[0],
-         productCode : this.productVote.code
-       };
-       this.server_sc.get_voter_for_product(getVoterForProduct_object).then((result_1: any) => {
-         this.alreadyVoted = result_1.length === 1;
-         if (this.alreadyVoted === false) {
-           this.server_sc.get_product_proposer_new_modify(getVoterForProduct_object).then((result_2: any) => {
-             this.isProductProposer = result_2.length === 1;
-             if (this.isProductProposer) {
-               const uniqueSqlResult_2 = result_2[0] as any;
-               this.isDateVotable = uniqueSqlResult_2.end_date > Date.now() / 1000;
-             } else {
-               this.server_sc.get_dates_new_modify(getVoterForProduct_object).then((result_3: any) => {
-                 const uniqueSqlResult_3 = result_3[0] as any;
-                 this.isDateVotable = uniqueSqlResult_3.end_date > Date.now() / 1000;
-               });
-             }
-           });
-         }
-       });
+    console.log(this.productVote);
+    if (this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+      const getVoterForProduct_object = {
+        user_address: this.web3.accounts[0],
+        productCode: this.productVote.code
+      };
+      this.server_sc.get_voter_for_product(getVoterForProduct_object).then((result_1: any) => {
+        this.alreadyVoted = result_1.length === 1;
+        if (this.alreadyVoted === false) {
+          this.server_sc.get_product_proposer_new_modify(getVoterForProduct_object).then((result_2: any) => {
+            this.isProductProposer = result_2.length === 1;
+            if (this.isProductProposer) {
+              const uniqueSqlResult_2 = result_2[0] as any;
+              this.isDateVotable = uniqueSqlResult_2.end_date > (Date.now() / 1000);
+            } else {
+              this.server_sc.get_dates_new_modify(getVoterForProduct_object).then((result_3: any) => {
+                const uniqueSqlResult_3 = result_3[0] as any;
+                this.isDateVotable = uniqueSqlResult_3.end_date > (Date.now() / 1000);
+              });
+            }
+          });
+        }
+      });
 
-      } else if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
-       this.web3.contract.methods.isAlreadyVotedByCurrentUser(this.productVote.code).call({from: this.web3.accounts[0]})
-         .then((result) => {
-           this.alreadyVoted = result;
-           if (this.alreadyVoted === false) {
-             this.web3.contract.methods.isProductProposer(this.productVote.code).call({from: this.web3.accounts[0]})
-               .then((result_) => {
-                 this.isProductProposer = result_;
-               });
-           }
-         });
-       this.web3.contract.methods.getDates(this.productVote.code).call()
-         .then((dates) => {
-           this.isDateVotable = dates[1] > dates[0];
-         });
-     }
-    });
+    } else if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+      this.server_sc.getFile({hash_code: this.productVote.IPFS_hash}).then((result: {}) => {
+        console.log(result['content']['data']);
+        this.imageProduct = this.toBase64(result['content']['data']);
+      });
+      console.log('coucou');
+      this.web3.contract.methods.isAlreadyVotedByCurrentUser(this.productVote.code).call({from: this.web3.accounts[0]})
+        .then((result) => {
+          this.alreadyVoted = result;
+          if (this.alreadyVoted === false) {
+            this.web3.contract.methods.isProductProposer(this.productVote.code).call({from: this.web3.accounts[0]})
+              .then((result_) => {
+                this.isProductProposer = result_;
+              });
+          }
+        });
+      this.web3.contract.methods.getDates(this.productVote.code).call()
+        .then((dates) => {
+          this.isDateVotable = dates[1] > (Date.now() / 1000);
+          console.log(this.isDateVotable);
+        });
+    }
 
   }
 
@@ -76,11 +82,17 @@ export class UserFormVoteComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  toBase64(arr) {
+    return btoa(
+      arr.reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
+  }
+
   voting(opinion) {
     const that = this;
     console.log('Mon vote : ' + opinion);
     console.log('Le produit pour lequel je vote : ' + this.productVote.code);
-    if ( this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+    if (this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
       that.web3.newVote.emit();
       that.addVote(opinion);
     } else if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {

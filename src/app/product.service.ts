@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Product} from './shared/product.model';
 
 @Injectable({
@@ -6,7 +6,8 @@ import {Product} from './shared/product.model';
 })
 export class ProductService {
 
-  constructor() { }
+  constructor() {
+  }
 
   createProduct(element) {
     return new Product(
@@ -43,7 +44,7 @@ export class ProductService {
       element.nutriments_hash,
       element.variousDatas_hash,
       element.lastVerificationDate,
-      element.IPFS_hash
+      element.ipfs_hash
     );
   }
 }

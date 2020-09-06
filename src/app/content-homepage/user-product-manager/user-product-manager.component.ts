@@ -63,17 +63,17 @@ export class UserProductManagerComponent implements OnInit {
           this.displayButtons(isNewProduct);
         } else if (this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
           const object = {productCode: barcodeValue};
-         this.server_sc.getSingleProduct(object).then((result: []) => {
-           const uniqueSqlResult = result[-1] as any;
-           if (result.length > 0 && uniqueSqlResult.status === 'ACCEPTED') {
-             this.displayButtons(false);
-           } else if (result.length === 0) {
-             this.displayButtons(true);
-           } else {
-             this.alreadyInVoteMessage = 'Ce produit est en cours de vote : pas de modification, ni d\'ajout possible !'
-           }
-         });
-       //   this.displayButtons(isNewProduct);
+          this.server_sc.getSingleProduct(object).then((result: []) => {
+            const uniqueSqlResult = result[-1] as any;
+            if (result.length > 0 && uniqueSqlResult.status === 'ACCEPTED') {
+              this.displayButtons(false);
+            } else if (result.length === 0) {
+              this.displayButtons(true);
+            } else {
+              this.alreadyInVoteMessage = 'Ce produit est en cours de vote : pas de modification, ni d\'ajout possible !';
+            }
+          });
+          //   this.displayButtons(isNewProduct);
         }
       } else {
         this.div_inputAddProductRef.nativeElement.style.display = 'none';

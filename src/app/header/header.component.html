@@ -1,11 +1,11 @@
 <mat-toolbar class="header">
   <mat-toolbar-row>
-    <img style=" height:100%;" src="/assets/img/logo_brand_4.png" >
-<!--    <h1 class="header__title">Eat Healthy LabelChain</h1>-->
-    <div style="margin:auto" class="header__router">
-      <a routerLink="/homepage" mat-button> Accueil </a>
-      <a routerLink="/votepage" mat-button> Articles en cours de vote </a>
-      <a routerLink="/myProposals" mat-button> Mes propositions en cours de vote </a>
+    <img src="/assets/img/logo_brand_4.png" style=" height:100%;">
+    <!--    <h1 class="header__title">Eat Healthy LabelChain</h1>-->
+    <div class="header__router" style="margin:auto">
+      <a mat-button routerLink="/homepage"> Accueil </a>
+      <a mat-button routerLink="/votepage"> Articles en cours de vote </a>
+      <a mat-button routerLink="/myProposals"> Mes propositions en cours de vote </a>
 
 
       <mat-slide-toggle #toggleDataSource (change)="onChangeDataSource(toggleDataSource)">

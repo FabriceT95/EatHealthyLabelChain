@@ -35,13 +35,13 @@ export class UserSearchFilterComponent implements OnInit {
 
   // Emit events on input change
   TriggerTypeSelected() {
-     this.server_sc.typeSelected_change_accepted.emit(this.typeSelected);
+    this.server_sc.typeSelected_change_accepted.emit(this.typeSelected);
   }
 
   // Emit events on input change
   TriggerDateOrder() {
-     this.server_sc.date_order_change_accepted.emit(!this.currentDateOrder);
-     this.currentDateOrder = !this.currentDateOrder;
+    this.server_sc.date_order_change_accepted.emit(!this.currentDateOrder);
+    this.currentDateOrder = !this.currentDateOrder;
   }
 
   // Emit events on input change

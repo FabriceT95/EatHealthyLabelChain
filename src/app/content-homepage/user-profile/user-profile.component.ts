@@ -13,7 +13,7 @@ export class UserProfileComponent implements OnInit {
   walletAddress: any;
   reputationPoints: number = null;
   remainingVotes: number = null;
- // singleRequest = false;
+  // singleRequest = false;
   errorUserProfile = '';
 
   //  Web3Service for accessing the contract, ServerSCService to get database access
@@ -31,9 +31,9 @@ export class UserProfileComponent implements OnInit {
             that.setUser(user_description.user_address, param);
           });
         });
-     /*   .on('error', function (error, receipt) {
-          alert('Erreur de la plateforme : ' + error.message);
-        });*/
+      /*   .on('error', function (error, receipt) {
+           alert('Erreur de la plateforme : ' + error.message);
+         });*/
     } else if (this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
       that.server_sc.addUser(user_description).then(() => {
         alert('Vous êtes bien inscrit à la plateforme ! ');
@@ -49,22 +49,22 @@ export class UserProfileComponent implements OnInit {
       try {
         this.web3.contract.methods.addressToUser(address).call().then(async (existing) => {
           if (existing.isExist === false && !this.web3.isBeingModified) {
-           // this.singleRequest = true;
+            // this.singleRequest = true;
             this.web3.isBeingModified = true;
             await this.subscribeUser(user_description, 'sc');
           } else {
-           // this.singleRequest = true;
+            // this.singleRequest = true;
             this.web3.isBeingModified = true;
             this.server_sc.getUser(user_description).then(async (result: []) => {
               const uniqueSqlResult = result as any;
               if (uniqueSqlResult.length === 1) {
                 this.reputationPoints = uniqueSqlResult[0].reputation;
                 this.remainingVotes = uniqueSqlResult[0].token_number;
-            //    this.singleRequest = true;
+                //    this.singleRequest = true;
                 this.web3.isBeingModified = true;
               } else {
                 this.errorUserProfile = 'Vous n\'êtes pas inscrit(e) !';
-            //    this.singleRequest = false;
+                //    this.singleRequest = false;
                 this.web3.isBeingModified = false;
               }
             });
@@ -74,23 +74,23 @@ export class UserProfileComponent implements OnInit {
         this.errorUserProfile = 'Erreur de la plateforme, ré-essayez ulterieurement ';
       }
     } else if (this.server_sc.serverUrl.endsWith(this.server_sc.port) && param === 'db') {
-    //  this.singleRequest = true;
+      //  this.singleRequest = true;
       this.web3.isBeingModified = true;
-        this.server_sc.getUser(user_description).then(async (result: []) => {
-          const uniqueSqlResult = result as any;
-          if (uniqueSqlResult.length === 1) {
-            this.reputationPoints = uniqueSqlResult[0].reputation;
-            this.remainingVotes = uniqueSqlResult[0].token_number;
-         //   this.singleRequest = false;
-            this.web3.isBeingModified = false;
-          } else {
-            this.subscribeUser(user_description, param);
-            // this.errorUserProfile = 'Vous n\'êtes pas inscrit(e) !';
-         //   this.singleRequest = true;
-            this.web3.isBeingModified = true;
-          }
-        });
-  //    }
+      this.server_sc.getUser(user_description).then(async (result: []) => {
+        const uniqueSqlResult = result as any;
+        if (uniqueSqlResult.length === 1) {
+          this.reputationPoints = uniqueSqlResult[0].reputation;
+          this.remainingVotes = uniqueSqlResult[0].token_number;
+          //   this.singleRequest = false;
+          this.web3.isBeingModified = false;
+        } else {
+          this.subscribeUser(user_description, param);
+          // this.errorUserProfile = 'Vous n\'êtes pas inscrit(e) !';
+          //   this.singleRequest = true;
+          this.web3.isBeingModified = true;
+        }
+      });
+      //    }
     }
   }
 
@@ -103,7 +103,7 @@ export class UserProfileComponent implements OnInit {
     }, 500);
     setTimeout(() => {
       this.web3.accountChanged.subscribe(
-         (account: any) => {
+        (account: any) => {
           try {
             this.walletAddress = account[0];
             this.setUser(this.walletAddress, 'sc');
@@ -112,7 +112,7 @@ export class UserProfileComponent implements OnInit {
           }
         });
       this.server_sc.changeDataSource.subscribe(
-         () => {
+        () => {
           try {
             this.setUser(this.walletAddress, 'db');
           } catch (Error) {

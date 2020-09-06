@@ -11,30 +11,30 @@
 }
 
 .modal-product-details_alternativeForBtn {
-  color:#e00034;
+  color: #e00034;
   vertical-align: middle;
   border: none;
-  background-color : transparent;
+  background-color: transparent;
 }
 
 .modal-product-details_alternativeAgainstBtn {
-  color:#36b7cd;
+  color: #36b7cd;
   vertical-align: middle;
   border: none;
-  background-color : transparent;
+  background-color: transparent;
 }
 
 .modal-product-details_alternativeCancel {
   vertical-align: middle;
   border: none;
-  background-color : transparent;
+  background-color: transparent;
 
 }
 
 .modal-product-details_alternativeAgainstBtn:hover {
   transition: transform 0.2s ease-in-out;
   transform: scale(1.2) !important;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .modal-product-details_alternativeForBtn:hover {
@@ -44,6 +44,6 @@
 }
 
 button:focus {
-  outline : none;
+  outline: none;
   outline-offset: 0;
 }
