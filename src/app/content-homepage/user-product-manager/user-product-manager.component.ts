@@ -20,6 +20,8 @@ export class UserProductManagerComponent implements OnInit {
   @ViewChild('div_inputUpdateProduct', {static: false}) div_inputUpdateProductRef: ElementRef;
   // Barcode needed in input
   barcode: string;
+  alreadyInVoteMessage: string;
+
   // Managing one or multiple product from Database
   private AcceptedProductArray: [Product, Product[]][] = [];
 
@@ -52,15 +54,25 @@ export class UserProductManagerComponent implements OnInit {
 
   // Check if product is totaly new (only in Smart Contract side)
   async checkStatusProduct(input_product_code) {
+    this.alreadyInVoteMessage = '';
     const barcodeValue = input_product_code.value.trim();
     try {
       if (Number(barcodeValue) && barcodeValue.length === 13) {
-        if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+        if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
           const isNewProduct = await this.web3.contract.methods.checkProductIsNew(barcodeValue).call();
           this.displayButtons(isNewProduct);
-        } else if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
-
-       //   const isNewProduct =
+        } else if (this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+          const object = {productCode: barcodeValue};
+         this.server_sc.getSingleProduct(object).then((result: []) => {
+           const uniqueSqlResult = result[-1] as any;
+           if (result.length > 0 && uniqueSqlResult.status === 'ACCEPTED') {
+             this.displayButtons(false);
+           } else if (result.length === 0) {
+             this.displayButtons(true);
+           } else {
+             this.alreadyInVoteMessage = 'Ce produit est en cours de vote : pas de modification, ni d\'ajout possible !'
+           }
+         });
        //   this.displayButtons(isNewProduct);
         }
       } else {
@@ -68,7 +80,7 @@ export class UserProductManagerComponent implements OnInit {
         this.div_inputUpdateProductRef.nativeElement.style.display = 'none';
       }
     } catch (Error) {
-      alert('Service inaccessible ');
+      alert('Service inaccessible :' + Error.message);
     }
   }
 

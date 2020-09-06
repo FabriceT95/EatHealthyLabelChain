@@ -13,6 +13,7 @@ import {FileUploader} from 'ng2-file-upload';
 
 
 
+
 @Component({
   selector: 'app-form-input-product',
   templateUrl: './form-input-product.component.html',
@@ -23,8 +24,9 @@ export class FormInputProductComponent implements OnInit {
   uploader: FileUploader = new FileUploader({url: this.server_sc.serverUrl + '/addfile',
     headers: [
       {name : 'Access-Control-Allow-Methods', value: 'POST, GET, PATCH, DELETE, OPTIONS'},
-      {name: 'Access-Control-Allow-Origin' , value: 'http://192.168.42.219:8090'}]});
+      {name: 'Access-Control-Allow-Origin' , value:  this.server_sc.serverUrl}]});
   attachmentList: any = {};
+  imageProduct: string;
 
   constructor(
     private web3: Web3Service,
@@ -37,11 +39,21 @@ export class FormInputProductComponent implements OnInit {
     this.codebarreProduct = data.codebarreValue;
     this.uploader.onCompleteItem = (item: any, response: any, status: any, header: any) => {
       this.attachmentList = JSON.parse(response);
-      console.log(this.attachmentList);
+      console.log(this.attachmentList.file[0].hash);
+      this.server_sc.getFile({hash_code: this.attachmentList.file[0].hash}).then((result: {}) => {
+        console.log(result['content']['data']);
+        this.imageProduct = this.toBase64(result['content']['data']);
+      });
     };
     this.uploader.onAfterAddingFile = (file) => {
       file.withCredentials = false;
     };
+  }
+
+  toBase64(arr) {
+    return btoa(
+      arr.reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
   }
 
   ngOnInit() {
@@ -91,7 +103,7 @@ export class FormInputProductComponent implements OnInit {
       null
     );
     // Si Mysql Server is ON
-    if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+    if (this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
       const labels_hash = keccak('keccak256').update(newProduct.labels).digest().toString('hex');
       const ingredients_hash = keccak('keccak256').update(newProduct.ingredients).digest().toString('hex');
       const additives_hash = keccak('keccak256').update(newProduct.additifs).digest().toString('hex');
@@ -119,14 +131,14 @@ export class FormInputProductComponent implements OnInit {
           [Date.now() / 1000, Date.now() / 1000 + 300]
         );
       }, 500);
-    } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
-      const hash_ipfs = this.attachmentList[0].hashIPFS;
-      if (!hash_ipfs) {
+    } else if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+      const that = this;
+      const hash_ipfs = this.attachmentList.file[0].hash;
+      if (!hash_ipfs.startsWith('Qm')) {
         alert('Veuillez insérer une image des composants de votre produit');
         return;
       }
       newProduct.IPFS_hash = hash_ipfs;
-      const that = this;
       this.web3.contract.methods.addProductToProposal(
         newProduct.code,
         newProduct.labels,

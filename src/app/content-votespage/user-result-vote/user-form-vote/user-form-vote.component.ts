@@ -29,7 +29,7 @@ export class UserFormVoteComponent implements OnInit {
   ngOnInit() {
     this.voter = this.web3.accounts[0];
     this.server_sc.changeDataSource.subscribe(() => {
-     if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+     if (this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
        const getVoterForProduct_object = {
          user_address: this.web3.accounts[0],
          productCode : this.productVote.code
@@ -52,7 +52,7 @@ export class UserFormVoteComponent implements OnInit {
          }
        });
 
-      } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+      } else if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
        this.web3.contract.methods.isAlreadyVotedByCurrentUser(this.productVote.code).call({from: this.web3.accounts[0]})
          .then((result) => {
            this.alreadyVoted = result;
@@ -80,10 +80,10 @@ export class UserFormVoteComponent implements OnInit {
     const that = this;
     console.log('Mon vote : ' + opinion);
     console.log('Le produit pour lequel je vote : ' + this.productVote.code);
-    if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+    if ( this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
       that.web3.newVote.emit();
       that.addVote(opinion);
-    } else if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+    } else if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
       this.web3.contract.methods.vote(opinion, this.productVote.code).send({from: this.web3.accounts[0]})
         .on('receipt', (receipt) => {
           that.web3.newVote.emit();

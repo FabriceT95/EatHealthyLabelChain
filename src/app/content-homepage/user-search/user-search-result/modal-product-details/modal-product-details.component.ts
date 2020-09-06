@@ -26,7 +26,7 @@ export class ModalProductDetailsComponent implements OnInit {
   public product: Product;
   public modifiedProduct: Product;
   public olderVersions: Product[];
-  public productImage;
+  public imageProduct: any;
   public alternatives: { [productCode: number]: Alternative } = {};
   public topAlternatives: { [productCode: number]: Alternative } = {};
   public freshAlternatives: { [productCode: number]: Alternative } = {};
@@ -70,17 +70,21 @@ export class ModalProductDetailsComponent implements OnInit {
     if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
       const lastVerifDate = new Date(this.product.lastVerification);
       this.verifiedProduct = new Date(lastVerifDate.setDate(lastVerifDate.getDate() + 7)).getTime() > Date.now();
+      this.server_sc.getFile({file: this.product.IPFS_hash}).then((result: {}) => {
+        this.imageProduct = this.toBase64(result['content']['data']);
+      });
     } else {
       this.verifiedProduct = true;
     }
     this.getAlternatives();
     this.checkAlreadyBeingModified();
-    this.server_sc.getFile({file: this.product.IPFS_hash}).then((result: {}) => {
-      console.log(result);
-      // this.productImage = btoa(result['file']['content']['data']);
-    });
 
+  }
 
+  toBase64(arr) {
+    return btoa(
+      arr.reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
   }
   // Closes dialog
   onNoClick(): void {
@@ -348,7 +352,7 @@ export class ModalProductDetailsComponent implements OnInit {
   }
 
   // Sends product modified by user into the contract and DB then it will be voted by users
-  async modifyProduct() {
+  modifyProduct() {
     this.checkAlreadyBeingModified();
     if (this.isAlreadyBeingModified === false) {
       const that = this;
@@ -356,7 +360,7 @@ export class ModalProductDetailsComponent implements OnInit {
       this.modifiedProduct.nutriments = JSON.parse(json, (key, val) => (
         typeof val !== 'object' && val !== null ? String(val) : val
       ));
-      if (!this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
+      if (this.server_sc.serverUrl.endsWith(this.server_sc.port)) {
         try {
           const labels_hash = keccak('keccak256').update(this.modifiedProduct.labels).digest().toString('hex');
           const ingredients_hash = keccak('keccak256').update(this.modifiedProduct.ingredients).digest().toString('hex');
@@ -381,7 +385,8 @@ export class ModalProductDetailsComponent implements OnInit {
             this.modifiedProduct.product_name,
             this.modifiedProduct.generic_name,
             this.modifiedProduct.quantity,
-            this.modifiedProduct.packaging);
+            this.modifiedProduct.packaging,
+            '');
           setTimeout(() => {
             this.addHashes(
               all_hash,
@@ -392,7 +397,7 @@ export class ModalProductDetailsComponent implements OnInit {
         } catch (error) {
           alert('Erreur lors de la modification du produit : ' + error.message + ' \n Merci de bien vouloir ré-essayer plus tard.');
         }
-      } else if (this.server_sc.isChecked && this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
+      } else if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
         this.web3.contract.methods.addProductToProposal(
           this.modifiedProduct.code,
           this.modifiedProduct.labels,
@@ -402,7 +407,8 @@ export class ModalProductDetailsComponent implements OnInit {
           this.modifiedProduct.product_name,
           this.modifiedProduct.generic_name,
           this.modifiedProduct.quantity,
-          this.modifiedProduct.packaging
+          this.modifiedProduct.packaging,
+          this.modifiedProduct.IPFS_hash
         )
           .send({from: this.web3.accounts[0]})
           .on('receipt', function (receipt) {
@@ -416,7 +422,8 @@ export class ModalProductDetailsComponent implements OnInit {
               that.modifiedProduct.product_name,
               that.modifiedProduct.generic_name,
               that.modifiedProduct.quantity,
-              that.modifiedProduct.packaging
+              that.modifiedProduct.packaging,
+              that.modifiedProduct.IPFS_hash
             );
             setTimeout(() => {
               that.addHashes(
@@ -441,14 +448,15 @@ export class ModalProductDetailsComponent implements OnInit {
   }
 
   // Sends data and hash of these data to DB
-  addVariousDatas(variousData_hash, productCode, product_name, product_type, quantity, packaging) {
+  addVariousDatas(variousData_hash, productCode, product_name, product_type, quantity, packaging, IPFS_hash) {
     const insertVariousDatas = {
       variousData_hash: variousData_hash,
       productCode: productCode,
       product_name: product_name,
       product_type: product_type,
       quantity: quantity,
-      packaging: packaging
+      packaging: packaging,
+      IPFS_hash: IPFS_hash
     };
     this.server_sc.addVariousDatas(insertVariousDatas).then((result) => {
       console.log('Les infos diverses et leur hash ont bien été ajouté à la BDD : ', result);

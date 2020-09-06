@@ -57,6 +57,7 @@
               <li><span>Nombre de votes "Contre" actuel : </span><strong>{{ product.againstVotes}}</strong></li>
             </ul>
           </div>
+          <img *ngIf="imageProduct" width="340px" height="200px" alt="" src="data:image/png;base64,{{imageProduct}}" />
           <div *ngIf="!isAlreadyBeingModified; else warning">
             <mat-checkbox (change)="activateFields()">
               CGU

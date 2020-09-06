@@ -36,7 +36,6 @@ export class ProductService {
       element.alreadyVoted,
       element.start_date,
       element.end_date,
-      element.status,
       element.all_hash,
       element.labels_hash,
       element.ingredients_hash,

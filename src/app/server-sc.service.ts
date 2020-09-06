@@ -27,9 +27,6 @@ export class ServerSCService {
   constructor(private http: HttpClient) {
   }
 
-  addFile(event, headers) {
-    return this.request('POST', `${this.serverUrl}/addfile/${event.file}/`, event, headers);
-  }
   getFile(event) {
     return this.request('GET', `${this.serverUrl}/getfile/${event.hash_code}/`, event);
   }
@@ -72,6 +69,9 @@ export class ServerSCService {
 
   getMyProposals(event) {
     return this.request('GET', `${this.serverUrl}/get_my_proposals/${event.user_address}`, event);
+  }
+  getSingleProduct(event) {
+    return this.request('GET', `${this.serverUrl}/get_product/${event.productCode}`, event);
   }
 
   getAllVotingProducts() {

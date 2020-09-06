@@ -21,5 +21,9 @@
         </button>
       </div>
     </div>
+
+    <div *ngIf="alreadyInVoteMessage" class="row" style="padding-top:2%; text-align: center; margin:auto">
+     {{alreadyInVoteMessage}}
+    </div>
   </mat-card-content>
 </mat-card>

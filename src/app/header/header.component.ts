@@ -23,9 +23,9 @@ export class HeaderComponent implements OnInit {
 
   onChangeDataSource(SourceData) {
     console.log('Source data : ' + SourceData._checked);
-    this.server_sc.isChecked = !SourceData._checked;
-    this.server.isChecked = SourceData._checked;
-    this.server_sc.serverUrl = environment.serverIP + ':' + (this.server_sc.isChecked ? this.server_sc.port_SC : this.server_sc.port);
+    this.server_sc.isChecked = SourceData._checked;
+    this.server_sc.serverUrl = environment.serverIP + ':' + (this.server_sc.isChecked ? this.server_sc.port : this.server_sc.port_SC);
+    console.log(this.server_sc.serverUrl);
     this.server_sc.changeDataSource.emit();
   }
 }

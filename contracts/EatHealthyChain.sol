@@ -336,7 +336,7 @@ contract EatHealthyChain {
       bytes32 ingredients_hash =  keccak256(abi.encode(_ingredients));
       bytes32 additives_hash =  keccak256(abi.encode(_additives));
       bytes32 nutriments_hash =  keccak256(abi.encode(_nutriments));
-      bytes32 variousDatas_hash = keccak256(abi.encodePacked(_productCode, _productName, _typeOfProduct, _quantity, _packaging, _hash_ipfs));
+      bytes32 variousDatas_hash = keccak256(abi.encodePacked(_productCode, _productName, _typeOfProduct, _quantity, _packaging, _hash_ipfscheckProductIsNew));
 
       return [keccak256(abi.encodePacked(labels_hash, ingredients_hash, additives_hash, nutriments_hash, variousDatas_hash)),
       labels_hash,

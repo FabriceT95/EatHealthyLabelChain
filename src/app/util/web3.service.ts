@@ -28,7 +28,6 @@ export class Web3Service {
   networkId: any;
   deployedNetwork: any;
   contract: any;
-  role: any;
   isBeingModified = false;
 
   constructor(@Inject(WEB3) public web3: Web3) {
