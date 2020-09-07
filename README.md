@@ -1,13 +1,9 @@
 # Projet Alyra : EatHealthy Chain
 The purpose of this project is to validate the Alyra cursus "Développeur Blockchain";
-Basée sur la technologie blockchain, ce projet est une application web permettant 
-à quiconque possédant un porte-monnaie Metamask de renseigner des informations
-sur un produit alimentaire. En d'autres termes, n'importe quel utilisateur peut ajouter,
-modifier ou simplement s'informer sur les caractéristiques de produits sans avoir à
-douter de leur véracité.
-Cette application décentralisée est gouvernée par sa communauté : à travers la gestion des produits
-ainsi que part le système de vote proposé, la communauté décide elle-même de la fiabilité qu'un
-proposeur de produit saisit.
+Based on the Blockchain technology, this project is a web app allowing Metamask wallet owner to fill in information about food products.
+In other words, any user can add, modify or simply inquire about product characteristics without having to doubt their veracity.
+This DApp  is governed by its community throught product management and by the voting system. 
+The community itself decides on the reliability of a product proposed by a user.
 
 
 ## Installation
