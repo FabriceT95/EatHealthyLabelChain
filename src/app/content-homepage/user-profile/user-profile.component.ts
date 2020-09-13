@@ -48,6 +48,7 @@ export class UserProfileComponent implements OnInit {
     if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC) && param === 'sc') {
       try {
         this.web3.contract.methods.addressToUser(address).call().then(async (existing) => {
+          console.log('hi  :' + existing.isExist);
           if (existing.isExist === false && !this.web3.isBeingModified) {
             // this.singleRequest = true;
             this.web3.isBeingModified = true;

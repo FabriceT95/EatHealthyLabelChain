@@ -136,7 +136,7 @@ export class ServerSCService {
   }
 
   UpdateVote(event) {
-    return this.request('PUT', `${this.serverUrl}/new_vote/${event.productCode}`, event);
+    return this.request('PUT', `${this.serverUrl}/new_vote/${event.productCode}/${event.opinion}`, event);
   }
 
   UpdateVoteAlternative(event) {

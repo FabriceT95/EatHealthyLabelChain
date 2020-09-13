@@ -404,13 +404,13 @@ export class ModalProductDetailsComponent implements OnInit {
       } else if (this.server_sc.serverUrl.endsWith(this.server_sc.port_SC)) {
         this.web3.contract.methods.addProductToProposal(
           this.modifiedProduct.code,
+          this.modifiedProduct.quantity,
           this.modifiedProduct.labels,
           this.modifiedProduct.ingredients,
           this.modifiedProduct.additifs,
           this.modifiedProduct.nutriments,
           this.modifiedProduct.product_name,
           this.modifiedProduct.generic_name,
-          this.modifiedProduct.quantity,
           this.modifiedProduct.packaging,
           this.modifiedProduct.IPFS_hash
         )
